@@ -1,7 +1,7 @@
 #labels Listeners
 Usage of message listeners is very straight forward, and is enabled through the IRCApi interface.
 
-You either need to extend the IMessage interface if you're willing to listen to all server events, or you can be selective and just extend VariousMessageListenerAdapter and override events you're interested in.
+You either need to extend the IMessage interface if you're willing to listen to all server events, or you can be selective and just extend the VariousMessageListenerAdapter and override events you're interested in.
 <br />
 {{{
 package com.ircclouds.irc.api;

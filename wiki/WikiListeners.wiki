@@ -1,0 +1,20 @@
+#labels Listeners
+Usage of message listeners is very straight forward, and is enabled through the IRCApi interface.
+
+You either need to extend the IMessage interface if you're willing to listen to all server events, or you can be selective and just extend VariousMessageListenerAdapter and override events you're interested in.
+<br />
+{{{
+package com.ircclouds.irc.api;
+
+import com.ircclouds.irc.api.domain.messages.*;
+import com.ircclouds.irc.api.listeners.*;
+
+public class ChannelJoinListener extends VariousMessageListenerAdapter
+{
+	@Override
+	public void onChannelJoin(ChanJoinMessage aMsg)
+	{
+		System.out.println("User " + aMsg.getFromUser().getNick() + " joined channel" + aMsg.getChannelName()); 
+	}
+}
+}}}

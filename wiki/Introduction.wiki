@@ -1,0 +1,11 @@
+IRC-API is basically built on 3 components.
+
+1) the IRC server message building layer where the raw server message is directly transformed into an instance of IMessage.
+
+2) the IMessage listeners, dubbed as IMessageListener, that can register for incoming message notifications through the IRCApi interface.
+
+3) the IRCApi interface that offers the ability to execute commands in both synchronous and asynchronous programming style.
+
+Internally, IRC-API uses an IRC session to execute IRC commands, and awaits for notifications.
+
+Optionally, the user chooses whether the API should save the IRC session state, by setting the IRCApiImpl's aSaveIRCState constructor parameter to true.  In this case, state can be queried by using the IIRCState interface.

@@ -9,3 +9,31 @@ IRC-API is basically built on 3 components.
 Internally, IRC-API uses an IRC session to execute IRC commands, and awaits for notifications.
 
 Optionally, the user chooses whether the API should save the IRC session state, by setting the IRCApiImpl's aSaveIRCState constructor parameter to true.  In this case, state can be queried by using the IIRCState interface.
+
+*Synchronous use of the API:*
+
+{{{
+_api.joinChannel("#ircapi");
+}}}
+
+Here, there's no promise that the client joined the #ircapi channel.
+
+*Asynchronous use of the API:*
+
+{{{
+_api.joinChannelAsync("#ircapi", new Callback<IRCChannel>()
+{
+	@Override
+	public void onSuccess(IRCChannel aObject)
+	{
+		// do something
+	}
+
+	@Override
+	public void onFailure(String aErrorMessage)
+	{
+	}
+});
+}}}
+
+Here, the client awaits for the callback to be invoked, and hence, the client will be informed about whether the join channel command was successful or not.

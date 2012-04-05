@@ -46,7 +46,7 @@ Saving IRC State is implemented in the API, and can be configured as shown in th
 IRCApi _api = new IRCApiImpl(true);
 }}}
 
-The state can then be obtained from the _IRCApi.connect_'s _Callback<IIRCState>_ parameter, and it basically inherits the _IIRCState_ interface.
+The state can then be obtained from the _IRCApi.connect_'s _Callback`<IIRCState>`_ parameter, and it basically inherits the _IIRCState_ interface.
 
 {{{
 public interface IIRCState

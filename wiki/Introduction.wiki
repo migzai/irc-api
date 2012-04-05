@@ -36,4 +36,4 @@ _api.joinChannelAsync("#ircapi", new Callback<IRCChannel>()
 });
 }}}
 
-Here, the client awaits for the callback to be invoked, and hence, the client will be informed about whether the join channel command was successful or not.
+Here, the client awaits for the callback to be invoked, and hence, the client will be informed about whether the join channel command was successful.

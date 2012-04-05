@@ -16,7 +16,7 @@ Optionally, the user can choose whether the API should save the IRC state by set
 _api.joinChannel("#ircapi");
 }}}
 
-Here, there's no promise that the client joined the #ircapi channel.
+Here, the API user doesn't get a feedback on whether the channel join was successful.  The user will have to extend _IMessage_ and manually listen to server events in this case.
 
 *Asynchronous use of the API:*
 

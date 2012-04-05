@@ -1,6 +1,6 @@
 IRC-API is basically built on 3 components.
 
-1) the IRC server message building layer where the raw server message is directly transformed into an instance of IMessage.
+1) the IRC server message building layer where the raw server message is directly transformed into an instance of _IMessage_.
 
 2) the _IMessage_ listeners, dubbed as _IMessageListener_, that can register for incoming message notifications through the _IRCApi_ interface.
 

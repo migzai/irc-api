@@ -40,13 +40,13 @@ Here, the client awaits for the callback to be invoked, and hence, will be infor
 
 *Saving IRC state*
 
-Saving IRC State is implemented in the API, and can be configured using the following example:
+Saving IRC State is implemented in the API, and can be configured as shown in the following example:
 
 {{{
 IRCApi _api = new IRCApiImpl(true);
 }}}
 
-The state can be obtained from the _IRCApi.connect_'s 2nd Callback, and it basically inherits the IIRCState interface.
+The state can then be obtained from the _IRCApi.connect_'s Callback parameter, and it basically inherits the _IIRCState_ interface.
 
 {{{
 public interface IIRCState

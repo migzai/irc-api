@@ -1,4 +1,4 @@
-#labels Connecting
+#labels Featured
 Usage of the API is very simple.  The main interfaces you should know about are:
 
 - IRCApi

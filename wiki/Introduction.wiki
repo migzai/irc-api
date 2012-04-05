@@ -36,4 +36,37 @@ _api.joinChannelAsync("#ircapi", new Callback<IRCChannel>()
 });
 }}}
 
-Here, the client awaits for the callback to be invoked, and hence, the client will be informed about whether the join channel command was successful.
+Here, the client awaits for the callback to be invoked, and hence, will be informed about whether the join channel command was successful.  On channel join, the user will receive an _IRCChannel_ object which has all the available information about the IRC channel.
+
+*Saving IRC state*
+
+Saving IRC State is implemented in the API, and can be configured using the following example:
+
+{{{
+IRCApi _api = new IRCApiImpl(true);
+}}}
+
+The state can be obtained from the _IRCApi.connect_'s 2nd Callback, and it basically inherits the IIRCState interface.
+
+{{{
+public interface IIRCState
+{
+	String getNickname();
+
+	List<String> getAltNicks();
+
+	String getRealname();
+
+	String getIdent();
+
+	List<IRCChannel> getChannels();
+
+	IRCChannel getChannelByName(String aChannelName);
+
+	IRCServer getServer();
+
+	IRCServerOptions getServerOptions();
+	
+	boolean isConnected();
+}
+}}}

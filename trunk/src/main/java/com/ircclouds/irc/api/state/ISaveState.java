@@ -8,5 +8,7 @@ public interface ISaveState
 	
 	void delete(String aChannelName);
 	
+	void updateNick(String aNewNick);
+	
 	IIRCState getIRCState();
 }

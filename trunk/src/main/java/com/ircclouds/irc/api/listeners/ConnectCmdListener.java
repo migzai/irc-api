@@ -11,7 +11,7 @@ import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.state.*;
 
-public class ConnectCmdListener implements IMessageListener
+public class ConnectCmdListener
 {
 	private String nick;
 	private IServerParameters params;

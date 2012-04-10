@@ -11,6 +11,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	private AbstractChannelJoinListener chanJoinListener;
 	private AbstractChannelPartListener chanPartListener;
 	private ConnectCmdListener connectListener;
+	private AbstractNickChangeListener nickChangeListener;
 	
 	public AbstractExecuteCommandListener(IIRCSession aSession)
 	{
@@ -37,6 +38,14 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 			}
 		};	
 		connectListener = new ConnectCmdListener(aSession);
+		nickChangeListener = new AbstractNickChangeListener()
+		{
+			@Override
+			protected void changeNick(String aNewNick)
+			{
+				updateNick(aNewNick);
+			}
+		};
 	}
 
 	@Override
@@ -62,20 +71,32 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	{
 		chanJoinListener.onServerMessage(aMsg);
 		chanPartListener.onServerMessage(aMsg);
-		connectListener.onMessage(aMsg);
+		if (!getIRCState().isConnected())
+		{
+			connectListener.onMessage(aMsg);
+		}
+		nickChangeListener.onServerMessage(aMsg);
 	}
 	
 	@Override
 	public void onError(ErrorMessage aMsg)
 	{
-		connectListener.onMessage(aMsg);
+		if (!getIRCState().isConnected())
+		{
+			connectListener.onMessage(aMsg);
+		}
 	}
 	
 	@Override
-	public void onServerPing(ServerPing aMsg)
+	public void onNickChange(NickMessage aMsg)
 	{
-		connectListener.onMessage(aMsg);
-	}
+		if (aMsg.getFromUser().getNick().equals(getIRCState().getNickname()))
+		{
+			nickChangeListener.onNickChange(aMsg);
+			
+			updateNick(aMsg.getNewNick());
+		}
+	}	
 	
 	public void submitConnectCallback(Callback<IIRCState> aCallback, IServerParameters aServerParameters)
 	{
@@ -104,6 +125,11 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	public void submitPartChannelCallback(String aChanName, Callback<String> aCallback)
 	{
 		chanPartListener.submit(aChanName, aCallback);
+	}
+
+	public void submitChangeNickCallback(String aNewNickname, Callback<String> aCallback)
+	{
+		nickChangeListener.submit(aNewNickname, aCallback);
 	}
 	
 	private boolean isForMe(IUserMessage aMsg)

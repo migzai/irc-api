@@ -33,6 +33,8 @@ public interface IRCApi
 	
 	void changeNick(String aValue) throws IOException;
 	
+	void changeNickAsync(String aValue, Callback<String> aCallback) throws IOException;	
+	
 	void changeTopic(String aChannel, String aTopic) throws IOException;
 	
 	void sendChannelMessage(String aChannelName, String aMessage) throws IOException;

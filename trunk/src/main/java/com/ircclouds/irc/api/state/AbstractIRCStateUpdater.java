@@ -131,4 +131,10 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		getIRCStateImpl().getChannelsMutable().remove(aChannelName);
 	}
+	
+	@Override
+	public void updateNick(String aNewNick)
+	{
+		getIRCStateImpl().updateNick(aNewNick);
+	}
 }

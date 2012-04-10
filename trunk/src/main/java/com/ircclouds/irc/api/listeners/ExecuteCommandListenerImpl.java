@@ -32,4 +32,10 @@ public class ExecuteCommandListenerImpl extends AbstractExecuteCommandListener
 	{
 		return updater.getIRCState();
 	}
+
+	@Override
+	public void updateNick(String aNewNick)
+	{
+		updater.updateNick(aNewNick);
+	}
 }

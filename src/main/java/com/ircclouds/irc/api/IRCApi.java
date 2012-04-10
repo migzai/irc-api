@@ -45,6 +45,8 @@ public interface IRCApi
 
 	void actInPrivate(String aChannelName, String aActionMessage) throws IOException;
 	
+	void sendRawMessage(String aMessage) throws IOException;
+	
 	// Session interface
 	void addListener(IMessageListener aListener);
 	

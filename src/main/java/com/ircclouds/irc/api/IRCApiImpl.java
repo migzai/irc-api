@@ -190,6 +190,15 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
+	public void changeNickAsync(String aNewNickname, Callback<String> aCallback) throws IOException
+	{
+		checkConnected();
+		
+		executeCmdListener.submitChangeNickCallback(aNewNickname, aCallback);
+		session.execute(new ChangeNickCmd(aNewNickname));
+	}	
+	
+	@Override
 	public void changeTopic(final String aChannel, final String aSuggestedTopic) throws IOException
 	{
 		checkConnected();
@@ -313,6 +322,12 @@ public class IRCApiImpl implements IRCApi
 				
 				@Override
 				public void delete(String aChannelName)
+				{
+					// NOP
+				}
+
+				@Override
+				public void updateNick(String aNewNick)
 				{
 					// NOP
 				}

@@ -207,6 +207,12 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
+	public void sendRawMessage(String aMessage) throws IOException
+	{
+		session.execute(new SendRawMessage(aMessage));
+	}
+	
+	@Override
 	public void addListener(IMessageListener aListener)
 	{
 		session.addListeners(aListener);

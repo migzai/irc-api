@@ -15,7 +15,7 @@ public final class MessagesDispatcherImpl implements IMessagesDispatcher
 	private List<IMessageListener> listeners = new ArrayList<IMessageListener>();
 
 	public void dispatch(IMessage aMessage)
-	{
+	{	
 		for (IMessageListener _listener : new ArrayList<IMessageListener>(listeners))
 		{
 			LOG.debug("Dispatching " + aMessage.getClass().getSimpleName() + " to " +  _listener.getClass().getSimpleName());

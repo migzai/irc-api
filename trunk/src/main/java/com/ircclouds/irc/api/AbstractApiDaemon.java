@@ -4,6 +4,7 @@ import org.slf4j.*;
 
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
+import com.ircclouds.irc.api.filters.*;
 
 public abstract class AbstractApiDaemon extends Thread
 {
@@ -11,8 +12,9 @@ public abstract class AbstractApiDaemon extends Thread
 
 	private IMessagesReader reader;
 	private IMessagesDispatcher dispatcher;
+	private IMessageFilter filter;
 
-	public AbstractApiDaemon(IMessagesReader aReader, IMessagesDispatcher aDispatcher)
+	public AbstractApiDaemon(IMessagesReader aReader, IMessagesDispatcher aDispatcher, IMessageFilter aMessageFilter)
 	{
 		super("ApiDaemon");
 
@@ -28,7 +30,18 @@ public abstract class AbstractApiDaemon extends Thread
 			{
 				for (IMessage _msg : reader.readMessages())
 				{
-					dispatcher.dispatch(_msg);
+					if (filter != null)
+					{
+						FilterResult _fr = filter.filter(_msg);
+						if (_fr.getFilterStatus().equals(FilterStatus.PASS))
+						{
+							dispatcher.dispatch(_fr.getFilteredMessage());
+						}
+					}
+					else
+					{
+						dispatcher.dispatch(_msg);
+					}
 					
 					if (_msg instanceof ErrorMessage)
 					{

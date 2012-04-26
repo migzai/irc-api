@@ -12,6 +12,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	private AbstractChannelPartListener chanPartListener;
 	private ConnectCmdListener connectListener;
 	private AbstractNickChangeListener nickChangeListener;
+	private AsyncMessageListener messsageListener;
 	
 	public AbstractExecuteCommandListener(IIRCSession aSession)
 	{
@@ -46,6 +47,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 				updateNick(aNewNick);
 			}
 		};
+		messsageListener = new AsyncMessageListener();
 	}
 
 	@Override
@@ -76,6 +78,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 			connectListener.onMessage(aMsg);
 		}
 		nickChangeListener.onServerMessage(aMsg);
+		messsageListener.onServerMsg(aMsg);
 	}
 	
 	@Override
@@ -130,6 +133,11 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	public void submitChangeNickCallback(String aNewNickname, Callback<String> aCallback)
 	{
 		nickChangeListener.submit(aNewNickname, aCallback);
+	}
+
+	public void submitSendMessageCallback(int aAsyncId, Callback<String> aCallback)
+	{
+		messsageListener.submit(aAsyncId, aCallback);
 	}
 	
 	private boolean isForMe(IUserMessage aMsg)

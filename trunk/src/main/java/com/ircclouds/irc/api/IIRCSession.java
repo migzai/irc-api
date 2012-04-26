@@ -4,6 +4,7 @@ import java.io.*;
 
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.domain.*;
+import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 
 public interface IIRCSession
@@ -17,4 +18,6 @@ public interface IIRCSession
 	boolean open(IRCServer aServer) throws IOException;
 	
 	void close() throws IOException;
+
+	IMessageFilter gettMessageFilter();
 }

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.exceptions.*;
+import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 import com.ircclouds.irc.api.state.*;
 
@@ -20,7 +21,10 @@ public class IRCApiImpl implements IRCApi
 	private IIRCSession session;
 	private AbstractExecuteCommandListener executeCmdListener;
 	private IIRCState state;
-
+	private int asyncId = 0;
+	
+	private IMessageFilter filter;
+	
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
 		configLog4j();
@@ -32,6 +36,12 @@ public class IRCApiImpl implements IRCApi
 			protected IRCServerOptions getIRCServerOptions()
 			{
 				return state.getServerOptions();
+			}
+
+			@Override
+			public IMessageFilter gettMessageFilter()
+			{
+				return filter;
 			}
 		};
 	
@@ -148,7 +158,16 @@ public class IRCApiImpl implements IRCApi
 
 		session.execute(new SendChannelMessage(aChannelName, aMessage));
 	}
-
+	
+	@Override
+	public void sendChannelMessageAsync(String aChannelName, String aMessage, Callback<String> aCallback) throws IOException
+	{
+		checkConnected();
+		
+		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		session.execute(new SendChannelMessage(aChannelName, aMessage, asyncId++));
+	}
+	
 	@Override
 	public void sendPrivateMessage(String aNick, String aText) throws IOException
 	{
@@ -224,6 +243,12 @@ public class IRCApiImpl implements IRCApi
 		session.removeListener(aListener);
 	}
 
+	@Override
+	public void setMessageFilter(IMessageFilter aFilter)
+	{
+		filter = aFilter;
+	}	
+	
 	private String prependChanType(String aChannelName)
 	{
 		for (Character _c : state.getServerOptions().getChanTypes())

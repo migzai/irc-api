@@ -20,7 +20,9 @@ public final class IRCServerNumerics
 	public static final int CHANNEL_NICKS_LIST = 353;
 	public static final int CHANNEL_NICKS_END_OF_LIST = 366;
 	public static final int END_OF_MOTD = 376;
+	public static final int NO_SUCH_NICK_CHANNEL = 401;
 	public static final int NO_SUCH_CHANNEL = 403;
+	public static final int NO_EXTERNAL_CHANNEL_MESSAGES = 404;
 	public static final int MOTD_FILE_MISSING = 422;
 	public static final int ERRONEUS_NICKNAME = 432;
 	public static final int NICKNAME_IN_USE = 433;

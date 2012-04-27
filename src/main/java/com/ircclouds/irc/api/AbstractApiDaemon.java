@@ -20,6 +20,7 @@ public abstract class AbstractApiDaemon extends Thread
 
 		reader = aReader;
 		dispatcher = aDispatcher;
+		filter = aMessageFilter;
 	}
 
 	public void run()
@@ -32,7 +33,7 @@ public abstract class AbstractApiDaemon extends Thread
 				{
 					if (filter != null)
 					{
-						FilterResult _fr = filter.filter(_msg);
+						MessageFilterResult _fr = filter.filter(_msg);
 						if (_fr.getFilterStatus().equals(FilterStatus.PASS))
 						{
 							dispatcher.dispatch(_fr.getFilteredMessage());

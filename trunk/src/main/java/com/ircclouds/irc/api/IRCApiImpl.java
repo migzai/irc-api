@@ -177,12 +177,30 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
+	public void sendPrivateMessageAsync(String aNick, String aText, Callback<String> aCallback) throws IOException
+	{
+		checkConnected();
+		
+		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		session.execute(new SendPrivateMessage(aNick, aText, asyncId++));
+	}	
+	
+	@Override
 	public void actInChannel(String aChannelName, String aActionMessage) throws IOException
 	{
 		checkConnected();
 
 		session.execute(new SendChannelActionMessage(aChannelName, aActionMessage));
 	}
+	
+	@Override
+	public void actInChannelAsync(String aChannelName, String aActionMessage, Callback<String> aCallback) throws IOException
+	{
+		checkConnected();
+		
+		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		session.execute(new SendChannelActionMessage(aChannelName, aActionMessage, asyncId++));
+	}	
 
 	@Override
 	public void actInPrivate(String aChannelName, String aActionMessage) throws IOException
@@ -191,13 +209,14 @@ public class IRCApiImpl implements IRCApi
 
 		session.execute(new SendPrivateActionMessage(aChannelName, aActionMessage));
 	}
-
+	
 	@Override
-	public void changeMode(String aModeString) throws IOException
+	public void actInPrivateAsync(String aNick, String aActionMessage, Callback<String> aCallback) throws IOException
 	{
 		checkConnected();
-
-		session.execute(new ChangeModeCmd(aModeString));
+		
+		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		session.execute(new SendPrivateActionMessage(aNick, aActionMessage, asyncId++));		
 	}
 
 	@Override
@@ -225,6 +244,14 @@ public class IRCApiImpl implements IRCApi
 		session.execute(new ChangeTopicCmd(aChannel, aSuggestedTopic));
 	}
 
+	@Override
+	public void changeMode(String aModeString) throws IOException
+	{
+		checkConnected();
+
+		session.execute(new ChangeModeCmd(aModeString));
+	}	
+	
 	@Override
 	public void sendRawMessage(String aMessage) throws IOException
 	{

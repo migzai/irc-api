@@ -24,7 +24,7 @@ public class IRCApiImpl implements IRCApi
 	private int asyncId = 0;
 	
 	private IMessageFilter filter;
-	private IMessageFilter apiFilter = new ApiMessageFilter(asyncId);
+	private ApiMessageFilter apiFilter = new ApiMessageFilter(asyncId);
 	
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
@@ -173,6 +173,8 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 		
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		apiFilter.addValue(asyncId);
+
 		session.execute(new SendChannelMessage(aChannelName, aMessage, asyncId++));
 	}
 	
@@ -190,6 +192,8 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 		
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		apiFilter.addValue(asyncId);
+
 		session.execute(new SendPrivateMessage(aNick, aText, asyncId++));
 	}	
 	
@@ -207,6 +211,8 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 		
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		apiFilter.addValue(asyncId);
+		
 		session.execute(new SendChannelActionMessage(aChannelName, aActionMessage, asyncId++));
 	}	
 
@@ -241,6 +247,8 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 		
 		executeCmdListener.submitChangeNickCallback(aNewNickname, aCallback);
+		apiFilter.addValue(asyncId);
+		
 		session.execute(new ChangeNickCmd(aNewNickname));
 	}	
 	

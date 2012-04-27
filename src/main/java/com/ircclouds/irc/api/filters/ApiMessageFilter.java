@@ -1,11 +1,13 @@
 package com.ircclouds.irc.api.filters;
 
+import java.util.*;
+
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
 public class ApiMessageFilter implements IMessageFilter
 {
-	private Integer nextInt;
+	private List<String> nextValues = new ArrayList<String>();
 
 	public ApiMessageFilter()
 	{
@@ -14,7 +16,7 @@ public class ApiMessageFilter implements IMessageFilter
 	
 	public ApiMessageFilter(Integer aNextInt)
 	{
-		nextInt = aNextInt;
+		nextValues.add(aNextInt+"");
 	}
 	
 	@Override
@@ -24,7 +26,8 @@ public class ApiMessageFilter implements IMessageFilter
 		{
 			String aText = ((ServerMessage) aMsg).getText();
 			String cmpnts[] = aText.split(" :");
-			if (nextInt+"" == cmpnts[0])
+			
+			if (nextValues.remove(cmpnts[0]))
 			{
 				return new MessageFilterResult(null, FilterStatus.HALT);
 			}
@@ -34,13 +37,8 @@ public class ApiMessageFilter implements IMessageFilter
 		return new MessageFilterResult(aMsg, FilterStatus.PASS);
 	}
 
-	public Integer getNextInt()
+	public void addValue(Integer aNextInt)
 	{
-		return nextInt;
-	}
-
-	public void setNextInt(Integer aNextInt)
-	{
-		nextInt = aNextInt;
+		nextValues.add(aNextInt+"");
 	}
 }

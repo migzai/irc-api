@@ -19,5 +19,5 @@ public interface IIRCSession
 	
 	void close() throws IOException;
 
-	IMessageFilter gettMessageFilter();
+	IMessageFilter getMessageFilter();
 }

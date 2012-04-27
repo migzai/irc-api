@@ -41,7 +41,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 			}
 		};
 		
-		daemon = new AbstractApiDaemon(reader, dispatcher, gettMessageFilter())
+		daemon = new AbstractApiDaemon(reader, dispatcher, getMessageFilter())
 		{
 			@Override
 			protected void onExit()

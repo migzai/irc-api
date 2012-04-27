@@ -24,6 +24,7 @@ public class IRCApiImpl implements IRCApi
 	private int asyncId = 0;
 	
 	private IMessageFilter filter;
+	private IMessageFilter apiFilter = new ApiMessageFilter(asyncId);
 	
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
@@ -39,9 +40,16 @@ public class IRCApiImpl implements IRCApi
 			}
 
 			@Override
-			public IMessageFilter gettMessageFilter()
+			public IMessageFilter getMessageFilter()
 			{
-				return filter;
+				if (filter != null)
+				{
+					return new AndMessageFilter(apiFilter, filter);
+				}
+				else
+				{
+					return apiFilter;
+				}
 			}
 		};
 	

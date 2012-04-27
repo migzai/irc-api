@@ -30,13 +30,9 @@ public interface IRCApi
 
 	void leaveChannelAsync(String aChannelName, String aPartMessage, Callback<String> aCallback) throws IOException;
 
-	void changeMode(String aModeString) throws IOException;
-	
 	void changeNick(String aNewNick) throws IOException;
 	
 	void changeNickAsync(String aNewNick, Callback<String> aCallback) throws IOException;	
-	
-	void changeTopic(String aChannel, String aTopic) throws IOException;
 	
 	void sendChannelMessage(String aChannelName, String aMessage) throws IOException;
 
@@ -44,9 +40,19 @@ public interface IRCApi
 	
 	void sendPrivateMessage(String aNick, String aText) throws IOException;
 	
+	void sendPrivateMessageAsync(String aNick, String aText, Callback<String> aCallback) throws IOException;	
+	
 	void actInChannel(String aChannelName, String aActionMessage) throws IOException;
 
+	void actInChannelAsync(String aChannelName, String aActionMessage, Callback<String> aCallback) throws IOException;
+	
 	void actInPrivate(String aNick, String aActionMessage) throws IOException;
+	
+	void actInPrivateAsync(String aNick, String aActionMessage, Callback<String> aCallback) throws IOException;
+
+	void changeTopic(String aChannel, String aTopic) throws IOException;
+	
+	void changeMode(String aModeString) throws IOException;
 	
 	void sendRawMessage(String aMessage) throws IOException;
 	

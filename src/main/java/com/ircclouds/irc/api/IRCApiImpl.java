@@ -79,7 +79,7 @@ public class IRCApiImpl implements IRCApi
 		{
 			if (_isOpen = session.open(aServerParameters.getServer()))
 			{
-				session.execute(new ConnectCmd(aServerParameters));
+				execute(new ConnectCmd(aServerParameters));
 			}
 			else
 			{
@@ -100,7 +100,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new QuitCmd(aQuitMessage));
+		execute(new QuitCmd(aQuitMessage));
 
 		((IRCStateImpl) (state)).setConnected(false);
 	}
@@ -122,7 +122,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new JoinChanCmd(prependChanType(aChannelName), aKey));
+		execute(new JoinChanCmd(prependChanType(aChannelName), aKey));
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class IRCApiImpl implements IRCApi
 		aChannelName = prependChanType(aChannelName);
 
 		executeCmdListener.submitJoinChannelCallback(aChannelName, aCallback);
-		session.execute(new JoinChanCmd(aChannelName, aKey));
+		execute(new JoinChanCmd(aChannelName, aKey));
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new PartChanCmd(aChannelName, aPartMessage));
+		execute(new PartChanCmd(aChannelName, aPartMessage));
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 
 		executeCmdListener.submitPartChannelCallback(aChannelName, aCallback);
-		session.execute(new PartChanCmd(aChannelName, aPartMessage));
+		execute(new PartChanCmd(aChannelName, aPartMessage));
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new SendChannelMessage(aChannelName, aMessage));
+		execute(new SendChannelMessage(aChannelName, aMessage));
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class IRCApiImpl implements IRCApi
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
 		apiFilter.addValue(asyncId);
 
-		session.execute(new SendChannelMessage(aChannelName, aMessage, asyncId++));
+		execute(new SendChannelMessage(aChannelName, aMessage, asyncId++));
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new SendPrivateMessage(aNick, aText));
+		execute(new SendPrivateMessage(aNick, aText));
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class IRCApiImpl implements IRCApi
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
 		apiFilter.addValue(asyncId);
 
-		session.execute(new SendPrivateMessage(aNick, aText, asyncId++));
+		execute(new SendPrivateMessage(aNick, aText, asyncId++));
 	}
 
 	@Override
@@ -208,7 +208,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new SendChannelActionMessage(aChannelName, aActionMessage));
+		execute(new SendChannelActionMessage(aChannelName, aActionMessage));
 	}
 
 	@Override
@@ -219,7 +219,7 @@ public class IRCApiImpl implements IRCApi
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
 		apiFilter.addValue(asyncId);
 
-		session.execute(new SendChannelActionMessage(aChannelName, aActionMessage, asyncId++));
+		execute(new SendChannelActionMessage(aChannelName, aActionMessage, asyncId++));
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new SendPrivateActionMessage(aChannelName, aActionMessage));
+		execute(new SendPrivateActionMessage(aChannelName, aActionMessage));
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
-		session.execute(new SendPrivateActionMessage(aNick, aActionMessage, asyncId++));
+		execute(new SendPrivateActionMessage(aNick, aActionMessage, asyncId++));
 	}
 
 	@Override
@@ -244,7 +244,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new ChangeNickCmd(aNewNick));
+		execute(new ChangeNickCmd(aNewNick));
 	}
 
 	@Override
@@ -255,7 +255,7 @@ public class IRCApiImpl implements IRCApi
 		executeCmdListener.submitChangeNickCallback(aNewNickname, aCallback);
 		apiFilter.addValue(asyncId);
 
-		session.execute(new ChangeNickCmd(aNewNickname));
+		execute(new ChangeNickCmd(aNewNickname));
 	}
 
 	@Override
@@ -263,7 +263,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new ChangeTopicCmd(aChannel, aSuggestedTopic));
+		execute(new ChangeTopicCmd(aChannel, aSuggestedTopic));
 	}
 
 	@Override
@@ -271,13 +271,13 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 
-		session.execute(new ChangeModeCmd(aModeString));
+		execute(new ChangeModeCmd(aModeString));
 	}
 
 	@Override
 	public void sendRawMessage(String aMessage) throws IOException
 	{
-		session.execute(new SendRawMessage(aMessage));
+		execute(new SendRawMessage(aMessage));
 	}
 
 	@Override
@@ -298,6 +298,11 @@ public class IRCApiImpl implements IRCApi
 		filter = aFilter;
 	}
 
+	protected ICommandServer getCommandServer()
+	{
+		return session.getCommandServer();
+	}
+	
 	private String prependChanType(String aChannelName)
 	{
 		for (Character _c : state.getServerOptions().getChanTypes())
@@ -368,7 +373,12 @@ public class IRCApiImpl implements IRCApi
 		_p.put("log4j.logger.org.eclipse", "WARN");
 		return _p;
 	}
-
+	
+	private void execute(ICommand aCommand) throws IOException
+	{
+		getCommandServer().execute(aCommand);
+	}
+	
 	private ISaveState getStateUpdater(Boolean aSaveIRCState)
 	{
 		ISaveState _stateUpdater = new AbstractIRCStateUpdater()

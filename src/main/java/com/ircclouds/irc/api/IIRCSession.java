@@ -2,14 +2,13 @@ package com.ircclouds.irc.api;
 
 import java.io.*;
 
-import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 
 public interface IIRCSession
 {
-	void execute(ICommand aCommand) throws IOException;
+	ICommandServer getCommandServer();
 
 	void addListeners(IMessageListener... aListener);
 	

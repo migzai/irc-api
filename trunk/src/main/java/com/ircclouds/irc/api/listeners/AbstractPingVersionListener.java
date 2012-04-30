@@ -36,7 +36,7 @@ public abstract class AbstractPingVersionListener extends VariousMessageListener
 	{
 		try
 		{
-			getSession().execute(aCmd);
+			getSession().getCommandServer().execute(aCmd);
 		}
 		catch (IOException aExc)
 		{

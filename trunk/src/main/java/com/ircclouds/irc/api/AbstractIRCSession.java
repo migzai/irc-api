@@ -70,6 +70,11 @@ public abstract class AbstractIRCSession implements IIRCSession
 			dispatcher.register(_listener);
 		}
 	}
+	
+	public ICommandServer getCommandServer()
+	{
+		return cmdServ;
+	}
 
 	@Override
 	public void removeListener(IMessageListener aListener)

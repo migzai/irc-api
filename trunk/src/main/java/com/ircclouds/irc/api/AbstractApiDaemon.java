@@ -12,15 +12,13 @@ public abstract class AbstractApiDaemon extends Thread
 
 	private IMessagesReader reader;
 	private IMessagesDispatcher dispatcher;
-	private IMessageFilter filter;
 
-	public AbstractApiDaemon(IMessagesReader aReader, IMessagesDispatcher aDispatcher, IMessageFilter aMessageFilter)
+	public AbstractApiDaemon(IMessagesReader aReader, IMessagesDispatcher aDispatcher)
 	{
 		super("ApiDaemon");
 
 		reader = aReader;
 		dispatcher = aDispatcher;
-		filter = aMessageFilter;
 	}
 
 	public void run()
@@ -31,9 +29,9 @@ public abstract class AbstractApiDaemon extends Thread
 			{
 				for (IMessage _msg : reader.readMessages())
 				{
-					if (filter != null)
+					if (getMessageFilter() != null)
 					{
-						MessageFilterResult _fr = filter.filter(_msg);
+						MessageFilterResult _fr = getMessageFilter().filter(_msg);
 						if (_fr.getFilterStatus().equals(FilterStatus.PASS))
 						{
 							dispatcher.dispatch(_fr.getFilteredMessage());
@@ -60,4 +58,6 @@ public abstract class AbstractApiDaemon extends Thread
 	}
 
 	protected abstract void onExit();
+	
+	protected abstract IMessageFilter getMessageFilter();
 }

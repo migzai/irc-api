@@ -5,6 +5,7 @@ import java.io.*;
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.comms.*;
 import com.ircclouds.irc.api.domain.*;
+import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 
 public abstract class AbstractIRCSession implements IIRCSession
@@ -41,7 +42,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 			}
 		};
 		
-		daemon = new AbstractApiDaemon(reader, dispatcher, getMessageFilter())
+		daemon = new AbstractApiDaemon(reader, dispatcher)
 		{
 			@Override
 			protected void onExit()
@@ -54,6 +55,12 @@ public abstract class AbstractIRCSession implements IIRCSession
 				{
 					throw new RuntimeException(aExc);
 				}
+			}
+
+			@Override
+			protected IMessageFilter getMessageFilter()
+			{
+				return AbstractIRCSession.this.getMessageFilter();
 			}
 		};
 	}

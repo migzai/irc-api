@@ -61,7 +61,7 @@ public class IRCApiImpl implements IRCApi
 			}
 		};
 
-		session.addListeners(executeCmdListener = new ExecuteCommandListenerImpl(session, getStateUpdater(aSaveIRCState)), new PingVersionListenerImpl(session));
+		session.addListeners(ListenerLevel.PRIVATE, executeCmdListener = new ExecuteCommandListenerImpl(session, getStateUpdater(aSaveIRCState)), new PingVersionListenerImpl(session));
 	}
 
 	@Override
@@ -283,7 +283,7 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void addListener(IMessageListener aListener)
 	{
-		session.addListeners(aListener);
+		session.addListeners(ListenerLevel.PUBLIC, aListener);
 	}
 
 	@Override
@@ -392,7 +392,7 @@ public class IRCApiImpl implements IRCApi
 
 		if (aSaveIRCState)
 		{
-			session.addListeners((AbstractIRCStateUpdater) _stateUpdater);
+			session.addListeners(ListenerLevel.PRIVATE, (AbstractIRCStateUpdater) _stateUpdater);
 		}
 		else
 		{

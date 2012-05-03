@@ -41,4 +41,10 @@ public class ApiMessageFilter implements IMessageFilter
 	{
 		nextValues.add(aNextInt+"");
 	}
+
+	@Override
+	public TargetListeners getTargetListeners()
+	{
+		return TargetListeners.ALL;
+	}
 }

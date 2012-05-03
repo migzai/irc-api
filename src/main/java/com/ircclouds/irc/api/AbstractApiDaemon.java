@@ -29,17 +29,19 @@ public abstract class AbstractApiDaemon extends Thread
 			{
 				for (IMessage _msg : reader.readMessages())
 				{
+					dispatcher.dispatchToPrivateListeners(_msg);
+					
 					if (getMessageFilter() != null)
 					{
 						MessageFilterResult _fr = getMessageFilter().filter(_msg);
 						if (_fr.getFilterStatus().equals(FilterStatus.PASS))
 						{
-							dispatcher.dispatch(_fr.getFilteredMessage());
+							dispatcher.dispatch(_fr.getFilteredMessage(), getMessageFilter().getTargetListeners());
 						}
 					}
 					else
 					{
-						dispatcher.dispatch(_msg);
+						dispatcher.dispatch(_msg, TargetListeners.ALL);
 					}
 					
 					if (_msg instanceof ErrorMessage)

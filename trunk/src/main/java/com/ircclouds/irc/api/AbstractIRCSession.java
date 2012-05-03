@@ -70,11 +70,11 @@ public abstract class AbstractIRCSession implements IIRCSession
 		cmdServ.execute(aCommand);
 	}
 
-	public void addListeners(IMessageListener... aListeners)
+	public void addListeners(ListenerLevel aListenerLevel, IMessageListener... aListeners)
 	{
 		for (IMessageListener _listener : aListeners)
 		{
-			dispatcher.register(_listener);
+			dispatcher.register(_listener, aListenerLevel);
 		}
 	}
 	

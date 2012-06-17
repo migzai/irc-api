@@ -112,9 +112,9 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void joinChannelAsync(String aChannelName, Callback<IRCChannel> aCallback) throws IOException
+	public void joinChannel(String aChannelName, Callback<IRCChannel> aCallback) throws IOException
 	{
-		joinChannelAsync(aChannelName, "", aCallback);
+		joinChannel(aChannelName, "", aCallback);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void joinChannelAsync(String aChannelName, String aKey, final Callback<IRCChannel> aCallback) throws IOException
+	public void joinChannel(String aChannelName, String aKey, final Callback<IRCChannel> aCallback) throws IOException
 	{
 		checkConnected();
 
@@ -143,9 +143,9 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void leaveChannelAsync(String aChannelName, Callback<String> aCallback) throws IOException
+	public void leaveChannel(String aChannelName, Callback<String> aCallback) throws IOException
 	{
-		leaveChannelAsync(aChannelName, "", aCallback);
+		leaveChannel(aChannelName, "", aCallback);
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void leaveChannelAsync(String aChannelName, String aPartMessage, Callback<String> aCallback) throws IOException
+	public void leaveChannel(String aChannelName, String aPartMessage, Callback<String> aCallback) throws IOException
 	{
 		checkConnected();
 
@@ -174,7 +174,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendChannelMessageAsync(String aChannelName, String aMessage, Callback<String> aCallback) throws IOException
+	public void sendChannelMessage(String aChannelName, String aMessage, Callback<String> aCallback) throws IOException
 	{
 		checkConnected();
 
@@ -193,7 +193,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendPrivateMessageAsync(String aNick, String aText, Callback<String> aCallback) throws IOException
+	public void sendPrivateMessage(String aNick, String aText, Callback<String> aCallback) throws IOException
 	{
 		checkConnected();
 
@@ -212,7 +212,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void actInChannelAsync(String aChannelName, String aActionMessage, Callback<String> aCallback) throws IOException
+	public void actInChannel(String aChannelName, String aActionMessage, Callback<String> aCallback) throws IOException
 	{
 		checkConnected();
 
@@ -231,7 +231,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void actInPrivateAsync(String aNick, String aActionMessage, Callback<String> aCallback) throws IOException
+	public void actInPrivate(String aNick, String aActionMessage, Callback<String> aCallback) throws IOException
 	{
 		checkConnected();
 
@@ -248,7 +248,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void changeNickAsync(String aNewNickname, Callback<String> aCallback) throws IOException
+	public void changeNick(String aNewNickname, Callback<String> aCallback) throws IOException
 	{
 		checkConnected();
 

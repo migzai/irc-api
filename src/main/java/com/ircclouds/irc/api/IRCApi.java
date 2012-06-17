@@ -16,39 +16,39 @@ public interface IRCApi
 
 	void joinChannel(String aChannelName) throws IOException;
 
-	void joinChannelAsync(String aChannelName, Callback<IRCChannel> aCallback) throws IOException;
+	void joinChannel(String aChannelName, Callback<IRCChannel> aCallback) throws IOException;
 
 	void joinChannel(String aChannelName, String aKey) throws IOException;
 	
-	void joinChannelAsync(String aChannelName, String aKey, Callback<IRCChannel> aCallback) throws IOException;
+	void joinChannel(String aChannelName, String aKey, Callback<IRCChannel> aCallback) throws IOException;
 
 	void leaveChannel(String aChannelName) throws IOException;
 
-	void leaveChannelAsync(String aChannelName, Callback<String> aCallback) throws IOException;
+	void leaveChannel(String aChannelName, Callback<String> aCallback) throws IOException;
 
 	void leaveChannel(String aChannelName, String aPartMessage) throws IOException;
 
-	void leaveChannelAsync(String aChannelName, String aPartMessage, Callback<String> aCallback) throws IOException;
+	void leaveChannel(String aChannelName, String aPartMessage, Callback<String> aCallback) throws IOException;
 
 	void changeNick(String aNewNick) throws IOException;
 	
-	void changeNickAsync(String aNewNick, Callback<String> aCallback) throws IOException;	
+	void changeNick(String aNewNick, Callback<String> aCallback) throws IOException;	
 	
 	void sendChannelMessage(String aChannelName, String aMessage) throws IOException;
 
-	void sendChannelMessageAsync(String aChannelName, String aMessage, Callback<String> aCallback) throws IOException;
+	void sendChannelMessage(String aChannelName, String aMessage, Callback<String> aCallback) throws IOException;
 	
 	void sendPrivateMessage(String aNick, String aText) throws IOException;
 	
-	void sendPrivateMessageAsync(String aNick, String aText, Callback<String> aCallback) throws IOException;	
+	void sendPrivateMessage(String aNick, String aText, Callback<String> aCallback) throws IOException;	
 	
 	void actInChannel(String aChannelName, String aActionMessage) throws IOException;
 
-	void actInChannelAsync(String aChannelName, String aActionMessage, Callback<String> aCallback) throws IOException;
+	void actInChannel(String aChannelName, String aActionMessage, Callback<String> aCallback) throws IOException;
 	
 	void actInPrivate(String aNick, String aActionMessage) throws IOException;
 	
-	void actInPrivateAsync(String aNick, String aActionMessage, Callback<String> aCallback) throws IOException;
+	void actInPrivate(String aNick, String aActionMessage, Callback<String> aCallback) throws IOException;
 
 	void changeTopic(String aChannel, String aTopic) throws IOException;
 	

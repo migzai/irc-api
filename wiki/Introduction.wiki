@@ -22,7 +22,7 @@ Here, the API user doesn't provide a feedback on whether the channel join was su
 *Asynchronous use of the API:*
 
 {{{
-_api.joinChannelAsync("#ircapi", new Callback<IRCChannel>()
+_api.joinChannel("#ircapi", new Callback<IRCChannel>()
 {
 	@Override
 	public void onSuccess(IRCChannel aObject)

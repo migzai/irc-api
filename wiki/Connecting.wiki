@@ -9,17 +9,16 @@ Usage of the API is very simple.  The main interfaces you should know about are:
 Here's an example connecting one client:
 
 {{{
-package com.ircclouds.irc.api;
 
-import java.io.*;
 import java.util.*;
 
+import com.ircclouds.irc.api.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.state.*;
 
 public class IRCClient
 {
-	public static void main(String[] aArgs) throws IOException
+	public static void main(String[] aArgs)
 	{
 		IRCApi _api = new IRCApiImpl(true);
 		_api.connect(getServerParams("nick", Arrays.asList("altNick1", "altNick2"), "IRC Api", "ident", "localhost", true), new Callback<IIRCState>()

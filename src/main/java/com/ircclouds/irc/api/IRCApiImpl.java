@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.domain.*;
-import com.ircclouds.irc.api.exceptions.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 import com.ircclouds.irc.api.state.*;
@@ -65,11 +64,11 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void connect(final IServerParameters aServerParameters, final Callback<IIRCState> aCallback) throws IOException
+	public void connect(final IServerParameters aServerParameters, final Callback<IIRCState> aCallback)
 	{
 		if (state.isConnected())
 		{
-			throw new AlreadyConnectedException();
+			throw new ApiException("Already connected!");
 		}
 
 		executeCmdListener.submitConnectCallback(newConnectCallback(aCallback), aServerParameters);
@@ -86,6 +85,11 @@ public class IRCApiImpl implements IRCApi
 				aCallback.onFailure("Failed to open connection to [" + aServerParameters.getServer().toString() + "]");
 			}
 		}
+		catch (IOException aExc)
+		{
+			LOG.error("Error opening session", aExc);
+			throw new ApiException(aExc);
+		}
 		finally
 		{
 			if (!_isOpen)
@@ -96,7 +100,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void disconnect(String aQuitMessage) throws IOException
+	public void disconnect(String aQuitMessage)
 	{
 		checkConnected();
 
@@ -106,19 +110,19 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void joinChannel(String aChannelName) throws IOException
+	public void joinChannel(String aChannelName)
 	{
 		joinChannel(aChannelName, "");
 	}
 
 	@Override
-	public void joinChannel(String aChannelName, Callback<IRCChannel> aCallback) throws IOException
+	public void joinChannel(String aChannelName, Callback<IRCChannel> aCallback)
 	{
 		joinChannel(aChannelName, "", aCallback);
 	}
 
 	@Override
-	public void joinChannel(String aChannelName, String aKey) throws IOException
+	public void joinChannel(String aChannelName, String aKey)
 	{
 		checkConnected();
 
@@ -126,7 +130,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void joinChannel(String aChannelName, String aKey, final Callback<IRCChannel> aCallback) throws IOException
+	public void joinChannel(String aChannelName, String aKey, final Callback<IRCChannel> aCallback)
 	{
 		checkConnected();
 
@@ -137,19 +141,19 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void leaveChannel(String aChannelName) throws IOException
+	public void leaveChannel(String aChannelName)
 	{
 		leaveChannel(aChannelName, "");
 	}
 
 	@Override
-	public void leaveChannel(String aChannelName, Callback<String> aCallback) throws IOException
+	public void leaveChannel(String aChannelName, Callback<String> aCallback)
 	{
 		leaveChannel(aChannelName, "", aCallback);
 	}
 
 	@Override
-	public void leaveChannel(String aChannelName, String aPartMessage) throws IOException
+	public void leaveChannel(String aChannelName, String aPartMessage)
 	{
 		checkConnected();
 
@@ -157,7 +161,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void leaveChannel(String aChannelName, String aPartMessage, Callback<String> aCallback) throws IOException
+	public void leaveChannel(String aChannelName, String aPartMessage, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -166,7 +170,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendChannelMessage(String aChannelName, String aMessage) throws IOException
+	public void sendChannelMessage(String aChannelName, String aMessage)
 	{
 		checkConnected();
 
@@ -174,7 +178,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendChannelMessage(String aChannelName, String aMessage, Callback<String> aCallback) throws IOException
+	public void sendChannelMessage(String aChannelName, String aMessage, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -185,7 +189,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendPrivateMessage(String aNick, String aText) throws IOException
+	public void sendPrivateMessage(String aNick, String aText)
 	{
 		checkConnected();
 
@@ -193,7 +197,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendPrivateMessage(String aNick, String aText, Callback<String> aCallback) throws IOException
+	public void sendPrivateMessage(String aNick, String aText, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -204,7 +208,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void actInChannel(String aChannelName, String aActionMessage) throws IOException
+	public void actInChannel(String aChannelName, String aActionMessage)
 	{
 		checkConnected();
 
@@ -212,7 +216,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void actInChannel(String aChannelName, String aActionMessage, Callback<String> aCallback) throws IOException
+	public void actInChannel(String aChannelName, String aActionMessage, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -223,7 +227,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void actInPrivate(String aChannelName, String aActionMessage) throws IOException
+	public void actInPrivate(String aChannelName, String aActionMessage)
 	{
 		checkConnected();
 
@@ -231,7 +235,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void actInPrivate(String aNick, String aActionMessage, Callback<String> aCallback) throws IOException
+	public void actInPrivate(String aNick, String aActionMessage, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -240,7 +244,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void changeNick(String aNewNick) throws IOException
+	public void changeNick(String aNewNick)
 	{
 		checkConnected();
 
@@ -248,7 +252,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void changeNick(String aNewNickname, Callback<String> aCallback) throws IOException
+	public void changeNick(String aNewNickname, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -259,7 +263,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void changeTopic(final String aChannel, final String aSuggestedTopic) throws IOException
+	public void changeTopic(final String aChannel, final String aSuggestedTopic)
 	{
 		checkConnected();
 
@@ -267,7 +271,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void changeMode(String aModeString) throws IOException
+	public void changeMode(String aModeString)
 	{
 		checkConnected();
 
@@ -275,7 +279,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendRawMessage(String aMessage) throws IOException
+	public void sendRawMessage(String aMessage)
 	{
 		execute(new SendRawMessage(aMessage));
 	}
@@ -332,7 +336,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		if (!state.isConnected())
 		{
-			throw new NotConnectedException();
+			throw new ApiException("Not connected!");
 		}
 	}
 
@@ -374,9 +378,17 @@ public class IRCApiImpl implements IRCApi
 		return _p;
 	}
 	
-	private void execute(ICommand aCommand) throws IOException
+	private void execute(ICommand aCommand)
 	{
-		getCommandServer().execute(aCommand);
+		try
+		{
+			getCommandServer().execute(aCommand);
+		}
+		catch (IOException aExc)
+		{
+			LOG.error("Error executing command", aExc);
+			throw new RuntimeException(aExc);
+		}
 	}
 	
 	private ISaveState getStateUpdater(Boolean aSaveIRCState)

@@ -9,11 +9,13 @@ import com.ircclouds.irc.api.*;
 public class DCCSendListener implements Runnable
 {
 	private File file;
+	private Integer timeout;
 	private Integer listeningPort;
 
-	public DCCSendListener(File aFile, Integer aPort)
+	public DCCSendListener(File aFile, Integer aTimeout, Integer aPort)
 	{
 		file = aFile;
+		timeout = aTimeout;
 		listeningPort = aPort;
 	}	
 	
@@ -27,6 +29,7 @@ public class DCCSendListener implements Runnable
 		{
 			_ssc = ServerSocketChannel.open();
 			_ssc.socket().bind(new InetSocketAddress(listeningPort));
+			_ssc.socket().setSoTimeout(timeout);
 			_sc = _ssc.accept();
 
 			_fc = new FileInputStream(file).getChannel();

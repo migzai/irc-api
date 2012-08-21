@@ -67,7 +67,11 @@ public interface IRCApi
 	// DCC cmds
 	void dccSend(String aNick, File aFile);
 
-	void dccSend(String aNick, File aFile, Integer aListeningPort);
+	void dccSend(String aNick, File aFile, Integer aTimeout);
+	
+	void dccSend(String aNick, Integer aListeningPort, File aFile);
+	
+	void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout);	
 	
 	// Session interface
 	void addListener(IMessageListener aListener);

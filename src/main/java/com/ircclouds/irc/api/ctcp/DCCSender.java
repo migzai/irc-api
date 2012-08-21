@@ -12,13 +12,13 @@ public class DCCSender implements Runnable
 	private Integer timeout;
 	private Integer listeningPort;
 	private Integer resumePos;
-	
+
 	public DCCSender(File aFile, Integer aPort, Integer aTimeout)
 	{
 		this(aFile, aTimeout, aPort, 0);
-	}	
-	
-	public DCCSender(File aFile, int aTimeout, Integer aPort, Integer aResumePosition) 
+	}
+
+	public DCCSender(File aFile, int aTimeout, Integer aPort, Integer aResumePosition)
 	{
 		file = aFile;
 		timeout = aTimeout;
@@ -33,24 +33,39 @@ public class DCCSender implements Runnable
 		SocketChannel _sc = null;
 		FileChannel _fc = null;
 		FileInputStream _fis = null;
-		
+
 		try
 		{
 			_ssc = ServerSocketChannel.open();
+			_ssc.configureBlocking(false);
 			_ssc.socket().bind(new InetSocketAddress(listeningPort));
-			_ssc.socket().setSoTimeout(timeout);
-			_sc = _ssc.accept();
 
-			_fis = new FileInputStream(file);
-			_fc = _fis.getChannel();
+			Selector _selector = Selector.open();
 			
-	        long _size = file.length();
-	        
-	        long _position = resumePos;
-	        while (_position < _size - resumePos) 
-	        {
-	            _position += _fc.transferTo(_position, _size, _sc);
-	        }
+			_ssc.register(_selector, SelectionKey.OP_ACCEPT);
+			if (_selector.select(timeout) > 0)
+			{
+				SelectionKey _sKey = _selector.selectedKeys().iterator().next();
+				if (_sKey.isAcceptable())
+				{
+					_sc = _ssc.accept();
+					if (_sc != null)
+					{
+						_sc.configureBlocking(true);
+
+						_fis = new FileInputStream(file);
+						_fc = _fis.getChannel();
+
+						long _size = file.length();
+						long _position = resumePos;
+
+						while (_position < _size - resumePos)
+						{
+							_position += _fc.transferTo(_position, _size, _sc);
+						}
+					}
+				}
+			}
 		}
 		catch (IOException aExc)
 		{
@@ -60,10 +75,10 @@ public class DCCSender implements Runnable
 		{
 			if (_ssc != null)
 				close(_ssc);
-			if (_fis != null)
-				close(_fis);
 			if (_sc != null)
 				close(_sc);
+			if (_fis != null)
+				close(_fis);
 			if (_fc != null)
 				close(_fc);
 		}

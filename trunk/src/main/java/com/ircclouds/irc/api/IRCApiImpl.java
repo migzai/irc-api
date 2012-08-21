@@ -10,6 +10,7 @@ import org.slf4j.*;
 import org.slf4j.Logger;
 
 import com.ircclouds.irc.api.commands.*;
+import com.ircclouds.irc.api.ctcp.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
@@ -21,7 +22,7 @@ public class IRCApiImpl implements IRCApi
 	private static final Logger LOG = LoggerFactory.getLogger(IRCApiImpl.class);
 
 	private static final int DCC_SEND_TIMEOUT = 10000;
-	
+
 	private IIRCSession session;
 	private AbstractExecuteCommandListener executeCmdListener;
 	private IIRCState state;
@@ -307,8 +308,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		filter = aFilter;
 	}
-	
-	
+
 	@Override
 	public void dccSend(final String aNick, final File aFile)
 	{
@@ -330,9 +330,9 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout)
 	{
-		new Thread(new DCCSendListener(aFile, aTimeout, aListeningPort)).start();
-		
-		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort +  " " + aFile.length() + '\001');
+		new Thread(new DCCSender(aFile, aTimeout, aListeningPort)).start();
+
+		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort + " " + aFile.length() + '\001');
 	}
 
 	@Override
@@ -340,14 +340,20 @@ public class IRCApiImpl implements IRCApi
 	{
 		dccAccept(aNick, aFile, aPort, aResumePosition, DCC_SEND_TIMEOUT);
 	}
-	
+
 	@Override
-	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout) 
+	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout)
 	{
-		new Thread(new DCCSendListener(aFile, aTimeout, aPort, aResumePosition)).start();
-		
-		privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');		
-	}	
+		new Thread(new DCCSender(aFile, aTimeout, aPort, aResumePosition)).start();
+
+		privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');
+	}
+
+	@Override
+	public void dccReceive(File aFile, Integer aSize, SocketAddress aAddress)
+	{
+		new Thread(new DCCReceiver(aFile, aSize, aAddress)).start();
+	}
 	
 	protected ICommandServer getCommandServer()
 	{
@@ -437,10 +443,10 @@ public class IRCApiImpl implements IRCApi
 			throw new RuntimeException(aExc);
 		}
 	}
-	
+
 	private String getLocalAddressRepresentation()
 	{
-		try 
+		try
 		{
 			InetAddress _localHost = InetAddress.getLocalHost();
 			byte[] _address = _localHost.getAddress();
@@ -453,13 +459,13 @@ public class IRCApiImpl implements IRCApi
 				return _localHost.getHostAddress();
 			}
 		}
-		catch (UnknownHostException aExc) 
+		catch (UnknownHostException aExc)
 		{
 			LOG.error("", aExc);
 			throw new ApiException(aExc);
 		}
-	}		
-	
+	}
+
 	private ISaveState getStateUpdater(Boolean aSaveIRCState)
 	{
 		ISaveState _stateUpdater = new AbstractIRCStateUpdater()

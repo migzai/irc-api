@@ -1,6 +1,7 @@
 package com.ircclouds.irc.api;
 
 import java.io.*;
+import java.net.*;
 
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
@@ -76,6 +77,8 @@ public interface IRCApi
 	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition);
 	
 	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout);
+	
+	void dccReceive(File aFile, Integer aSize, SocketAddress aAddress);
 	
 	// Session interface
 	void addListener(IMessageListener aListener);

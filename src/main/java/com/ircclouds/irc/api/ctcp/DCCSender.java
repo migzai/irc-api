@@ -1,4 +1,4 @@
-package com.ircclouds.irc.api.listeners;
+package com.ircclouds.irc.api.ctcp;
 
 import java.io.*;
 import java.net.*;
@@ -6,19 +6,19 @@ import java.nio.channels.*;
 
 import com.ircclouds.irc.api.*;
 
-public class DCCSendListener implements Runnable
+public class DCCSender implements Runnable
 {
 	private File file;
 	private Integer timeout;
 	private Integer listeningPort;
 	private Integer resumePos;
 	
-	public DCCSendListener(File aFile, Integer aTimeout, Integer aPort)
+	public DCCSender(File aFile, Integer aTimeout, Integer aPort)
 	{
 		this(aFile, aTimeout, aPort, 0);
 	}	
 	
-	public DCCSendListener(File aFile, int aTimeout, Integer aPort, Integer aResumePosition) 
+	public DCCSender(File aFile, int aTimeout, Integer aPort, Integer aResumePosition) 
 	{
 		file = aFile;
 		timeout = aTimeout;

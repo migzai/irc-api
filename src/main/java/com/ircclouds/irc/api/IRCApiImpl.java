@@ -20,6 +20,8 @@ public class IRCApiImpl implements IRCApi
 {
 	private static final Logger LOG = LoggerFactory.getLogger(IRCApiImpl.class);
 
+	private static final int DCC_SEND_TIMEOUT = 10000;
+	
 	private IIRCSession session;
 	private AbstractExecuteCommandListener executeCmdListener;
 	private IIRCState state;
@@ -305,41 +307,32 @@ public class IRCApiImpl implements IRCApi
 	{
 		filter = aFilter;
 	}
-
-	@Override
-	public void dccSend(String aNick, File aFile, Integer aListeningPort)
-	{
-		new Thread(new DCCSendListener(aFile, aListeningPort)).start();
-		
-		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort +  " " + aFile.length() + '\001');
-	}
-
-	private String getLocalAddressRepresentation()
-	{
-		try 
-		{
-			InetAddress _localHost = InetAddress.getLocalHost();
-			byte[] _address = _localHost.getAddress();
-			if (_address.length == 4)
-			{
-				return new BigInteger(1, _address).toString();
-			}
-			else
-			{
-				return _localHost.getHostAddress();
-			}
-		}
-		catch (UnknownHostException aExc) 
-		{
-			LOG.error("", aExc);
-			throw new ApiException(aExc);
-		}
-	}	
+	
 	
 	@Override
 	public void dccSend(final String aNick, final File aFile)
 	{
-		dccSend(aNick, aFile, NetUtils.getRandDccPort());
+		dccSend(aNick, aFile, NetUtils.getRandDccPort(), DCC_SEND_TIMEOUT);
+	}
+
+	@Override
+	public void dccSend(String aNick, Integer aListeningPort, File aFile)
+	{
+		dccSend(aNick, aFile, aListeningPort, DCC_SEND_TIMEOUT);
+	}
+
+	@Override
+	public void dccSend(String aNick, File aFile, Integer aTimeout)
+	{
+		dccSend(aNick, aFile, NetUtils.getRandDccPort(), aTimeout);
+	}
+
+	@Override
+	public void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout)
+	{
+		new Thread(new DCCSendListener(aFile, aTimeout, aListeningPort)).start();
+		
+		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort +  " " + aFile.length() + '\001');
 	}
 
 	protected ICommandServer getCommandServer()
@@ -430,7 +423,29 @@ public class IRCApiImpl implements IRCApi
 			throw new RuntimeException(aExc);
 		}
 	}
-
+	
+	private String getLocalAddressRepresentation()
+	{
+		try 
+		{
+			InetAddress _localHost = InetAddress.getLocalHost();
+			byte[] _address = _localHost.getAddress();
+			if (_address.length == 4)
+			{
+				return new BigInteger(1, _address).toString();
+			}
+			else
+			{
+				return _localHost.getHostAddress();
+			}
+		}
+		catch (UnknownHostException aExc) 
+		{
+			LOG.error("", aExc);
+			throw new ApiException(aExc);
+		}
+	}		
+	
 	private ISaveState getStateUpdater(Boolean aSaveIRCState)
 	{
 		ISaveState _stateUpdater = new AbstractIRCStateUpdater()

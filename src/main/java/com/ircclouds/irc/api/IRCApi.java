@@ -71,7 +71,9 @@ public interface IRCApi
 	
 	void dccSend(String aNick, Integer aListeningPort, File aFile);
 	
-	void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout);	
+	void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout);
+	
+	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition);
 	
 	// Session interface
 	void addListener(IMessageListener aListener);

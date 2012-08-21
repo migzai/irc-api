@@ -11,14 +11,21 @@ public class DCCSendListener implements Runnable
 	private File file;
 	private Integer timeout;
 	private Integer listeningPort;
-
+	private Integer resumePos;
+	
 	public DCCSendListener(File aFile, Integer aTimeout, Integer aPort)
+	{
+		this(aFile, aTimeout, aPort, 0);
+	}	
+	
+	public DCCSendListener(File aFile, int aTimeout, Integer aPort, Integer aResumePosition) 
 	{
 		file = aFile;
 		timeout = aTimeout;
 		listeningPort = aPort;
-	}	
-	
+		resumePos = aResumePosition;
+	}
+
 	@Override
 	public void run()
 	{
@@ -33,7 +40,7 @@ public class DCCSendListener implements Runnable
 			_sc = _ssc.accept();
 
 			_fc = new FileInputStream(file).getChannel();
-			_fc.transferTo(0, file.length(), _sc);
+			_fc.transferTo(resumePos, file.length(), _sc);
 		}
 		catch (IOException aExc)
 		{

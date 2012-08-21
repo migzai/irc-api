@@ -311,11 +311,25 @@ public class IRCApiImpl implements IRCApi
 	{
 		new Thread(new DCCSendListener(aFile, aListeningPort)).start();
 		
-		try
+		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort +  " " + aFile.length() + '\001');
+	}
+
+	private String getLocalAddressRepresentation()
+	{
+		try 
 		{
-			privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + new BigInteger(1, InetAddress.getLocalHost().getAddress()).toString() + " " + aListeningPort +  " " + aFile.length() + '\001');
+			InetAddress _localHost = InetAddress.getLocalHost();
+			byte[] _address = _localHost.getAddress();
+			if (_address.length == 4)
+			{
+				return new BigInteger(1, _address).toString();
+			}
+			else
+			{
+				return _localHost.getHostAddress();
+			}
 		}
-		catch (UnknownHostException aExc)
+		catch (UnknownHostException aExc) 
 		{
 			LOG.error("", aExc);
 			throw new ApiException(aExc);

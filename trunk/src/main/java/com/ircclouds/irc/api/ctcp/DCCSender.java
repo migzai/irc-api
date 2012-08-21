@@ -47,7 +47,7 @@ public class DCCSender implements Runnable
 	        long _size = file.length();
 	        
 	        long _position = resumePos;
-	        while (_position < _size) 
+	        while (_position < _size - resumePos) 
 	        {
 	            _position += _fc.transferTo(_position, _size, _sc);
 	        }

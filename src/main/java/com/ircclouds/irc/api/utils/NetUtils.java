@@ -13,7 +13,7 @@ public class NetUtils
 	
 	public static int getRandNumberIn(int aMin, int aMax)
 	{
-		if (aMin <= aMax)
+		if (aMin >= aMax)
 		{
 			throw new RuntimeException("Please provide a valid [Min-Max] range.");
 		}

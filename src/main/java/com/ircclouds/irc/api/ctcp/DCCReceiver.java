@@ -26,12 +26,19 @@ public class DCCReceiver implements Runnable
 	{
 		SocketChannel _sc = null;
 		FileChannel _fc = null;
+		FileOutputStream _fos = null;
 		
 		try
 		{
 			_sc = SocketChannel.open(address);
-			_fc = new FileOutputStream(file).getChannel();
-			_fc.transferFrom(_sc, resumePos, size);
+			_fos = new FileOutputStream(file);
+			_fc = _fos.getChannel();
+	
+	        long _read = resumePos;
+	        while (_read < size - resumePos) 
+	        {
+	            _read += _fc.transferFrom(_sc, resumePos + _read, size);
+	        }
 		}
 		catch (IOException aExc)
 		{
@@ -41,6 +48,8 @@ public class DCCReceiver implements Runnable
 		{
 			if (_sc != null)
 				close(_sc);
+			if (_fos != null)
+				close(_fos);
 			if (_fc != null)
 				close(_fc);
 		}

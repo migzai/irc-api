@@ -8,10 +8,10 @@ public class NetUtils
 {	
 	public static int getRandDccPort()
 	{
-		return getRandNumberIn(1024, 5000);
+		return getRandPortIn(1024, 5000);
 	}
 	
-	public static int getRandNumberIn(int aMin, int aMax)
+	public static int getRandPortIn(int aMin, int aMax)
 	{
 		if (aMin >= aMax)
 		{

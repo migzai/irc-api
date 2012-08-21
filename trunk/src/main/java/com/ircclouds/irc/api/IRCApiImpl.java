@@ -335,6 +335,14 @@ public class IRCApiImpl implements IRCApi
 		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort +  " " + aFile.length() + '\001');
 	}
 
+	@Override
+	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition)
+	{
+		new Thread(new DCCSendListener(aFile, DCC_SEND_TIMEOUT, aPort, aResumePosition)).start();
+		
+		privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');
+	}
+	
 	protected ICommandServer getCommandServer()
 	{
 		return session.getCommandServer();

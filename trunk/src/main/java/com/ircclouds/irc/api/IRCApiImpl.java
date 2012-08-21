@@ -1,6 +1,7 @@
 package com.ircclouds.irc.api;
 
 import java.io.*;
+import java.math.*;
 import java.net.*;
 import java.util.*;
 
@@ -312,7 +313,7 @@ public class IRCApiImpl implements IRCApi
 		
 		try
 		{
-			privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + NetUtils.ipAsNumeric(InetAddress.getLocalHost().getHostAddress()) + " " + aListeningPort +  " " + aFile.length() + '\001');
+			privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + new BigInteger(1, InetAddress.getLocalHost().getAddress()).toString() + " " + aListeningPort +  " " + aFile.length() + '\001');
 		}
 		catch (UnknownHostException aExc)
 		{

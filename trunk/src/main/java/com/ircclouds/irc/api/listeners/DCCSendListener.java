@@ -1,8 +1,10 @@
-package com.ircclouds.irc.api;
+package com.ircclouds.irc.api.listeners;
 
 import java.io.*;
 import java.net.*;
 import java.nio.channels.*;
+
+import com.ircclouds.irc.api.*;
 
 public class DCCSendListener implements Runnable
 {

@@ -5,13 +5,7 @@ import java.net.*;
 import java.util.*;
 
 public class NetUtils
-{
-	public static Long ipAsNumeric(String ipAsString)
-	{
-		String[] segments = ipAsString.split("\\.");
-		return (long) (Long.parseLong(segments[0]) * 16777216L + Long.parseLong(segments[1]) * 65536L + Long.parseLong(segments[2]) * 256L + Long.parseLong(segments[3]));
-	}
-	
+{	
 	public static int getRandDccPort()
 	{
 		return getRandNumberIn(1024, 5000);

@@ -1,6 +1,7 @@
 package com.ircclouds.irc.api;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import org.apache.log4j.*;
@@ -12,6 +13,7 @@ import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 import com.ircclouds.irc.api.state.*;
+import com.ircclouds.irc.api.utils.*;
 
 public class IRCApiImpl implements IRCApi
 {
@@ -60,7 +62,8 @@ public class IRCApiImpl implements IRCApi
 			}
 		};
 
-		session.addListeners(ListenerLevel.PRIVATE, executeCmdListener = new ExecuteCommandListenerImpl(session, getStateUpdater(aSaveIRCState)), new PingVersionListenerImpl(session));
+		session.addListeners(ListenerLevel.PRIVATE, executeCmdListener = new ExecuteCommandListenerImpl(session, getStateUpdater(aSaveIRCState)), new PingVersionListenerImpl(
+				session));
 	}
 
 	@Override
@@ -170,7 +173,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendChannelMessage(String aChannelName, String aMessage)
+	public void channelMessage(String aChannelName, String aMessage)
 	{
 		checkConnected();
 
@@ -178,7 +181,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendChannelMessage(String aChannelName, String aMessage, Callback<String> aCallback)
+	public void channelMessage(String aChannelName, String aMessage, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -189,7 +192,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendPrivateMessage(String aNick, String aText)
+	public void privateMessage(String aNick, String aText)
 	{
 		checkConnected();
 
@@ -197,7 +200,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendPrivateMessage(String aNick, String aText, Callback<String> aCallback)
+	public void privateMessage(String aNick, String aText, Callback<String> aCallback)
 	{
 		checkConnected();
 
@@ -227,11 +230,11 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void actInPrivate(String aChannelName, String aActionMessage)
+	public void actInPrivate(String aNick, String aActionMessage)
 	{
 		checkConnected();
 
-		execute(new SendPrivateActionMessage(aChannelName, aActionMessage));
+		execute(new SendPrivateActionMessage(aNick, aActionMessage));
 	}
 
 	@Override
@@ -302,11 +305,33 @@ public class IRCApiImpl implements IRCApi
 		filter = aFilter;
 	}
 
+	@Override
+	public void dccSend(String aNick, File aFile, Integer aListeningPort)
+	{
+		new Thread(new DCCSendListener(aFile, aListeningPort)).start();
+		
+		try
+		{
+			privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + NetUtils.ipAsNumeric(InetAddress.getLocalHost().getHostAddress()) + " " + aListeningPort +  " " + aFile.length() + '\001');
+		}
+		catch (UnknownHostException aExc)
+		{
+			LOG.error("", aExc);
+			throw new ApiException(aExc);
+		}
+	}	
+	
+	@Override
+	public void dccSend(final String aNick, final File aFile)
+	{
+		dccSend(aNick, aFile, NetUtils.getRandDccPort());
+	}
+
 	protected ICommandServer getCommandServer()
 	{
 		return session.getCommandServer();
 	}
-	
+
 	private String prependChanType(String aChannelName)
 	{
 		for (Character _c : state.getServerOptions().getChanTypes())
@@ -377,7 +402,7 @@ public class IRCApiImpl implements IRCApi
 		_p.put("log4j.logger.org.eclipse", "WARN");
 		return _p;
 	}
-	
+
 	private void execute(ICommand aCommand)
 	{
 		try
@@ -390,7 +415,7 @@ public class IRCApiImpl implements IRCApi
 			throw new RuntimeException(aExc);
 		}
 	}
-	
+
 	private ISaveState getStateUpdater(Boolean aSaveIRCState)
 	{
 		ISaveState _stateUpdater = new AbstractIRCStateUpdater()

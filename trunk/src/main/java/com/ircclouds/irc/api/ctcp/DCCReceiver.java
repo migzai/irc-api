@@ -9,12 +9,14 @@ import com.ircclouds.irc.api.*;
 public class DCCReceiver implements Runnable
 {
 	private SocketAddress address;
+	private Integer resumePos;
 	private Integer size;
 	private File file;
 	
-	public DCCReceiver(File aFile, Integer aSize, SocketAddress aAddress)
+	public DCCReceiver(File aFile, Integer aResumePos, Integer aSize, SocketAddress aAddress)
 	{
 		file = aFile;
+		resumePos = aResumePos;
 		size = aSize;
 		address = aAddress;
 	}
@@ -29,7 +31,7 @@ public class DCCReceiver implements Runnable
 		{
 			_sc = SocketChannel.open(address);
 			_fc = new FileOutputStream(file).getChannel();
-			_fc.transferFrom(_sc, 0, size);
+			_fc.transferFrom(_sc, resumePos, size);
 		}
 		catch (IOException aExc)
 		{

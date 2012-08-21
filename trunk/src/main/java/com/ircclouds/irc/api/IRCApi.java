@@ -80,6 +80,8 @@ public interface IRCApi
 	
 	void dccReceive(File aFile, Integer aSize, SocketAddress aAddress);
 	
+	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress);
+	
 	// Session interface
 	void addListener(IMessageListener aListener);
 	

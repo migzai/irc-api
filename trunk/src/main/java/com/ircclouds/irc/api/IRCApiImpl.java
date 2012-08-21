@@ -352,8 +352,14 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void dccReceive(File aFile, Integer aSize, SocketAddress aAddress)
 	{
-		new Thread(new DCCReceiver(aFile, aSize, aAddress)).start();
+		dccResume(aFile, 0, aSize, aAddress);
 	}
+
+	@Override
+	public void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress)
+	{
+		new Thread(new DCCReceiver(aFile, aResumePosition, aSize, aAddress)).start();
+	}	
 	
 	protected ICommandServer getCommandServer()
 	{

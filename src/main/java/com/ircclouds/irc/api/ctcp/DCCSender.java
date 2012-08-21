@@ -32,6 +32,8 @@ public class DCCSender implements Runnable
 		ServerSocketChannel _ssc = null;
 		SocketChannel _sc = null;
 		FileChannel _fc = null;
+		FileInputStream _fis = null;
+		
 		try
 		{
 			_ssc = ServerSocketChannel.open();
@@ -39,8 +41,16 @@ public class DCCSender implements Runnable
 			_ssc.socket().setSoTimeout(timeout);
 			_sc = _ssc.accept();
 
-			_fc = new FileInputStream(file).getChannel();
-			_fc.transferTo(resumePos, file.length(), _sc);
+			_fis = new FileInputStream(file);
+			_fc = _fis.getChannel();
+			
+	        long _size = file.length();
+	        
+	        long _position = resumePos;
+	        while (_position < _size) 
+	        {
+	            _position += _fc.transferTo(_position, _size, _sc);
+	        }
 		}
 		catch (IOException aExc)
 		{
@@ -50,6 +60,8 @@ public class DCCSender implements Runnable
 		{
 			if (_ssc != null)
 				close(_ssc);
+			if (_fis != null)
+				close(_fis);
 			if (_sc != null)
 				close(_sc);
 			if (_fc != null)

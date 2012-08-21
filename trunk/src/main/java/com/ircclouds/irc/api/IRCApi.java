@@ -1,5 +1,7 @@
 package com.ircclouds.irc.api;
 
+import java.io.*;
+
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
@@ -32,13 +34,21 @@ public interface IRCApi
 	
 	void changeNick(String aNewNick, Callback<String> aCallback);	
 	
-	void sendChannelMessage(String aChannelName, String aMessage);
+//	void notice(String aNick, String aText);
+//	
+//	void notice(String aNick, String aText, Callback<String> aCallback);	
+//			
+//	void noticeChannel(String aChannelName, String aMessage);
+//
+//	void noticeChannel(String aChannelName, String aMessage, Callback<String> aCallback);
+//		
+	void channelMessage(String aChannelName, String aMessage);
 
-	void sendChannelMessage(String aChannelName, String aMessage, Callback<String> aCallback);
+	void channelMessage(String aChannelName, String aMessage, Callback<String> aCallback);
 	
-	void sendPrivateMessage(String aNick, String aText);
+	void privateMessage(String aNick, String aText);
 	
-	void sendPrivateMessage(String aNick, String aText, Callback<String> aCallback);	
+	void privateMessage(String aNick, String aText, Callback<String> aCallback);	
 	
 	void actInChannel(String aChannelName, String aActionMessage);
 
@@ -53,6 +63,11 @@ public interface IRCApi
 	void changeMode(String aModeString);
 	
 	void sendRawMessage(String aMessage);
+	
+	// DCC cmds
+	void dccSend(String aNick, File aFile);
+
+	void dccSend(String aNick, File aFile, Integer aListeningPort);
 	
 	// Session interface
 	void addListener(IMessageListener aListener);

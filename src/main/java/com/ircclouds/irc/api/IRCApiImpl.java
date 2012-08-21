@@ -338,10 +338,16 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition)
 	{
-		new Thread(new DCCSendListener(aFile, DCC_SEND_TIMEOUT, aPort, aResumePosition)).start();
-		
-		privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');
+		dccAccept(aNick, aFile, aPort, aResumePosition, DCC_SEND_TIMEOUT);
 	}
+	
+	@Override
+	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout) 
+	{
+		new Thread(new DCCSendListener(aFile, aTimeout, aPort, aResumePosition)).start();
+		
+		privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');		
+	}	
 	
 	protected ICommandServer getCommandServer()
 	{

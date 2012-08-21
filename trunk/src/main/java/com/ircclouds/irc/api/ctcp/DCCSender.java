@@ -13,7 +13,7 @@ public class DCCSender implements Runnable
 	private Integer listeningPort;
 	private Integer resumePos;
 	
-	public DCCSender(File aFile, Integer aTimeout, Integer aPort)
+	public DCCSender(File aFile, Integer aPort, Integer aTimeout)
 	{
 		this(aFile, aTimeout, aPort, 0);
 	}	

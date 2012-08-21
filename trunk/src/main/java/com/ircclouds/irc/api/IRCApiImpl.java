@@ -330,7 +330,7 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout)
 	{
-		new Thread(new DCCSender(aFile, aTimeout, aListeningPort)).start();
+		new Thread(new DCCSender(aFile, aListeningPort, aTimeout)).start();
 
 		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort + " " + aFile.length() + '\001');
 	}

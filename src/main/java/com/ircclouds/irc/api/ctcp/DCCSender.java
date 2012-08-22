@@ -2,6 +2,7 @@ package com.ircclouds.irc.api.ctcp;
 
 import java.io.*;
 import java.net.*;
+import java.nio.*;
 import java.nio.channels.*;
 
 import com.ircclouds.irc.api.*;
@@ -41,7 +42,7 @@ public class DCCSender implements Runnable
 			_ssc.socket().bind(new InetSocketAddress(listeningPort));
 
 			Selector _selector = Selector.open();
-			
+
 			_ssc.register(_selector, SelectionKey.OP_ACCEPT);
 			if (_selector.select(timeout) > 0)
 			{
@@ -51,8 +52,6 @@ public class DCCSender implements Runnable
 					_sc = _ssc.accept();
 					if (_sc != null)
 					{
-						_sc.configureBlocking(true);
-
 						_fis = new FileInputStream(file);
 						_fc = _fis.getChannel();
 
@@ -61,7 +60,39 @@ public class DCCSender implements Runnable
 
 						while (_position < _size - resumePos)
 						{
-							_position += _fc.transferTo(_position, _size, _sc);
+							_position += _fc.transferTo(_position, _size - _position, _sc);
+						}
+
+						ByteBuffer _bb = ByteBuffer.allocate(1024).order(ByteOrder.BIG_ENDIAN);
+
+						boolean _readData = false;
+						boolean _cleared = false;
+						while (_sc.read(_bb) > 0)
+						{
+							_readData = true;
+							_cleared = false;
+
+							if (!_bb.hasRemaining())
+							{
+								_bb.clear();
+								_cleared = true;
+							}
+						}
+
+						if (_readData)
+						{
+							if (!_cleared)
+							{
+								_bb.flip();
+								if (_bb.limit() >= 4)
+									_bb.position(_bb.limit() - 4);
+							}
+							else
+							{
+								_bb.position(1020);
+							}
+
+							System.out.println(_bb.getInt());
 						}
 					}
 				}

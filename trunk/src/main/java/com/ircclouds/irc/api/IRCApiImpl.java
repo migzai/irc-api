@@ -1,7 +1,8 @@
 package com.ircclouds.irc.api;
 
+import static com.ircclouds.irc.api.DCCManagerImpl.*;
+
 import java.io.*;
-import java.math.*;
 import java.net.*;
 import java.util.*;
 
@@ -21,8 +22,6 @@ public class IRCApiImpl implements IRCApi
 {
 	private static final Logger LOG = LoggerFactory.getLogger(IRCApiImpl.class);
 
-	private static final int DCC_SEND_TIMEOUT = 10000;
-
 	private IIRCSession session;
 	private AbstractExecuteCommandListener executeCmdListener;
 	private IIRCState state;
@@ -38,6 +37,8 @@ public class IRCApiImpl implements IRCApi
 			return filter;
 		}
 	};
+	
+	private DCCManagerImpl dccManager;
 
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
@@ -68,6 +69,8 @@ public class IRCApiImpl implements IRCApi
 
 		session.addListeners(ListenerLevel.PRIVATE, executeCmdListener = new ExecuteCommandListenerImpl(session, getStateUpdater(aSaveIRCState)), new PingVersionListenerImpl(
 				session));
+		
+		dccManager = new DCCManagerImpl(this);
 	}
 
 	@Override
@@ -330,9 +333,7 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout, DCCSendCallback aCallback)
 	{
-		new DCCSender(aListeningPort, aTimeout, aCallback).send(aFile);
-
-		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort + " " + aFile.length() + '\001');
+		dccManager.dccSend(aNick, aFile, aListeningPort, aTimeout, aCallback);
 	}
 
 	@Override
@@ -344,9 +345,7 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout, DCCSendCallback aCallback)
 	{
-		new DCCSender(aTimeout, aPort, aResumePosition, aCallback).send(aFile);
-
-		privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');
+		dccManager.dccAccept(aNick, aFile, aPort, aResumePosition, aTimeout, aCallback);
 	}
 
 	@Override
@@ -358,8 +357,14 @@ public class IRCApiImpl implements IRCApi
 	@Override
 	public void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress)
 	{
-		new Thread(new DCCReceiver(aFile, aResumePosition, aSize, aAddress)).start();
+		dccManager.dccResume(aFile, aResumePosition, aSize, aAddress);
 	}	
+	
+	@Override
+	public DCCManagerImpl getDCCManager()
+	{
+		return dccManager;
+	}
 	
 	protected ICommandServer getCommandServer()
 	{
@@ -447,28 +452,6 @@ public class IRCApiImpl implements IRCApi
 		{
 			LOG.error("Error executing command", aExc);
 			throw new RuntimeException(aExc);
-		}
-	}
-
-	private String getLocalAddressRepresentation()
-	{
-		try
-		{
-			InetAddress _localHost = InetAddress.getLocalHost();
-			byte[] _address = _localHost.getAddress();
-			if (_address.length == 4)
-			{
-				return new BigInteger(1, _address).toString();
-			}
-			else
-			{
-				return _localHost.getHostAddress();
-			}
-		}
-		catch (UnknownHostException aExc)
-		{
-			LOG.error("", aExc);
-			throw new ApiException(aExc);
 		}
 	}
 

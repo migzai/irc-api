@@ -36,6 +36,11 @@ public class DCCSender
 		callback = aCallback;
 	}
 
+	public void setResumePosition(int aResumePosition)
+	{
+		resumePos = aResumePosition;
+	}
+	
 	public void send(final File aFile)
 	{
 		new Thread(new Runnable()

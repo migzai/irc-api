@@ -146,7 +146,7 @@ public class DCCSender
 		long _size = aFile.length();
 		long _position = resumePos;
 
-		while (_position < _size - resumePos)
+		while (_position < _size)
 		{
 			_position += _fc.transferTo(_position, _size - _position, aSocketChannel);
 		}

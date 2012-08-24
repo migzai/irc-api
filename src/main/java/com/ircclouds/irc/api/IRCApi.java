@@ -83,6 +83,8 @@ public interface IRCApi
 	
 	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress);
 	
+	DCCManager getDCCManager();
+	
 	// Session interface
 	void addListener(IMessageListener aListener);
 	

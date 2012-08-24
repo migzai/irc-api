@@ -1,10 +1,9 @@
 package com.ircclouds.irc.api;
 
-import java.io.*;
 
 public class ApiException extends RuntimeException
 {
-	public ApiException(IOException aExc)
+	public ApiException(Exception aExc)
 	{
 		super(aExc);
 	}

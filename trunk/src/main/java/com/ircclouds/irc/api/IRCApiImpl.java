@@ -310,41 +310,41 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void dccSend(final String aNick, final File aFile)
+	public void dccSend(final String aNick, final File aFile, DCCSendCallback aCallback)
 	{
-		dccSend(aNick, aFile, NetUtils.getRandDccPort(), DCC_SEND_TIMEOUT);
+		dccSend(aNick, aFile, NetUtils.getRandDccPort(), DCC_SEND_TIMEOUT, aCallback);
 	}
 
 	@Override
-	public void dccSend(String aNick, Integer aListeningPort, File aFile)
+	public void dccSend(String aNick, Integer aListeningPort, File aFile, DCCSendCallback aCallback)
 	{
-		dccSend(aNick, aFile, aListeningPort, DCC_SEND_TIMEOUT);
+		dccSend(aNick, aFile, aListeningPort, DCC_SEND_TIMEOUT, aCallback);
 	}
 
 	@Override
-	public void dccSend(String aNick, File aFile, Integer aTimeout)
+	public void dccSend(String aNick, File aFile, Integer aTimeout, DCCSendCallback aCallback)
 	{
-		dccSend(aNick, aFile, NetUtils.getRandDccPort(), aTimeout);
+		dccSend(aNick, aFile, NetUtils.getRandDccPort(), aTimeout, aCallback);
 	}
 
 	@Override
-	public void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout)
+	public void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout, DCCSendCallback aCallback)
 	{
-		new Thread(new DCCSender(aFile, aListeningPort, aTimeout)).start();
+		new DCCSender(aListeningPort, aTimeout, aCallback).send(aFile);
 
 		privateMessage(aNick, '\001' + "DCC SEND " + aFile.getName() + " " + getLocalAddressRepresentation() + " " + aListeningPort + " " + aFile.length() + '\001');
 	}
 
 	@Override
-	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition)
+	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, DCCSendCallback aCallback)
 	{
-		dccAccept(aNick, aFile, aPort, aResumePosition, DCC_SEND_TIMEOUT);
+		dccAccept(aNick, aFile, aPort, aResumePosition, DCC_SEND_TIMEOUT, aCallback);
 	}
 
 	@Override
-	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout)
+	public void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout, DCCSendCallback aCallback)
 	{
-		new Thread(new DCCSender(aFile, aTimeout, aPort, aResumePosition)).start();
+		new DCCSender(aTimeout, aPort, aResumePosition, aCallback).send(aFile);
 
 		privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');
 	}

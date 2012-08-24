@@ -3,6 +3,7 @@ package com.ircclouds.irc.api;
 import java.io.*;
 import java.net.*;
 
+import com.ircclouds.irc.api.ctcp.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
@@ -66,17 +67,17 @@ public interface IRCApi
 	void sendRawMessage(String aMessage);
 	
 	// DCC cmds
-	void dccSend(String aNick, File aFile);
+	void dccSend(String aNick, File aFile, DCCSendCallback aCallback);
 
-	void dccSend(String aNick, File aFile, Integer aTimeout);
+	void dccSend(String aNick, File aFile, Integer aTimeout, DCCSendCallback aCallback);
 	
-	void dccSend(String aNick, Integer aListeningPort, File aFile);
+	void dccSend(String aNick, Integer aListeningPort, File aFile, DCCSendCallback aCallback);
 	
-	void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout);
+	void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout, DCCSendCallback aCallback);
 	
-	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition);
+	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, DCCSendCallback aCallback);
 	
-	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout);
+	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout, DCCSendCallback aCallback);
 	
 	void dccReceive(File aFile, Integer aSize, SocketAddress aAddress);
 	

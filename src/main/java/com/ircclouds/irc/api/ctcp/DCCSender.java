@@ -122,15 +122,19 @@ public class DCCSender
 			}
 		};
 		
-		LOG.info(_dccSendRes.toString());
-		
 		if (totalBytesTransferred == aFile.length())
 		{
+			LOG.debug(_dccSendRes.toString());
+			
 			callback.onSuccess(_dccSendRes);
 		}
 		else
 		{
-			callback.onFailure(new DCCSendException(_dccSendRes, readerExc, writerExc));
+			DCCSendException _dccSendExc = new DCCSendException(_dccSendRes, readerExc, writerExc);
+
+			LOG.debug("", _dccSendExc);
+			
+			callback.onFailure(_dccSendExc);
 		}
 	}
 	

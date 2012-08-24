@@ -7,8 +7,6 @@ import java.nio.channels.*;
 
 import org.slf4j.*;
 
-import com.ircclouds.irc.api.*;
-
 public class DCCSender
 {
 	private static final Logger LOG = LoggerFactory.getLogger(DCCSender.class);
@@ -21,6 +19,9 @@ public class DCCSender
 	private DCCSendCallback callback;
 	private int totalBytesTransferred;
 	private int totalAcksRead;
+	
+	private Exception readerExc;
+	private Exception writerExc;
 	
 	public DCCSender(Integer aPort, Integer aTimeout, DCCSendCallback aCallback)
 	{
@@ -45,9 +46,11 @@ public class DCCSender
 				ServerSocketChannel _ssc = null;
 				SocketChannel _sc = null;
 
+				long _timeBefore = 0;
+				
 				try
 				{
-					long _timeBefore = System.currentTimeMillis();
+					_timeBefore = System.currentTimeMillis();
 										
 					_ssc = ServerSocketChannel.open();
 					_ssc.configureBlocking(false);
@@ -69,16 +72,13 @@ public class DCCSender
 						}
 
 						_ar.join();
-						
-						long _timeAfter = System.currentTimeMillis();
-						
-						callBack(aFile, _timeAfter - _timeBefore);
 					}
 				}
 				catch (Exception aExc)
 				{
-					LOG.error("", aExc);
-					throw new ApiException(aExc);
+					LOG.error("Error Transmitting File", aExc);
+					
+					writerExc = aExc;
 				}
 				finally
 				{
@@ -86,6 +86,8 @@ public class DCCSender
 						close(_ssc);
 					if (_sc != null)
 						close(_sc);
+										
+					callBack(aFile, System.currentTimeMillis() - _timeBefore);
 				}
 			}
 		}, "DCCSender").start();
@@ -128,7 +130,7 @@ public class DCCSender
 		}
 		else
 		{
-			callback.onFailure(_dccSendRes);
+			callback.onFailure(new DCCSendException(_dccSendRes, readerExc, writerExc));
 		}
 	}
 	
@@ -201,8 +203,8 @@ public class DCCSender
 				}
 				catch (IOException aExc)
 				{
-					LOG.error("", aExc);
-					throw new RuntimeException(aExc);
+					LOG.error("Error Reading Acks", aExc);
+					readerExc = aExc;
 				}
 			}
 

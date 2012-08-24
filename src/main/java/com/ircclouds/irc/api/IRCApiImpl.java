@@ -349,19 +349,19 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void dccReceive(File aFile, Integer aSize, SocketAddress aAddress)
+	public void dccReceive(File aFile, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback)
 	{
-		dccResume(aFile, 0, aSize, aAddress);
+		dccResume(aFile, 0, aSize, aAddress, aCallback);
 	}
 
 	@Override
-	public void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress)
+	public void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback)
 	{
-		dccManager.dccResume(aFile, aResumePosition, aSize, aAddress);
+		dccManager.dccResume(aFile, aResumePosition, aSize, aAddress, aCallback);
 	}	
 	
 	@Override
-	public DCCManagerImpl getDCCManager()
+	public DCCManager getDCCManager()
 	{
 		return dccManager;
 	}

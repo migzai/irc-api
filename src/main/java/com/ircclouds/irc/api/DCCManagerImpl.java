@@ -18,7 +18,7 @@ public class DCCManagerImpl implements DCCManager
 	private IRCApi api;
 
 	private Map<Integer, DCCSender> sendersMap = new HashMap<Integer, DCCSender>();
-	private Map<Integer, DCCReceiver> receiversMap = new HashMap<Integer, DCCReceiver>();
+	private List<DCCReceiver> dccReceivers = new ArrayList<DCCReceiver>();
 	
 	public DCCManagerImpl(IRCApi aApi)
 	{
@@ -27,7 +27,7 @@ public class DCCManagerImpl implements DCCManager
 
 	void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout, DCCSendCallback aCallback)
 	{
-		DCCSender _dccSender = new DCCSender(aListeningPort, aTimeout, addManagerCallback(aCallback, aListeningPort));
+		DCCSender _dccSender = new DCCSender(aListeningPort, aTimeout, addManagerDCCSendCallback(aCallback, aListeningPort));
 
 		registerSender(aListeningPort, _dccSender);
 
@@ -38,7 +38,7 @@ public class DCCManagerImpl implements DCCManager
 
 	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout, DCCSendCallback aCallback)
 	{
-		DCCSender _dccSender = new DCCSender(aTimeout, aPort, aResumePosition, addManagerCallback(aCallback, aPort));
+		DCCSender _dccSender = new DCCSender(aTimeout, aPort, aResumePosition, addManagerDCCSendCallback(aCallback, aPort));
 
 		if (isWaitingForConnection(aPort))
 		{
@@ -53,9 +53,13 @@ public class DCCManagerImpl implements DCCManager
 		api.privateMessage(aNick, '\001' + "DCC ACCEPT " + aFile.getName() + " " + aPort + " " + aResumePosition + '\001');
 	}
 
-	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress)
+	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback)
 	{
-		new Thread(new DCCReceiver(aFile, aResumePosition, aSize, aAddress)).start();
+		DCCReceiver _dccReceiver = new DCCReceiver(addManagerDCCReceiveCallback(aCallback));
+		
+		registerReceiver(_dccReceiver);
+		
+		_dccReceiver.receive(aFile, aResumePosition, aSize, aAddress);
 	}
 
 	public int activeDCCSendsCount()
@@ -65,7 +69,7 @@ public class DCCManagerImpl implements DCCManager
 
 	public int activeDCCReceivesCount()
 	{
-		return receiversMap.size();
+		return dccReceivers.size();
 	}
 	
 	private String getLocalAddressRepresentation()
@@ -90,7 +94,53 @@ public class DCCManagerImpl implements DCCManager
 		}
 	}
 
-	private DCCSendCallback addManagerCallback(final DCCSendCallback aCallback, final int aPort)
+	private DCCReceiveCallback addManagerDCCReceiveCallback(final DCCReceiveCallback aCallback)
+	{
+		if (aCallback instanceof DCCReceiveProgressCallback)
+		{
+			return new DCCReceiveProgressCallback()
+			{				
+				@Override
+				public void onSuccess(DCCReceiveResult aU)
+				{
+					dccReceivers.remove(aU);
+					aCallback.onSuccess(aU);
+				}
+				
+				@Override
+				public void onFailure(DCCReceiveException aV)
+				{
+					dccReceivers.remove(aV);
+					aCallback.onFailure(aV);
+				}
+				
+				@Override
+				public void onProgress(int aBytesTransferred)
+				{
+					((DCCReceiveProgressCallback) aCallback).onProgress(aBytesTransferred);
+				}
+			};
+		}
+		
+		return new DCCReceiveCallback()
+		{			
+			@Override
+			public void onSuccess(DCCReceiveResult aU)
+			{
+				dccReceivers.remove(aU);
+				aCallback.onSuccess(aU);
+			}
+			
+			@Override
+			public void onFailure(DCCReceiveException aV)
+			{
+				dccReceivers.remove(aV);
+				aCallback.onFailure(aV);
+			}
+		};
+	}
+	
+	private DCCSendCallback addManagerDCCSendCallback(final DCCSendCallback aCallback, final int aPort)
 	{
 		if (aCallback instanceof DCCSendProgressCallback)
 		{
@@ -143,6 +193,11 @@ public class DCCManagerImpl implements DCCManager
 	private void registerSender(Integer aListeningPort, DCCSender _dccSender)
 	{
 		sendersMap.put(aListeningPort, _dccSender);
+	}
+
+	private void registerReceiver(DCCReceiver aDCCReceiver)
+	{
+		dccReceivers.add(aDCCReceiver);
 	}
 	
 	private boolean isWaitingForConnection(Integer aPort)

@@ -79,9 +79,9 @@ public interface IRCApi
 	
 	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout, DCCSendCallback aCallback);
 	
-	void dccReceive(File aFile, Integer aSize, SocketAddress aAddress);
+	void dccReceive(File aFile, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback);
 	
-	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress);
+	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback);
 	
 	DCCManager getDCCManager();
 	

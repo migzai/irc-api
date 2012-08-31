@@ -1,23 +1,23 @@
 package com.ircclouds.irc.api.commands;
 
-public class SendPrivateActionMessage implements ICommand
+public class SendActionMessage implements ICommand
 {	
 	private static final char NUL = '\001';
 	private static final String PRIVMSG = "PRIVMSG ";
 	private static final String ACTION = "ACTION ";
 
-	private String nick;
+	private String target;
 	private String msg;
 	private Integer asyncRandConstant;
 
-	public SendPrivateActionMessage(String aNick, String aText)
+	public SendActionMessage(String aTarget, String aText)
 	{
-		this(aNick, aText, null);
+		this(aTarget, aText, null);
 	}
 
-	public SendPrivateActionMessage(String aNick, String aText, Integer aAsyncRandConstant)
+	public SendActionMessage(String aTarget, String aText, Integer aAsyncRandConstant)
 	{
-		nick = aNick;
+		target = aTarget;
 		msg = aText;
 		asyncRandConstant = aAsyncRandConstant;
 	}	
@@ -27,11 +27,11 @@ public class SendPrivateActionMessage implements ICommand
 	{
 		if (asyncRandConstant == null)
 		{
-			return PRIVMSG + nick + " :" + NUL + ACTION + msg + NUL;
+			return PRIVMSG + target + " :" + NUL + ACTION + msg + NUL;
 		}
 		else
 		{
-			return PRIVMSG + nick + "," + asyncRandConstant + " :" + NUL + ACTION + msg + NUL;
+			return PRIVMSG + target + "," + asyncRandConstant + " :" + NUL + ACTION + msg + NUL;
 		}
 	}
 }

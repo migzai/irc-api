@@ -2,20 +2,22 @@ package com.ircclouds.irc.api.commands;
 
 public class SendPrivateMessage implements ICommand
 {
+	private static final char NUL = '\001';
 	private static final String PRIVMSG = "PRIVMSG ";
+	private static final String ACTION = "ACTION ";
 
-	private String nick;
+	private String target;
 	private String msg;
 	private Integer asyncRandConstant;
 	
-	public SendPrivateMessage(String aNick, String aText)
+	public SendPrivateMessage(String aChannel, String aText)
 	{
-		this(aNick, aText, null);
+		this(aChannel, aText, null);
 	}
 
-	public SendPrivateMessage(String aNick, String aText, Integer aAsyncRandConstant)
+	public SendPrivateMessage(String aTarget, String aText, Integer aAsyncRandConstant)
 	{
-		nick = aNick;
+		target = aTarget;
 		msg = aText;
 		asyncRandConstant = aAsyncRandConstant;
 	}
@@ -25,11 +27,11 @@ public class SendPrivateMessage implements ICommand
 	{
 		if (asyncRandConstant == null)
 		{
-			return PRIVMSG + nick + " :" + msg;
+			return PRIVMSG + target + " :" + NUL + ACTION + msg + NUL;
 		}
 		else
 		{
-			return PRIVMSG + nick + "," + asyncRandConstant + " :" + msg;
+			return PRIVMSG + target + "," + asyncRandConstant + " :" + NUL + ACTION + msg + NUL;
 		}
 	}
 }

@@ -1,19 +1,19 @@
 package com.ircclouds.irc.api.commands;
 
-public class SendChannelMessage implements ICommand
+public class SendNoticeMessage implements ICommand
 {
-	private static final String PRIVMSG = "PRIVMSG ";
+	private static final String NOTICE = "NOTICE ";
 
 	private String channel;
 	private String msg;
 	private Integer asyncRandConstant;
 
-	public SendChannelMessage(String aChannel, String aText)
+	public SendNoticeMessage(String aChannel, String aText)
 	{
 		this(aChannel, aText, null);
 	}
 	
-	public SendChannelMessage(String aChannel, String aText, Integer aAsyncRandConstant)
+	public SendNoticeMessage(String aChannel, String aText, Integer aAsyncRandConstant)
 	{
 		channel = aChannel;
 		msg = aText;
@@ -25,11 +25,11 @@ public class SendChannelMessage implements ICommand
 	{
 		if (asyncRandConstant == null)
 		{
-			return PRIVMSG + channel + " :" + msg;
+			return NOTICE + channel + " :" + msg;
 		}
 		else
 		{
-			return PRIVMSG + channel + "," + asyncRandConstant + " :" + msg;
+			return NOTICE + channel + "," + asyncRandConstant + " :" + msg;
 		}
 	}
 }

@@ -180,79 +180,62 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void channelMessage(String aChannelName, String aMessage)
+	public void message(String aTarget, String aMessage)
 	{
 		checkConnected();
 
-		execute(new SendChannelMessage(aChannelName, aMessage));
+		execute(new SendPrivateMessage(aTarget, aMessage));
 	}
 
 	@Override
-	public void channelMessage(String aChannelName, String aMessage, Callback<String> aCallback)
+	public void message(String aTarget, String aMessage, Callback<String> aCallback)
+	{
+		checkConnected();
+
+		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
+		apiFilter.addValue(asyncId);
+		
+		execute(new SendPrivateMessage(aTarget, aMessage, asyncId++));
+	}
+
+	@Override
+	public void act(String aTarget, String aActionMessage)
+	{
+		checkConnected();
+		
+		execute(new SendActionMessage(aTarget, aActionMessage));
+	}
+
+	@Override
+	public void act(String aTarget, String aActionMessage, Callback<String> aCallback)
 	{
 		checkConnected();
 
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
 		apiFilter.addValue(asyncId);
 
-		execute(new SendChannelMessage(aChannelName, aMessage, asyncId++));
+		execute(new SendActionMessage(aTarget, aActionMessage, asyncId++));
+	}
+	
+	@Override
+	public void notice(String aTarget, String aText)
+	{
+		checkConnected();
+		
+		execute(new SendNoticeMessage(aTarget, aText));
 	}
 
 	@Override
-	public void privateMessage(String aNick, String aText)
+	public void notice(String aTarget, String aText, Callback<String> aCallback)
 	{
 		checkConnected();
-
-		execute(new SendPrivateMessage(aNick, aText));
-	}
-
-	@Override
-	public void privateMessage(String aNick, String aText, Callback<String> aCallback)
-	{
-		checkConnected();
-
+		
 		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
 		apiFilter.addValue(asyncId);
-
-		execute(new SendPrivateMessage(aNick, aText, asyncId++));
+		
+		execute(new SendNoticeMessage(aTarget, aText, asyncId++));
 	}
-
-	@Override
-	public void actInChannel(String aChannelName, String aActionMessage)
-	{
-		checkConnected();
-
-		execute(new SendChannelActionMessage(aChannelName, aActionMessage));
-	}
-
-	@Override
-	public void actInChannel(String aChannelName, String aActionMessage, Callback<String> aCallback)
-	{
-		checkConnected();
-
-		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
-		apiFilter.addValue(asyncId);
-
-		execute(new SendChannelActionMessage(aChannelName, aActionMessage, asyncId++));
-	}
-
-	@Override
-	public void actInPrivate(String aNick, String aActionMessage)
-	{
-		checkConnected();
-
-		execute(new SendPrivateActionMessage(aNick, aActionMessage));
-	}
-
-	@Override
-	public void actInPrivate(String aNick, String aActionMessage, Callback<String> aCallback)
-	{
-		checkConnected();
-
-		executeCmdListener.submitSendMessageCallback(asyncId, aCallback);
-		execute(new SendPrivateActionMessage(aNick, aActionMessage, asyncId++));
-	}
-
+	
 	@Override
 	public void changeNick(String aNewNick)
 	{

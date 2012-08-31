@@ -35,30 +35,18 @@ public interface IRCApi
 	void changeNick(String aNewNick);
 	
 	void changeNick(String aNewNick, Callback<String> aCallback);	
-	
-//	void notice(String aNick, String aText);
-//	
-//	void notice(String aNick, String aText, Callback<String> aCallback);	
-//			
-//	void noticeChannel(String aChannelName, String aMessage);
-//
-//	void noticeChannel(String aChannelName, String aMessage, Callback<String> aCallback);
-//		
-	void channelMessage(String aChannelName, String aMessage);
 
-	void channelMessage(String aChannelName, String aMessage, Callback<String> aCallback);
-	
-	void privateMessage(String aNick, String aText);
-	
-	void privateMessage(String aNick, String aText, Callback<String> aCallback);	
-	
-	void actInChannel(String aChannelName, String aActionMessage);
+	void message(String aTarget, String aText);
 
-	void actInChannel(String aChannelName, String aActionMessage, Callback<String> aCallback);
+	void message(String aTarget, String aMessage, Callback<String> aCallback);
 	
-	void actInPrivate(String aNick, String aActionMessage);
+	void act(String aTarget, String aMessage);
+
+	void act(String aTarget, String aMessage, Callback<String> aCallback);
 	
-	void actInPrivate(String aNick, String aActionMessage, Callback<String> aCallback);
+	void notice(String aNick, String aText);
+	
+	void notice(String aNick, String aText, Callback<String> aCallback);
 
 	void changeTopic(String aChannel, String aTopic);
 	

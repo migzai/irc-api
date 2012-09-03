@@ -51,7 +51,7 @@ public class VariousMessageListenerAdapter implements IVariousMessageListener
 	}
 
 	@Override
-	public void onChannelKickMessage(ChannelKickMsg aMsg)
+	public void onChannelKick(ChannelKick aMsg)
 	{
 	}
 

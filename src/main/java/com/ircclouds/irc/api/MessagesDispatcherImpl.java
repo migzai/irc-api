@@ -95,9 +95,9 @@ public final class MessagesDispatcherImpl implements IMessagesDispatcher
 		{
 			aListener.onChannelAction((ChannelActionMsg) aMessage);
 		}
-		else if (aMessage instanceof ChannelKickMsg)
+		else if (aMessage instanceof ChannelKick)
 		{
-			aListener.onChannelKickMessage((ChannelKickMsg) aMessage);
+			aListener.onChannelKick((ChannelKick) aMessage);
 		}
 		else if (aMessage instanceof TopicMessage)
 		{

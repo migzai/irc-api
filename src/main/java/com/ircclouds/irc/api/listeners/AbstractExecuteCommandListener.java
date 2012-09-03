@@ -12,6 +12,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	private AbstractChannelPartListener chanPartListener;
 	private ConnectCmdListener connectListener;
 	private AbstractNickChangeListener nickChangeListener;
+	private KickUserListener kickUserListener;
 	private AsyncMessageListener messsageListener;
 	
 	public AbstractExecuteCommandListener(IIRCSession aSession)
@@ -47,6 +48,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 				updateNick(aNewNick);
 			}
 		};
+		kickUserListener = new KickUserListener();
 		messsageListener = new AsyncMessageListener();
 	}
 
@@ -69,6 +71,15 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	}
 
 	@Override
+	public void onChannelKick(ChannelKick aChanKick)
+	{
+		if (isForMe(aChanKick))
+		{
+			kickUserListener.onChannelKick(aChanKick);
+		}
+	}
+	
+	@Override
 	public void onServerMsg(ServerMessage aMsg)
 	{
 		chanJoinListener.onServerMessage(aMsg);
@@ -79,6 +90,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 		}
 		nickChangeListener.onServerMessage(aMsg);
 		messsageListener.onServerMsg(aMsg);
+		kickUserListener.onServerMsg(aMsg);
 	}
 	
 	@Override
@@ -138,6 +150,11 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	public void submitSendMessageCallback(int aAsyncId, Callback<String> aCallback)
 	{
 		messsageListener.submit(aAsyncId, aCallback);
+	}
+	
+	public void submitKickUserCallback(String aChannel, String aNick, Callback<String> aCallback)
+	{
+		kickUserListener.submit(aChannel, aNick, aCallback);
 	}
 	
 	private boolean isForMe(IUserMessage aMsg)

@@ -237,6 +237,36 @@ public class IRCApiImpl implements IRCApi
 	}
 	
 	@Override
+	public void kick(String aChannel, String aNick)
+	{
+		kick(aChannel, aNick, "");
+	}
+
+	@Override
+	public void kick(String aChannel, String aNick, Callback<String> aCallback)
+	{
+		kick(aChannel, aNick, "", aCallback);
+	}
+	
+	@Override
+	public void kick(String aChannel, String aNick, String aKickMessage)
+	{
+		checkConnected();
+		
+		execute(new KickUserCmd(aChannel, aNick, aKickMessage));
+	}
+
+	@Override
+	public void kick(String aChannel, String aNick, String aKickMessage, Callback<String> aCallback)
+	{
+		checkConnected();
+		
+		executeCmdListener.submitKickUserCallback(aChannel, aNick, aCallback);
+		
+		execute(new KickUserCmd(aChannel, aNick, aKickMessage));
+	}
+	
+	@Override
 	public void changeNick(String aNewNick)
 	{
 		checkConnected();

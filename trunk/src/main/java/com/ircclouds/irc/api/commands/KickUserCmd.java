@@ -2,13 +2,13 @@ package com.ircclouds.irc.api.commands;
 
 public class KickUserCmd implements ICommand
 {
-	private String user;
 	private String channel;
+	private String user;
 	private String kickMsg;
 
-	public KickUserCmd(String aUserName, String aChannel, String aKickMessage)
+	public KickUserCmd(String aChannel, String aNick, String aKickMessage)
 	{
-		user = aUserName;
+		user = aNick;
 		channel = aChannel;
 		kickMsg = aKickMessage;
 	}
@@ -17,5 +17,4 @@ public class KickUserCmd implements ICommand
 	{
 		return new StringBuffer().append("KICK").append(" ").append(channel).append(" ").append(user).append(" :").append(kickMsg).append("\r\n").toString();
 	}
-
 }

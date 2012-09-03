@@ -60,7 +60,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	}
 
 	@Override
-	public void onChannelKickMessage(ChannelKickMsg aMsg)
+	public void onChannelKick(ChannelKick aMsg)
 	{
 		getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName()).removeUser(new IRCUser(aMsg.getKickedUser()));
 	}

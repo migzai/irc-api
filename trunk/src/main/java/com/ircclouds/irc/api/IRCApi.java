@@ -48,6 +48,14 @@ public interface IRCApi
 	
 	void notice(String aNick, String aText, Callback<String> aCallback);
 
+	void kick(String aChannel, String aNick);
+	
+	void kick(String aChannel, String aNick, String aKickMessage);
+
+	void kick(String aChannel, String aNick, Callback<String> aCallback);
+	
+	void kick(String aChannel, String aNick, String aKickMessage, Callback<String> aCallback);
+	
 	void changeTopic(String aChannel, String aTopic);
 	
 	void changeMode(String aModeString);

@@ -30,7 +30,11 @@ public abstract class AbstractChannelPartListener
 	{
 		if (aServerMessage.getNumericCode() == IRCServerNumerics.NO_SUCH_CHANNEL)
 		{
-			callbacks.remove(aServerMessage.getText().split(" ")[0]).onFailure(aServerMessage.getText());
+			String _chan = aServerMessage.getText().split(" ")[0];
+			if (callbacks.containsKey(_chan))
+			{
+				callbacks.remove(_chan).onFailure(aServerMessage.getText());
+			}
 		}
 	}
 	

@@ -86,11 +86,11 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 		chanPartListener.onServerMessage(aMsg);
 		if (!getIRCState().isConnected())
 		{
-			connectListener.onMessage(aMsg);
+			connectListener.onServerMessage(aMsg);
 		}
 		nickChangeListener.onServerMessage(aMsg);
 		messsageListener.onServerMsg(aMsg);
-		kickUserListener.onServerMsg(aMsg);
+		kickUserListener.onServerMessage(aMsg);
 	}
 	
 	@Override
@@ -98,7 +98,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	{
 		if (!getIRCState().isConnected())
 		{
-			connectListener.onMessage(aMsg);
+			connectListener.onError(aMsg);
 		}
 	}
 	

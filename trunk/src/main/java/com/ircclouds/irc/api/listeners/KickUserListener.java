@@ -3,6 +3,7 @@ package com.ircclouds.irc.api.listeners;
 import java.util.*;
 
 import com.ircclouds.irc.api.*;
+import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.utils.*;
 
@@ -18,9 +19,16 @@ public class KickUserListener
 		}
 	}
 
-	public void onServerMsg(ServerMessage aMsg)
+	public void onServerMessage(ServerMessage aServerMessage)
 	{
-		
+		if (aServerMessage.getNumericCode() == IRCServerNumerics.NO_SUCH_CHANNEL)
+		{
+			String _chan = aServerMessage.getText().split(" ")[0];
+			if (callbacks.containsKey(_chan))
+			{
+				callbacks.remove(_chan).onFailure(aServerMessage.getText());
+			}
+		}
 	}
 
 	public void submit(String aChannel, String aNick, Callback<String> aCallback)

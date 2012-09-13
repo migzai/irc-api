@@ -6,7 +6,7 @@ import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.state.*;
 
-public abstract class AbstractExecuteCommandListener extends VariousMessageListenerAdapter implements ISaveState
+public abstract class AbstractExecuteCommandListener extends VariousMessageListenerAdapter implements IStateAccessor
 {
 	private AbstractChannelJoinListener chanJoinListener;
 	private AbstractChannelPartListener chanPartListener;
@@ -22,7 +22,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 			@Override
 			public void saveChannel(IRCChannel aChannel)
 			{
-				save(aChannel);
+				saveChan(aChannel);
 			}
 
 			@Override
@@ -36,7 +36,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 			@Override
 			protected void deleteChannel(String aChannelName)
 			{
-				delete(aChannelName);
+				deleteChan(aChannelName);
 			}
 		};	
 		connectListener = new ConnectCmdListener(aSession);
@@ -48,7 +48,14 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 				updateNick(aNewNick);
 			}
 		};
-		kickUserListener = new KickUserListener();
+		kickUserListener = new KickUserListener()
+		{
+			@Override
+			protected void delChanUser(String aChan, String aUser)
+			{
+				deleteNickFromChan(aChan, aUser);
+			}			
+		};
 		messsageListener = new AsyncMessageListener();
 	}
 
@@ -125,7 +132,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 			@Override
 			public void onSuccess(IRCChannel aChannel)
 			{
-				save(aChannel);
+				saveChan(aChannel);
 				aCallback.onSuccess(aChannel);
 			}
 
@@ -152,9 +159,9 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 		messsageListener.submit(aAsyncId, aCallback);
 	}
 	
-	public void submitKickUserCallback(String aChannel, String aNick, Callback<String> aCallback)
+	public void submitKickUserCallback(String aChannel, Callback<String> aCallback)
 	{
-		kickUserListener.submit(aChannel, aNick, aCallback);
+		kickUserListener.submit(aChannel, aCallback);
 	}
 	
 	private boolean isForMe(IUserMessage aMsg)

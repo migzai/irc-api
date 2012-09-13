@@ -7,7 +7,7 @@ import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.listeners.*;
 
-public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdapter implements ISaveState
+public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdapter implements IStateAccessor
 {
 	@Override
 	public void onChannelJoin(ChanJoinMessage aMsg)
@@ -121,13 +121,13 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	}
 
 	@Override
-	public void save(IRCChannel aChannel)
+	public void saveChan(IRCChannel aChannel)
 	{
 		getIRCStateImpl().getChannelsMutable().add(aChannel);
 	}
 
 	@Override
-	public void delete(String aChannelName)
+	public void deleteChan(String aChannelName)
 	{
 		getIRCStateImpl().getChannelsMutable().remove(aChannelName);
 	}
@@ -136,5 +136,18 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	public void updateNick(String aNewNick)
 	{
 		getIRCStateImpl().updateNick(aNewNick);
+	}
+	
+	@Override
+	public void deleteNickFromChan(String aChannel, String aNick)
+	{
+		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
+		{
+			if (_chan.getName().equals(aChannel))
+			{
+				_chan.getUsers().remove(new IRCUser(aNick));
+				break;
+			}
+		}
 	}
 }

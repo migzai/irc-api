@@ -6,9 +6,9 @@ import com.ircclouds.irc.api.state.*;
 
 public class ExecuteCommandListenerImpl extends AbstractExecuteCommandListener
 {
-	private ISaveState updater;
+	private IStateAccessor updater;
 	
-	public ExecuteCommandListenerImpl(IIRCSession aSession, ISaveState aUpdater)
+	public ExecuteCommandListenerImpl(IIRCSession aSession, IStateAccessor aUpdater)
 	{
 		super(aSession);
 		
@@ -16,15 +16,15 @@ public class ExecuteCommandListenerImpl extends AbstractExecuteCommandListener
 	}
 
 	@Override
-	public void save(IRCChannel aChannel)
+	public void saveChan(IRCChannel aChannel)
 	{
-		updater.save(aChannel);
+		updater.saveChan(aChannel);
 	}
 
 	@Override
-	public void delete(String aChannelName)
+	public void deleteChan(String aChannelName)
 	{
-		updater.delete(aChannelName);
+		updater.deleteChan(aChannelName);
 	}
 
 	@Override
@@ -37,5 +37,11 @@ public class ExecuteCommandListenerImpl extends AbstractExecuteCommandListener
 	public void updateNick(String aNewNick)
 	{
 		updater.updateNick(aNewNick);
+	}
+
+	@Override
+	public void deleteNickFromChan(String aChan, String aNick)
+	{
+		updater.deleteNickFromChan(aChan, aNick);
 	}
 }

@@ -5,17 +5,17 @@ import java.util.*;
 import com.ircclouds.irc.api.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
-import com.ircclouds.irc.api.utils.*;
 
-public class KickUserListener
+public abstract class KickUserListener
 {
-	private Map<ChanNickTuple, Callback<String>> callbacks = new HashMap<ChanNickTuple, Callback<String>>();
+	private Map<String, Callback<String>> callbacks = new HashMap<String, Callback<String>>();
 	
 	public void onChannelKick(ChannelKick aChanKick)
 	{
 		if (callbacks.containsKey(aChanKick))
 		{
 			callbacks.get(aChanKick).onSuccess("");
+			delChanUser(aChanKick.getChannelName(), aChanKick.getKickedUser());
 		}
 	}
 
@@ -31,16 +31,10 @@ public class KickUserListener
 		}
 	}
 
-	public void submit(String aChannel, String aNick, Callback<String> aCallback)
+	public void submit(String aChannel, Callback<String> aCallback)
 	{
-		callbacks.put(new ChanNickTuple(aChannel, aNick), aCallback);
+		callbacks.put(aChannel, aCallback);
 	}
 	
-	private class ChanNickTuple extends Tuple<String, String>
-	{
-		public ChanNickTuple(String aK, String aV)
-		{
-			super(aK, aV);
-		}		
-	}
+	protected abstract void delChanUser(String aChan, String aUser);
 }

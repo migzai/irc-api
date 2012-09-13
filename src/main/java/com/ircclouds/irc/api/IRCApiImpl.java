@@ -261,7 +261,7 @@ public class IRCApiImpl implements IRCApi
 	{
 		checkConnected();
 		
-		executeCmdListener.submitKickUserCallback(aChannel, aNick, aCallback);
+		executeCmdListener.submitKickUserCallback(aChannel, aCallback);
 		
 		execute(new KickUserCmd(aChannel, aNick, aKickMessage));
 	}
@@ -468,9 +468,9 @@ public class IRCApiImpl implements IRCApi
 		}
 	}
 
-	private ISaveState getStateUpdater(Boolean aSaveIRCState)
+	private IStateAccessor getStateUpdater(Boolean aSaveIRCState)
 	{
-		ISaveState _stateUpdater = new AbstractIRCStateUpdater()
+		IStateAccessor _stateUpdater = new AbstractIRCStateUpdater()
 		{
 			@Override
 			public IIRCState getIRCState()
@@ -485,10 +485,10 @@ public class IRCApiImpl implements IRCApi
 		}
 		else
 		{
-			_stateUpdater = new ISaveState()
+			_stateUpdater = new IStateAccessor()
 			{
 				@Override
-				public void save(IRCChannel aChannel)
+				public void saveChan(IRCChannel aChannel)
 				{
 					// NOP
 				}
@@ -500,13 +500,19 @@ public class IRCApiImpl implements IRCApi
 				}
 
 				@Override
-				public void delete(String aChannelName)
+				public void deleteChan(String aChannelName)
 				{
 					// NOP
 				}
 
 				@Override
 				public void updateNick(String aNewNick)
+				{
+					// NOP
+				}
+
+				@Override
+				public void deleteNickFromChan(String aChan, String aNick)
 				{
 					// NOP
 				}

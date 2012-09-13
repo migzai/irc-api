@@ -4,11 +4,8 @@ import static com.ircclouds.irc.api.DCCManagerImpl.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
-import org.apache.log4j.*;
 import org.slf4j.*;
-import org.slf4j.Logger;
 
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.ctcp.*;
@@ -42,8 +39,6 @@ public class IRCApiImpl implements IRCApi
 
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
-		configLog4j();
-
 		state = new DisconnectedIRCState();
 		session = new AbstractIRCSession()
 		{
@@ -437,22 +432,6 @@ public class IRCApiImpl implements IRCApi
 				aCallback.onFailure(aErrorMessage);
 			}
 		};
-	}
-
-	private void configLog4j()
-	{
-		PropertyConfigurator.configure(getLog4jProperties());
-	}
-
-	private Properties getLog4jProperties()
-	{
-		Properties _p = new Properties();
-		_p.put("log4j.rootLogger", "DEBUG, A1");
-		_p.put("log4j.appender.A1.layout", "org.apache.log4j.PatternLayout");
-		_p.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-		_p.put("log4j.appender.A1.layout.ConversionPattern", "%d [%t] %p %c{1} - %m%n");
-		_p.put("log4j.logger.org.eclipse", "WARN");
-		return _p;
 	}
 
 	private void execute(ICommand aCommand)

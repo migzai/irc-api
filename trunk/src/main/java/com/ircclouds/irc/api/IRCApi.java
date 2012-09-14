@@ -60,7 +60,7 @@ public interface IRCApi
 	
 	void changeMode(String aModeString);
 	
-	void sendRawMessage(String aMessage);
+	void rawMessage(String aMessage);
 	
 	// DCC cmds
 	void dccSend(String aNick, File aFile, DCCSendCallback aCallback);

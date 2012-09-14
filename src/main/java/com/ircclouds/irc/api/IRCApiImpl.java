@@ -297,7 +297,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void sendRawMessage(String aMessage)
+	public void rawMessage(String aMessage)
 	{
 		execute(new SendRawMessage(aMessage));
 	}

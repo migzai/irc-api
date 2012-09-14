@@ -11,13 +11,19 @@ public class Tuple<K, V>
 		v = aV;
 	}
 	
-	public boolean equals(Tuple<K, V> aTuple)
+	public boolean equals(Object aTuple)
 	{
 		if (aTuple instanceof Tuple)
 		{
-			return k.equals(aTuple.k) && v.equals(aTuple.v);
+			Tuple<?, ?> _t = (Tuple<?, ?>) aTuple;
+			return k.equals(_t.k) && v.equals(_t.v);
 		}
 		
 		return false;
+	}
+	
+	public int hashCode()
+	{
+		return k.hashCode() + v.hashCode();
 	}
 }

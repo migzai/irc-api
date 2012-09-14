@@ -71,13 +71,20 @@ public abstract class AbstractChannelJoinListener
 					saveChannel(channel);
 				}
 			}
-			else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_INVITE)
+			else if (callbacks.containsKey(getChannelNameFrom(aServerMessage.getText())))
 			{
-				callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
-			}
-			else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_KEYED)
-			{
-				callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
+				if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_INVITE)
+				{
+					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
+				}
+				else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_KEYED)
+				{
+					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
+				}
+				else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_BANNED)
+				{
+					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
+				}
 			}
 		}
 	}

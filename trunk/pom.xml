@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ircclouds.irc</groupId>
 	<artifactId>irc-api</artifactId>
-	<version>1.0-0007</version>
+	<version>1.0-0008-SNAPSHOT</version>
 	<name>IRC API</name>
 	<packaging>jar</packaging>
 

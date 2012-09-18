@@ -1,6 +1,5 @@
 package com.ircclouds.irc.api;
 
-
 public class ApiException extends RuntimeException
 {
 	public ApiException(Exception aExc)

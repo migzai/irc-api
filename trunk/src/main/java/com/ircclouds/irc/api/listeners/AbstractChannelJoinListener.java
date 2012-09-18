@@ -75,15 +75,15 @@ public abstract class AbstractChannelJoinListener
 			{
 				if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_INVITE)
 				{
-					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
+					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(new IRCException(aServerMessage.getText()));
 				}
 				else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_KEYED)
 				{
-					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
+					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(new IRCException(aServerMessage.getText()));
 				}
 				else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_BANNED)
 				{
-					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(aServerMessage.getText());
+					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(new IRCException(aServerMessage.getText()));
 				}
 			}
 		}

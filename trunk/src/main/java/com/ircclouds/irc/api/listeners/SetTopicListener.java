@@ -27,7 +27,7 @@ public class SetTopicListener implements IMessageListener
 		{
 			if (((ServerMessage) aMessage).getNumericCode().equals(IRCServerNumerics.NOT_CHANNEL_OP))
 			{
-				callback.onFailure(((ServerMessage) aMessage).getText());
+				callback.onFailure(new IRCException(((ServerMessage) aMessage).getText()));
 			}
 		}
 	}

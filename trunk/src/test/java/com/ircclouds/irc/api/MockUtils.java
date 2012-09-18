@@ -32,7 +32,7 @@ public class MockUtils
 			}
 
 			@Override
-			public void onFailure(String aErrorMessage)
+			public void onFailure(Exception aExc)
 			{
 				readerThread = Thread.currentThread();
 

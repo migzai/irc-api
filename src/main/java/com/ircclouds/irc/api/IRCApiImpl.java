@@ -68,7 +68,6 @@ public class IRCApiImpl implements IRCApi
 		dccManager = new DCCManagerImpl(this);
 	}
 
-	// TODO
 	@Override
 	public void connect(final IServerParameters aServerParameters, Callback<IIRCState> aCallback)
 	{

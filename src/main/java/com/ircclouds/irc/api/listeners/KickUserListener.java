@@ -26,7 +26,7 @@ public abstract class KickUserListener
 			String _chan = aServerMessage.getText().split(" ")[0];
 			if (callbacks.containsKey(_chan))
 			{
-				callbacks.remove(_chan).onFailure(aServerMessage.getText());
+				callbacks.remove(_chan).onFailure(new IRCException(aServerMessage.getText()));
 			}
 		}
 	}

@@ -137,9 +137,9 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 			}
 
 			@Override
-			public void onFailure(String aErrorMessage)
+			public void onFailure(Exception aExc)
 			{
-				aCallback.onFailure(aErrorMessage);
+				aCallback.onFailure(aExc);
 			}
 		});
 	}

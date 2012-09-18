@@ -87,7 +87,7 @@ public class ConnectCmdListener
 
 	public void onError(ErrorMessage aMsg)
 	{
-		callback.onFailure(aMsg.getText());
+		callback.onFailure(new IRCException(aMsg.getText()));
 	}
 
 	private String getNick(String aText)

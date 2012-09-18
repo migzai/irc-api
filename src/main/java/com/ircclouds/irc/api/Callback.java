@@ -1,8 +1,8 @@
 package com.ircclouds.irc.api;
 
-public interface Callback<T> extends ICallback<T, String>
+public interface Callback<T> extends ICallback<T, Exception>
 {
 	void onSuccess(T aObject);
 
-    void onFailure(String aErrorMessage);
+    void onFailure(Exception aExc);
 }

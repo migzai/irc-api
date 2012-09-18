@@ -32,7 +32,7 @@ public class AsyncMessageListener
 				}
 				else
 				{
-					_aTrip.callback.onFailure(aText);
+					_aTrip.callback.onFailure(new IRCException(aText));
 					_aTrip.flag = true;
 				}
 			}

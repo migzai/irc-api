@@ -37,15 +37,15 @@ public abstract class AbstractNickChangeListener
 		{
 			if (aServerMessage.getNumericCode().equals(IRCServerNumerics.NICKNAME_IN_USE))
 			{
-				_callback.onFailure(aServerMessage.getText());
+				_callback.onFailure(new IRCException(aServerMessage.getText()));
 			}
 			else if (aServerMessage.getNumericCode().equals(IRCServerNumerics.ERRONEUS_NICKNAME))
 			{
-				_callback.onFailure(aServerMessage.getText());
+				_callback.onFailure(new IRCException(aServerMessage.getText()));
 			}
 			else if (aServerMessage.getNumericCode().equals(IRCServerNumerics.ERR_NICKTOOFAST))
 			{
-				_callback.onFailure(aServerMessage.getText());
+				_callback.onFailure(new IRCException(aServerMessage.getText()));
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 #labels Featured
-IRC-API is basically built on 3 components.
+IRC-API is basically built on top of 3 components.
 
 1) the IRC server message building layer where the raw server message is directly transformed into an instance of _IMessage_.
 

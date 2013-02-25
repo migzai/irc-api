@@ -3,7 +3,7 @@ IRC-API is basically built on 3 components.
 
 1) the IRC server message building layer where the raw server message is directly transformed into an instance of _IMessage_.
 
-2) the _IMessage_ listeners, dubbed as _IMessageListener_, that can register for incoming message notifications through the _IRCApi_ interface.
+2) the _IMessage_ listeners, dubbed _IMessageListener_, that can be registered for incoming message notifications with the _IRCApi_ interface.
 
 3) the _IRCApi_ interface that offers the ability to execute commands in both synchronous and asynchronous programming style.
 <br/>
@@ -17,7 +17,7 @@ Optionally, the user can choose whether the API should save the IRC state by set
 _api.joinChannel("#ircapi");
 }}}
 
-Here, the API user doesn't provide a feedback on whether the channel join was successful.  The user will have to extend _IMessage_, and manually listen to server events in this case.
+Here, the API doesn't provide feedback on whether the channel join was successful.
 
 *Asynchronous use of the API:*
 

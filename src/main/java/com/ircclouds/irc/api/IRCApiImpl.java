@@ -15,6 +15,15 @@ import com.ircclouds.irc.api.listeners.*;
 import com.ircclouds.irc.api.state.*;
 import com.ircclouds.irc.api.utils.*;
 
+/**
+ * The main implementation of {@link IRCApi}. It offers the ability to save the IRC state, and 
+ * allows for extensibility through {@link #getCommandServer()}.
+ * 
+ * This implementation provides logging via slf4j.
+ * 
+ * @author miguel@lebane.se
+ *
+ */
 public class IRCApiImpl implements IRCApi
 {
 	private static final Logger LOG = LoggerFactory.getLogger(IRCApiImpl.class);
@@ -37,6 +46,10 @@ public class IRCApiImpl implements IRCApi
 	
 	private DCCManagerImpl dccManager;
 
+	/**
+	 * 
+	 * @param aSaveIRCState A flag to allow saving the IRC state that will be obtained by {@link #connect(IServerParameters, Callback)}
+	 */
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
 		state = new DisconnectedIRCState();
@@ -412,6 +425,11 @@ public class IRCApiImpl implements IRCApi
 		return dccManager;
 	}
 	
+	/**
+	 * Returns the interface responsible for executing IRC commands
+	 * 
+	 * @return {@link ICommandServer}
+	 */
 	protected ICommandServer getCommandServer()
 	{
 		return session.getCommandServer();

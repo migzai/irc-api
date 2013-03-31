@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ircclouds.irc</groupId>
 	<artifactId>irc-api</artifactId>
-	<version>1.0-0008-SNAPSHOT</version>
+	<version>1.0-0008</version>
 	<name>IRC API</name>
 	<packaging>jar</packaging>
 
@@ -18,13 +18,13 @@
 			<artifactId>jmockit</artifactId>
 			<version>0.999.12</version>
 			<scope>test</scope>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.9</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -48,7 +48,7 @@
 			<resource>
 				<directory>src/test/resources</directory>
 				<filtering>false</filtering>
-			</resource>			
+			</resource>
 		</resources>
 		<plugins>
 			<plugin>
@@ -103,6 +103,11 @@
 					<testFailureIgnore>false</testFailureIgnore>
 					<skip>false</skip>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
 			</plugin>
 		</plugins>
 	</build>

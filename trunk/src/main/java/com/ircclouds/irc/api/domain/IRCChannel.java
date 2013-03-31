@@ -3,8 +3,11 @@ package com.ircclouds.irc.api.domain;
 import java.util.*;
 
 /**
+ * The IRC channel object that will be returned when an asynchronous joinChannel succeeds.
  * 
- * @author
+ * The object stores the channel name, topic, channel modes, and a mapping of all channel users and their statuses.
+ * 
+ * @author miguel@lebane.se
  * 
  */
 public class IRCChannel

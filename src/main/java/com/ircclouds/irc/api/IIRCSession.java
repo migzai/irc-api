@@ -10,7 +10,7 @@ public interface IIRCSession
 {
 	ICommandServer getCommandServer();
 
-	void addListeners(ListenerLevel aLevel, IMessageListener... aListener);
+	void addListeners(MESSAGE_VISIBILITY aLevel, IMessageListener... aListener);
 	
 	void removeListener(IMessageListener aListener);
 	

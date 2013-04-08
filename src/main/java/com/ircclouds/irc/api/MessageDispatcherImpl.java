@@ -9,23 +9,23 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 
-public final class MessagesDispatcherImpl implements IMessagesDispatcher
+public final class MessageDispatcherImpl implements IMessageDispatcher
 {
-	private static Logger LOG = LoggerFactory.getLogger(MessagesDispatcherImpl.class);
+	private static Logger LOG = LoggerFactory.getLogger(MessageDispatcherImpl.class);
 	
-	private Map<ListenerLevel, List<IMessageListener>> listenersMap = new HashMap<ListenerLevel, List<IMessageListener>>();
+	private Map<MESSAGE_VISIBILITY, List<IMessageListener>> listenersMap = new HashMap<MESSAGE_VISIBILITY, List<IMessageListener>>();
 	
-	public MessagesDispatcherImpl()
+	public MessageDispatcherImpl()
 	{
-		listenersMap.put(ListenerLevel.PRIVATE, new ArrayList<IMessageListener>());
-		listenersMap.put(ListenerLevel.PUBLIC, new ArrayList<IMessageListener>());		
+		listenersMap.put(MESSAGE_VISIBILITY.PRIVATE, new ArrayList<IMessageListener>());
+		listenersMap.put(MESSAGE_VISIBILITY.PUBLIC, new ArrayList<IMessageListener>());		
 	}
 
 	public void dispatch(IMessage aMessage, TargetListeners aTargetListeners)
 	{
 		if (aTargetListeners.getHowMany().equals(HowMany.ALL))
 		{
-			dispatchTo(aMessage, new ArrayList<IMessageListener>(listenersMap.get(ListenerLevel.PUBLIC)));
+			dispatchTo(aMessage, new ArrayList<IMessageListener>(listenersMap.get(MESSAGE_VISIBILITY.PUBLIC)));
 		}
 		else
 		{
@@ -36,18 +36,18 @@ public final class MessagesDispatcherImpl implements IMessagesDispatcher
 	@Override
 	public void dispatchToPrivateListeners(IMessage aMessage)
 	{
-		dispatchTo(aMessage, new ArrayList<IMessageListener>(listenersMap.get(ListenerLevel.PRIVATE)));
+		dispatchTo(aMessage, new ArrayList<IMessageListener>(listenersMap.get(MESSAGE_VISIBILITY.PRIVATE)));
 	}	
 	
-	public void register(IMessageListener aListener, ListenerLevel aLevel)
+	public void register(IMessageListener aListener, MESSAGE_VISIBILITY aVisibility)
 	{
-		listenersMap.get(aLevel).add(aListener);
+		listenersMap.get(aVisibility).add(aListener);
 	}
 
 	public void unregister(IMessageListener aListener)
 	{
-		listenersMap.get(ListenerLevel.PUBLIC).remove(aListener);
-		listenersMap.get(ListenerLevel.PUBLIC).remove(aListener);
+		listenersMap.get(MESSAGE_VISIBILITY.PUBLIC).remove(aListener);
+		listenersMap.get(MESSAGE_VISIBILITY.PUBLIC).remove(aListener);
 	}
 	
 	private void dispatchTo(IMessage aMessage, List<IMessageListener> aListeners)

@@ -1,6 +1,6 @@
 package com.ircclouds.irc.api.listeners;
 
-public enum ListenerLevel
+public enum MESSAGE_VISIBILITY
 {
 	PRIVATE, PUBLIC
 }

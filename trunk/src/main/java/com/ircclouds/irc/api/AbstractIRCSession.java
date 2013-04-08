@@ -10,7 +10,7 @@ import com.ircclouds.irc.api.listeners.*;
 
 public abstract class AbstractIRCSession implements IIRCSession
 {
-	private IMessagesDispatcher dispatcher = new MessagesDispatcherImpl();
+	private IMessageDispatcher dispatcher = new MessageDispatcherImpl();
 	private ICommandServer cmdServ;
 	private IMessagesReader reader;
 	private AbstractApiDaemon daemon;
@@ -70,7 +70,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 		cmdServ.execute(aCommand);
 	}
 
-	public void addListeners(ListenerLevel aListenerLevel, IMessageListener... aListeners)
+	public void addListeners(MESSAGE_VISIBILITY aListenerLevel, IMessageListener... aListeners)
 	{
 		for (IMessageListener _listener : aListeners)
 		{

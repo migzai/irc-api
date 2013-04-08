@@ -11,9 +11,9 @@ public abstract class AbstractApiDaemon extends Thread
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractApiDaemon.class);
 
 	private IMessagesReader reader;
-	private IMessagesDispatcher dispatcher;
+	private IMessageDispatcher dispatcher;
 
-	public AbstractApiDaemon(IMessagesReader aReader, IMessagesDispatcher aDispatcher)
+	public AbstractApiDaemon(IMessagesReader aReader, IMessageDispatcher aDispatcher)
 	{
 		super("ApiDaemon");
 

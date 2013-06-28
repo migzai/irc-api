@@ -75,11 +75,7 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 
 	private void dispatchVarious(IVariousMessageListener aListener, IMessage aMessage)
 	{
-		if (aMessage instanceof ChannelPrivMsg)
-		{
-			aListener.onChannelMessage((ChannelPrivMsg) aMessage);
-		}
-		else if (aMessage instanceof ChanJoinMessage)
+		if (aMessage instanceof ChanJoinMessage)
 		{
 			aListener.onChannelJoin((ChanJoinMessage) aMessage);
 		}
@@ -98,6 +94,10 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 		else if (aMessage instanceof ChannelKick)
 		{
 			aListener.onChannelKick((ChannelKick) aMessage);
+		}
+		else if (aMessage instanceof ChannelPrivMsg)
+		{
+			aListener.onChannelMessage((ChannelPrivMsg) aMessage);
 		}
 		else if (aMessage instanceof TopicMessage)
 		{

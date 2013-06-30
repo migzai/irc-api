@@ -32,4 +32,6 @@ public interface IIRCState
 	IRCServerOptions getServerOptions();
 	
 	boolean isConnected();
+	
+	IIRCState getPrevious();
 }

@@ -14,6 +14,16 @@ public class IRCStateImpl implements IIRCState
 	private List<IRCChannel> channels = new ArrayList<IRCChannel>();
 	private List<String> altNicks;
 	private boolean isConnected;
+	private IRCStateImpl previousState;
+	
+	IRCStateImpl(String aIdent, String aRealname, List<String> aAltNicks, IRCServer aIRCServer, IRCServerOptions aServerOptions)
+	{
+		ident = aIdent;
+		realname = aRealname;
+		ircServer = aIRCServer;
+		serverOptions = aServerOptions;
+		altNicks = aAltNicks;
+	}
 	
 	public IRCStateImpl(String aNickname, String aIdent, String aRealname, List<String> aAltNicks, IRCServer aIRCServer, IRCServerOptions aServerOptions)
 	{
@@ -23,6 +33,9 @@ public class IRCStateImpl implements IIRCState
 		ircServer = aIRCServer;
 		serverOptions = aServerOptions;
 		altNicks = aAltNicks;
+
+		previousState = new IRCStateImpl(aIdent, aRealname, aAltNicks, aIRCServer, aServerOptions);
+		previousState.updateNick(nickname);
 	}
 	
 	@Override
@@ -130,5 +143,11 @@ public class IRCStateImpl implements IIRCState
 		}
 		
 		return null;
+	}
+
+	@Override
+	public IIRCState getPrevious()
+	{
+		return previousState;
 	}
 }

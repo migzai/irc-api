@@ -6,6 +6,7 @@ import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.listeners.*;
+import com.ircclouds.irc.api.utils.*;
 
 public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdapter implements IStateAccessor
 {
@@ -16,6 +17,9 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 		{
 			IRCUser _user = aMsg.getSource();
 			IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+			
+			savedOldState(_chan);
+			
 			_chan.addUser(_user, new HashSet<IRCUserStatus>());
 		}
 	}
@@ -25,7 +29,11 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		if (!isForMe(aMsg))
 		{
-			getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName()).removeUser(aMsg.getSource());
+			IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+			
+			savedOldState(_chan);
+
+			_chan.removeUser(aMsg.getSource());
 		}
 	}
 
@@ -34,9 +42,11 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		IRCUser _old = new IRCUser(aMsg.getSource().getNick());
 		IRCUser _new = new IRCUser(aMsg.getNewNick());
-
+		
 		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
 		{
+			savedOldState(_chan);
+			
 			if (_chan.getUsers().containsKey(_old))
 			{
 				_chan.addUser(_new, _chan.removeUser(_old));
@@ -49,20 +59,30 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
 		{
-			_chan.removeUser(aMsg.getSource());
+			savedOldState(_chan);
+			
+			_chan.removeUser(aMsg.getSource());			
 		}
 	}
 
 	@Override
 	public void onTopicChange(TopicMessage aMsg)
-	{
-		getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName()).setTopic(aMsg.getTopic());
+	{		
+		IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+		
+		savedOldState(_chan);
+		
+		_chan.setTopic(aMsg.getTopic());	
 	}
 
 	@Override
 	public void onChannelKick(ChannelKick aMsg)
 	{
-		getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName()).removeUser(new IRCUser(aMsg.getKickedUser()));
+		IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+		
+		savedOldState(_chan);
+		
+		_chan.removeUser(new IRCUser(aMsg.getKickedUser()));			
 	}
 
 	@Override
@@ -70,7 +90,9 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		String _chanName = aMsg.getChannelName();
 		IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(_chanName);
-
+		
+		savedOldState(_chan);
+		
 		Map<IRCUser, Set<IRCUserStatus>> _users = _chan.getUsers();
 		for (ChannelMode _mode : aMsg.getAddedModes())
 		{
@@ -108,6 +130,11 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	private IRCStateImpl getIRCStateImpl()
 	{
 		return (IRCStateImpl) getIRCState();
+	}
+	
+	private IRCStateImpl getPreviousIRCStateImpl()
+	{
+		return (IRCStateImpl) getIRCStateImpl().getPrevious();
 	}
 	
 	private IRCUserStatuses getAvailableUserStatuses()
@@ -149,5 +176,11 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 				break;
 			}
 		}
+	}
+	
+	private void savedOldState(IRCChannel aChan)
+	{
+		getPreviousIRCStateImpl().getChannelsMutable().remove(aChan);
+		getPreviousIRCStateImpl().getChannelsMutable().add(StateUtils.cloneChannel(aChan));
 	}
 }

@@ -60,6 +60,11 @@ public class IRCUser implements ISource, Serializable
 	{
 		if (aObject != null)
 		{
+			if (aObject instanceof IRCUser)
+			{
+				return ((IRCUser) aObject).getNick().equals(nick);
+			}
+			
 			return aObject.equals(nick);
 		}
 

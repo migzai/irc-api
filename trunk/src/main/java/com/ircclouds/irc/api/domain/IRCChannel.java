@@ -38,9 +38,9 @@ public class IRCChannel
 		name = aName;
 	}
 
-	public void addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
+	public Set<IRCUserStatus> addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
 	{
-		users.put(aUser, aStatus);
+		return users.put(aUser, aStatus);
 	}
 
 	public Set<IRCUserStatus> removeUser(IRCUser aUser)

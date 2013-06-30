@@ -32,7 +32,7 @@ public class UnmodifiableIRCChannel extends IRCChannel
 		 throw new UnsupportedOperationException();
 	}
 
-	public void addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
+	public Set<IRCUserStatus> addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
 	{
 		 throw new UnsupportedOperationException();
 	}

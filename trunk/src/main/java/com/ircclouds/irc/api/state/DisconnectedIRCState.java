@@ -59,4 +59,10 @@ public class DisconnectedIRCState implements IIRCState
 	{
 		return false;
 	}
+
+	@Override
+	public IIRCState getPrevious()
+	{
+		return null;
+	}
 }

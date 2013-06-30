@@ -1,8 +1,9 @@
 package com.ircclouds.irc.api.domain.messages;
 
+import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
-public class ErrorMessage implements IMessage, IHasText
+public class ErrorMessage implements IServerMessage, IHasText
 {	
 	private String text;
 	
@@ -15,5 +16,11 @@ public class ErrorMessage implements IMessage, IHasText
 	public String getText()
 	{
 		return text;
+	}
+
+	@Override
+	public IRCServer getSource()
+	{
+		return null;
 	}
 }

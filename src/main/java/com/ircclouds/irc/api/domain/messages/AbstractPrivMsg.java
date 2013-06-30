@@ -19,7 +19,7 @@ public abstract class AbstractPrivMsg implements IUserMessage, IHasText
 		text = aText;
 	}
 	
-	public IRCUser getFromUser()
+	public IRCUser getSource()
 	{
 		return fromUser;
 	}

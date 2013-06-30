@@ -63,7 +63,7 @@ public abstract class AbstractChanModeBuilder implements IBuilder<ChannelModeMes
 			}
 		}
 		
-		return new ChannelModeMessage(ParseUtils.getUser(_cmpnts[0]), _cmpnts[2], getModeStr(_cmpnts), _addedModes, _removedModes);
+		return new ChannelModeMessage(ParseUtils.getSource(_cmpnts[0].substring(1)), _cmpnts[2], getModeStr(_cmpnts), _addedModes, _removedModes);
 	}
 
 	protected abstract IRCServerOptions getIRCServerOptions();

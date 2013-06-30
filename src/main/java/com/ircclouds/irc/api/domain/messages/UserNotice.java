@@ -19,7 +19,7 @@ public class UserNotice extends AbstractNotice implements IUserMessage
 		fromUser = aFromUser;
 	}
 	
-	public IRCUser getFromUser()
+	public IRCUser getSource()
 	{
 		return fromUser;
 	}

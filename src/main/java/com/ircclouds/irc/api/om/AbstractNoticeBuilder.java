@@ -4,17 +4,24 @@ import java.util.*;
 
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
+import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.utils.*;
 
-public abstract class AbstractNoticeBuilder implements IBuilder<AbstractNotice>
+public abstract class AbstractNoticeBuilder implements IBuilder<IMessage>
 {
-	public AbstractNotice build(String aMessage)
+	private static final String NOTICE = "NOTICE";
+
+	public IMessage build(String aMessage)
 	{
 		String _components[] = aMessage.split(" ");
-
 		if (!_components[0].contains("@"))
 		{
-			return new ServerNotice(aMessage.substring(aMessage.indexOf(':', 1) + 1));
+			if (NOTICE.equals(_components[0]))
+			{
+				return new ServerNotice(aMessage.substring(aMessage.indexOf(NOTICE) + NOTICE.length()), null);
+			}
+			
+			return new ServerNotice(aMessage.substring(aMessage.indexOf(':', 1) + 1), new IRCServer(_components[0].substring(1)));
 		}
 
 		IRCUser _user = ParseUtils.getUser(_components[0]);

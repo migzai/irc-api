@@ -1,12 +1,12 @@
 package com.ircclouds.irc.api.om;
 
+import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.utils.*;
 
-public class ServerMessageBuilder implements IBuilder<ServerMessage>
+public class ServerMessageBuilder implements IBuilder<ServerNumericMessage>
 {
-
-	public ServerMessage build(String aMessage)
+	public ServerNumericMessage build(String aMessage)
 	{
 		int _indexOfCol = StringUtils.indexOf(' ', 3, aMessage);
 		String _firstPart = aMessage.substring(0, _indexOfCol);
@@ -14,7 +14,7 @@ public class ServerMessageBuilder implements IBuilder<ServerMessage>
 
 		String[] _firstPartCmpnts = _firstPart.split(" ");
 
-		return new ServerMessage(getNumberFrom(_firstPartCmpnts[1]), _secondPart);
+		return new ServerNumericMessage(getNumberFrom(_firstPartCmpnts[1]), _secondPart, new IRCServer(_firstPartCmpnts[0].substring(1)));
 	}
 
 	private Integer getNumberFrom(String aString)

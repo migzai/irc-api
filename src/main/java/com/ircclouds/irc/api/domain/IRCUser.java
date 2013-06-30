@@ -2,12 +2,14 @@ package com.ircclouds.irc.api.domain;
 
 import java.io.*;
 
+import com.ircclouds.irc.api.domain.messages.interfaces.*;
+
 /**
  * 
  * @author
  * 
  */
-public class IRCUser implements Serializable
+public class IRCUser implements ISource, Serializable
 {
 	private String nick;
 	private String hostname;

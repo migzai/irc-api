@@ -1,8 +1,6 @@
 package com.ircclouds.irc.api.domain.messages;
 
-import com.ircclouds.irc.api.domain.messages.interfaces.*;
-
-public class ServerPong implements IMessage
+public class ServerPongMessage
 {
 	private static final String PONG = "PONG";
 	private static final String SPACE = " ";
@@ -10,7 +8,7 @@ public class ServerPong implements IMessage
 
 	private String text;
 
-	public ServerPong(String aReply)
+	public ServerPongMessage(String aReply)
 	{
 		text = aReply;
 	}

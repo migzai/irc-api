@@ -23,7 +23,7 @@ public abstract class AbstractChannelJoinListener
 		channel = new IRCChannel(aMsg.getChannelName());
 	}
 
-	public void onServerMessage(ServerMessage aServerMessage)
+	public void onServerMessage(ServerNumericMessage aServerMessage)
 	{
 		int _numcode = aServerMessage.getNumericCode();
 		if (_numcode == IRCServerNumerics.CHANNEL_FORWARD || _numcode == IRCServerNumerics.TOPIC_USER_DATE || _numcode == IRCServerNumerics.CHANNEL_NICKS_LIST
@@ -126,7 +126,7 @@ public abstract class AbstractChannelJoinListener
 		}
 	}
 
-	private String getTopic(ServerMessage aServMsg)
+	private String getTopic(ServerNumericMessage aServMsg)
 	{
 		return aServMsg.getText().substring(aServMsg.getText().indexOf(":") + 1);
 	}

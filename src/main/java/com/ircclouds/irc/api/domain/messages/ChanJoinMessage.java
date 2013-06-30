@@ -8,7 +8,7 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
  * @author
  * 
  */
-public class ChanJoinMessage implements IChannelMessage
+public class ChanJoinMessage implements IChannelMessage, IUserMessage
 {
 	private String chanName;
 	private IRCUser user;
@@ -24,7 +24,7 @@ public class ChanJoinMessage implements IChannelMessage
 		return chanName;
 	}
 
-	public IRCUser getFromUser()
+	public IRCUser getSource()
 	{
 		return user;
 	}

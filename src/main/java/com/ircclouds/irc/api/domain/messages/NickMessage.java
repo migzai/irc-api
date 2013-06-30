@@ -20,7 +20,7 @@ public class NickMessage implements IUserMessage
 	}
 
 	@Override
-	public IRCUser getFromUser()
+	public IRCUser getSource()
 	{
 		return user;
 	}

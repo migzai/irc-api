@@ -76,7 +76,7 @@ public class VariousMessageListenerAdapter implements IVariousMessageListener
 	}
 
 	@Override
-	public void onServerMsg(ServerMessage aMsg)
+	public void onServerNumericMessage(ServerNumericMessage aMsg)
 	{
 	}
 
@@ -97,11 +97,6 @@ public class VariousMessageListenerAdapter implements IVariousMessageListener
 
 	@Override
 	public void onError(ErrorMessage aMsg)
-	{
-	}
-	
-	@Override
-	public void onServerAuth(ServerAuth aMsg)
 	{
 	}
 

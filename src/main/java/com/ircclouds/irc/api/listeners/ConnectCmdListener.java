@@ -35,7 +35,7 @@ public class ConnectCmdListener
 		properties = new Properties();
 	}
 
-	public void onServerMessage(ServerMessage aServMsg)
+	public void onServerMessage(ServerNumericMessage aServMsg)
 	{
 		if (aServMsg.getNumericCode() == IRCServerNumerics.NICKNAME_IN_USE)
 		{

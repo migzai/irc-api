@@ -18,7 +18,7 @@ public abstract class AbstractMessageFactory
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageFactory.class);
 	
 	private static final String PING_KEY = "PING";
-	private static final String NOTICE = "NOTICE";
+	private static final String NOTICE_KEY = "NOTICE";
 	private static final String PRIVATE_MESSAGE_KEY = "PRIVMSG";
 	private static final String JOIN_KEY = "JOIN";
 	private static final String PART_KEY = "PART";
@@ -26,19 +26,18 @@ public abstract class AbstractMessageFactory
 	private static final String TOPIC_KEY = "TOPIC";
 	private static final String NICK_KEY = "NICK";
 	private static final String KICK_KEY = "KICK";
-	private static final String MODE = "MODE";
-	private static final String ERROR = "ERROR";
+	private static final String MODE_KEY = "MODE";
+	private static final String ERROR_KEY = "ERROR";
 	
 	private static final ServerMessageBuilder SERVER_MESSAGE_BUILDER = new ServerMessageBuilder();
 	private static final TopicMessageBuilder TOPIC_MESSAGE_BUILDER = new TopicMessageBuilder();
 	private static final NickMessageBuilder NICK_MESSAGE_BUILDER = new NickMessageBuilder();
 	private static final KickMessageBuilder KICK_MESSAGE_BUILDER = new KickMessageBuilder();
-	private static final PingMessageBuilder PING_MESSAGE_BUILDER = new PingMessageBuilder();
+	private static final ServerPingMessageBuilder SERVER_PING_MESSAGE_BUILDER = new ServerPingMessageBuilder();
 	private static final ChanJoinBuilder CHAN_JOIN_BUILDER = new ChanJoinBuilder();
 	private static final ChanPartBuilder CHAN_PART_BUILDER = new ChanPartBuilder();
 	private static final QuitMessageBuilder QUIT_MESSAGE_BUILDER = new QuitMessageBuilder();
 	private static final ErrorMessageBuilder ERROR_MESSAGE_BUILDER = new ErrorMessageBuilder();
-	private static final ServerAuthBuilder SERVER_AUTH_BUILDER = new ServerAuthBuilder();
 	
 	private static AbstractPrivateMessageBuilder PRIVATE_MESSAGE_BUILDER;
 	private static AbstractNoticeBuilder NOTICE_BUILDER;
@@ -84,13 +83,13 @@ public abstract class AbstractMessageFactory
 				String _msgType = _components[1];
 				if (PING_KEY.equals(_components[0]))
 				{
-					return PING_MESSAGE_BUILDER.build(aMsg);
+					return SERVER_PING_MESSAGE_BUILDER.build(aMsg);
 				}
 				else if (PRIVATE_MESSAGE_KEY.equals(_msgType))
 				{
 					return PRIVATE_MESSAGE_BUILDER.build(aMsg);
 				}
-				else if (NOTICE.equals(_msgType))
+				else if (NOTICE_KEY.equals(_msgType) || NOTICE_KEY.equals(_components[0]))
 				{
 					return NOTICE_BUILDER.build(aMsg);
 				}
@@ -118,7 +117,7 @@ public abstract class AbstractMessageFactory
 				{
 					return KICK_MESSAGE_BUILDER.build(aMsg);
 				}
-				else if (MODE.equals(_msgType) && _components[0].contains("@") && getIRCServerOptions().getChanTypes().contains(_components[2].charAt(0)))
+				else if (MODE_KEY.equals(_msgType) && getIRCServerOptions().getChanTypes().contains(_components[2].charAt(0)))
 				{
 					return CHAN_MODE_BUILDER.build(aMsg);
 				}
@@ -126,17 +125,13 @@ public abstract class AbstractMessageFactory
 				{
 					return SERVER_MESSAGE_BUILDER.build(aMsg);
 				}
-				else if (ERROR.equals(_components[0]))
+				else if (ERROR_KEY.equals(_components[0]))
 				{
 					return ERROR_MESSAGE_BUILDER.build(aMsg);
 				}
-				else if (NOTICE.equals(_components[0]))
-				{
-					return SERVER_AUTH_BUILDER.build(aMsg);
-				}
 			}
 
-			return IMessage.NO_MESSAGE;
+			return IMessage.NULL_MESSAGE;
 		}
 		catch (Exception aExc)
 		{

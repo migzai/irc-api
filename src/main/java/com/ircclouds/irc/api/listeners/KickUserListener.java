@@ -19,7 +19,7 @@ public abstract class KickUserListener
 		}
 	}
 
-	public void onServerMessage(ServerMessage aServerMessage)
+	public void onServerMessage(ServerNumericMessage aServerMessage)
 	{
 		if (aServerMessage.getNumericCode() == IRCServerNumerics.NO_SUCH_CHANNEL || aServerMessage.getNumericCode() == IRCServerNumerics.NOT_CHANNEL_OP)
 		{

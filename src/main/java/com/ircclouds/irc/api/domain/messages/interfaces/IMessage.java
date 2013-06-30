@@ -4,8 +4,14 @@ import java.io.*;
 
 public interface IMessage extends Serializable
 {
-	IMessage NO_MESSAGE = new IMessage()
+	IMessage NULL_MESSAGE = new IMessage()
 	{
-
+		@Override
+		public ISource getSource()
+		{
+			return ISource.NULL_SOURCE;
+		}		
 	};
+	
+	ISource getSource();	
 }

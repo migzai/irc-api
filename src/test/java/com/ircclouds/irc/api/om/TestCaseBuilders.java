@@ -6,6 +6,7 @@ import junit.framework.*;
 
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
+import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.utils.*;
 
 /**
@@ -55,7 +56,7 @@ public class TestCaseBuilders extends TestCase
 	{
 		ChanJoinBuilder _builder = new ChanJoinBuilder();
 		ChanJoinMessage _msg    = _builder.build(USER_STRING+" JOIN "+TEST_CHANNEL);
-		checkChannelAndUser(_msg.getFromUser(),_msg.getChannelName(),true);
+		checkChannelAndUser(_msg.getSource(),_msg.getChannelName(),true);
 	}
 	
 	/**
@@ -65,7 +66,7 @@ public class TestCaseBuilders extends TestCase
 	{
 		ChanJoinBuilder _builder = new ChanJoinBuilder();
 		ChanJoinMessage _msg    = _builder.build(USER_STRING+" PART "+TEST_CHANNEL);
-		checkChannelAndUser(_msg.getFromUser(),_msg.getChannelName(),true);
+		checkChannelAndUser(_msg.getSource(),_msg.getChannelName(),true);
 	}
 	
 	/**
@@ -81,17 +82,17 @@ public class TestCaseBuilders extends TestCase
 				return new LinkedHashSet<Character>() {{ add('#'); }};
 			}
 		};
-		AbstractNotice _msg    = _builder.build("NOTICE Server Shit");
+		IMessage _msg    = _builder.build("NOTICE Server Shit");
 		assertEquals(_msg.getClass(),ServerNotice.class);
 		
 		_msg = _builder.build(USER_STRING+" NOTICE Something To An User");
 		assertEquals(_msg.getClass(),UserNotice.class);
-		assertEquals(TEST_USER,((UserNotice)_msg).getFromUser());
+		assertEquals(TEST_USER,((UserNotice)_msg).getSource());
 		assertEquals(TEST_USER.getNick()+"!"+TEST_USER.getIdent()+"@"+TEST_USER.getHostname()+" NOTICE Something To An User",((UserNotice)_msg).getText());
 		
 		_msg = _builder.build(USER_STRING+" NOTICE "+TEST_CHANNEL+" Something To a Chan");
 		assertEquals(_msg.getClass(),ChannelNotice.class);
-		checkChannelAndUser(((ChannelNotice)_msg).getFromUser(),((ChannelNotice)_msg).getChannelName(),false);
+		checkChannelAndUser(((ChannelNotice)_msg).getSource(),((ChannelNotice)_msg).getChannelName(),false);
 		assertEquals(TEST_USER.getNick()+"!"+TEST_USER.getIdent()+"@"+TEST_USER.getHostname()+" NOTICE " +TEST_CHANNEL+" Something To a Chan",((ChannelNotice)_msg).getText());
 	}
 	
@@ -100,9 +101,9 @@ public class TestCaseBuilders extends TestCase
 	 */
 	public void testPingBuiler()
 	{
-		PingMessageBuilder _builder = new PingMessageBuilder();
-		AbstractPingMessage _msg    = _builder.build("PING miguel:1234");
-		assertEquals("1234",_msg.getReplyText());
+		ServerPingMessageBuilder _builder = new ServerPingMessageBuilder();
+		ServerPing _msg    = _builder.build("PING miguel:1234");
+		assertEquals("1234",_msg.getText());
 	}
 
 	
@@ -114,7 +115,7 @@ public class TestCaseBuilders extends TestCase
 		QuitMessageBuilder _builder = new QuitMessageBuilder();
 		QuitMessage _msg    = _builder.build(USER_STRING+" QUIT :stfu message");
 		assertEquals("stfu message",_msg.getQuitMsg());
-		assertEquals(TEST_USER,_msg.getFromUser());
+		assertEquals(TEST_USER,_msg.getSource());
 	}
 	
 	

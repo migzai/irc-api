@@ -126,9 +126,9 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 		{
 			aListener.onUserNotice((UserNotice) aMessage);
 		}
-		else if (aMessage instanceof ServerMessage)
+		else if (aMessage instanceof ServerNumericMessage)
 		{
-			aListener.onServerMsg((ServerMessage) aMessage);
+			aListener.onServerNumericMessage((ServerNumericMessage) aMessage);
 		}
 		else if (aMessage instanceof ServerNotice)
 		{
@@ -145,10 +145,6 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 		else if (aMessage instanceof ErrorMessage)
 		{
 			aListener.onError((ErrorMessage) aMessage);
-		}
-		else if (aMessage instanceof ServerAuth)
-		{
-			aListener.onServerAuth((ServerAuth) aMessage);
 		}
 		else if (aMessage instanceof ChannelModeMessage)
 		{

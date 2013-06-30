@@ -26,7 +26,7 @@ public abstract class AbstractChannelPartListener
 		deleteChannel(aMsg.getChannelName());
 	}
 	
-	public void onServerMessage(ServerMessage aServerMessage)
+	public void onServerMessage(ServerNumericMessage aServerMessage)
 	{
 		if (aServerMessage.getNumericCode() == IRCServerNumerics.NO_SUCH_CHANNEL)
 		{

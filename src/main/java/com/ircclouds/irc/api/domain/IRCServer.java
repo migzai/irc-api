@@ -1,11 +1,13 @@
 package com.ircclouds.irc.api.domain;
 
+import com.ircclouds.irc.api.domain.messages.interfaces.*;
+
 /**
  * 
  * @author
  * 
  */
-public class IRCServer
+public class IRCServer implements ISource
 {
 	private static final int DEFAULT_IRC_SERVER_PORT = 6667;
 	private static final int DEFAULT_SSL_IRC_SERVER_PORT = 6697;

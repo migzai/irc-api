@@ -13,21 +13,9 @@ public abstract class AbstractPingVersionListener extends VariousMessageListener
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPingVersionListener.class);
 
 	@Override
-	public void onUserPing(UserPing aMsg)
-	{
-		execute(new SendUserPingReplyCmd(new UserPong(aMsg.getFromUser().getNick(), aMsg.getText())));
-	}
-
-	@Override
-	public void onUserVersion(UserVersion aMsg)
-	{
-		execute(new SendVersionReplyCmd(aMsg.getFromUser().getNick()));
-	}
-
-	@Override
 	public void onServerPing(ServerPing aMsg)
 	{
-		execute(new SendServerPingReplyCmd(new ServerPong(aMsg.getReplyText())));
+		execute(new SendServerPingReplyCmd(new ServerPongMessage(aMsg.getText())));
 	}
 
 	protected abstract IIRCSession getSession();

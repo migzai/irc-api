@@ -19,7 +19,7 @@ public class QuitMessage implements IUserMessage
 		quitMsg = aQuitMsg;
 	}
 	
-	public IRCUser getFromUser()
+	public IRCUser getSource()
 	{
 		return user;
 	}

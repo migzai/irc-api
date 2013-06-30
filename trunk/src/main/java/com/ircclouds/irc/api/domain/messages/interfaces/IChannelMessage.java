@@ -5,7 +5,7 @@ package com.ircclouds.irc.api.domain.messages.interfaces;
  * @author
  * 
  */
-public interface IChannelMessage extends IUserMessage
+public interface IChannelMessage
 {
 	String getChannelName();
 }

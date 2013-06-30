@@ -1,6 +1,7 @@
 package com.ircclouds.irc.api.utils;
 
 import com.ircclouds.irc.api.domain.*;
+import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
 /**
  * 
@@ -26,5 +27,15 @@ public final class ParseUtils
 		_user.setIdent(_cmpnts2[1]);
 
 		return _user;
+	}
+
+	public static ISource getSource(String aString)
+	{
+		if (aString.contains("@"))
+		{
+			return getUser(aString);
+		}
+		
+		return new IRCServer(aString);
 	}
 }

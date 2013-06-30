@@ -87,7 +87,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	}
 	
 	@Override
-	public void onServerMsg(ServerMessage aMsg)
+	public void onServerNumericMessage(ServerNumericMessage aMsg)
 	{
 		chanJoinListener.onServerMessage(aMsg);
 		chanPartListener.onServerMessage(aMsg);
@@ -112,7 +112,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	@Override
 	public void onNickChange(NickMessage aMsg)
 	{
-		if (aMsg.getFromUser().getNick().equals(getIRCState().getNickname()))
+		if (aMsg.getSource().getNick().equals(getIRCState().getNickname()))
 		{
 			nickChangeListener.onNickChange(aMsg);
 			
@@ -166,6 +166,6 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	
 	private boolean isForMe(IUserMessage aMsg)
 	{
-		return getIRCState().getNickname().equals(aMsg.getFromUser().getNick());
+		return getIRCState().getNickname().equals(aMsg.getSource().getNick());
 	}
 }

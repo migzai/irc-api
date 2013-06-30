@@ -12,7 +12,7 @@ public class AsyncMessageListener
 	
 	private Queue<AsyncTriple> myQueue = new LinkedList<AsyncTriple>();
 	
-	public void onServerMsg(ServerMessage aMsg)
+	public void onServerMsg(ServerNumericMessage aMsg)
 	{
 		if (NUMERICS.contains(aMsg.getNumericCode()))
 		{

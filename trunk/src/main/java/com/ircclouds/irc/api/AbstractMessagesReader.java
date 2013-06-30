@@ -105,7 +105,7 @@ public abstract class AbstractMessagesReader implements IMessagesReader, INeedsC
 				try
 				{
 					IMessage _iMsg = msgFactory.build(_msg);
-					if (_iMsg != IMessage.NO_MESSAGE)
+					if (_iMsg != IMessage.NULL_MESSAGE)
 					{
 						messages.add(_iMsg);
 					}	

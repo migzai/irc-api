@@ -3,7 +3,7 @@ package com.ircclouds.irc.api.domain.messages;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
-public class TopicMessage implements IChannelMessage
+public class TopicMessage implements IChannelMessage, IUserMessage
 {
 	private String channel;
 	private IRCTopic topic;
@@ -25,7 +25,7 @@ public class TopicMessage implements IChannelMessage
 	}
 
 	@Override
-	public IRCUser getFromUser()
+	public IRCUser getSource()
 	{
 		return null;
 	}

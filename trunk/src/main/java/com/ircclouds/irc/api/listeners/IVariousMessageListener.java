@@ -24,7 +24,7 @@ public interface IVariousMessageListener extends IMessageListener
 	
 	void onUserAction(UserActionMsg aMsg);
 	
-	void onServerMsg(ServerMessage aMsg);
+	void onServerNumericMessage(ServerNumericMessage aMsg);
 	
 	void onServerNotice(ServerNotice aMsg);
 	
@@ -33,8 +33,6 @@ public interface IVariousMessageListener extends IMessageListener
 	void onUserQuit(QuitMessage aMsg);
 	
 	void onError(ErrorMessage aMsg);
-	
-	void onServerAuth(ServerAuth aMsg);
 	
 	void onChannelMode(ChannelModeMessage aMsg);
 	

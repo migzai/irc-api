@@ -14,7 +14,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		if (!isForMe(aMsg))
 		{
-			IRCUser _user = aMsg.getFromUser();
+			IRCUser _user = aMsg.getSource();
 			IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
 			_chan.addUser(_user, new HashSet<IRCUserStatus>());
 		}
@@ -25,14 +25,14 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		if (!isForMe(aMsg))
 		{
-			getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName()).removeUser(aMsg.getFromUser());
+			getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName()).removeUser(aMsg.getSource());
 		}
 	}
 
 	@Override
 	public void onNickChange(NickMessage aMsg)
 	{
-		IRCUser _old = new IRCUser(aMsg.getFromUser().getNick());
+		IRCUser _old = new IRCUser(aMsg.getSource().getNick());
 		IRCUser _new = new IRCUser(aMsg.getNewNick());
 
 		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
@@ -49,7 +49,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
 		{
-			_chan.removeUser(aMsg.getFromUser());
+			_chan.removeUser(aMsg.getSource());
 		}
 	}
 
@@ -117,7 +117,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	
 	private boolean isForMe(IUserMessage aMsg)
 	{
-		return getIRCState().getNickname().equals(aMsg.getFromUser().getNick());
+		return getIRCState().getNickname().equals(aMsg.getSource().getNick());
 	}
 
 	@Override

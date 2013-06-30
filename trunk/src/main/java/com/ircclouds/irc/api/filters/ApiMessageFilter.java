@@ -22,9 +22,9 @@ public class ApiMessageFilter implements IMessageFilter
 	@Override
 	public MessageFilterResult filter(IMessage aMsg)
 	{
-		if (aMsg instanceof ServerMessage)
+		if (aMsg instanceof ServerNumericMessage)
 		{
-			String aText = ((ServerMessage) aMsg).getText();
+			String aText = ((ServerNumericMessage) aMsg).getText();
 			String cmpnts[] = aText.split(" :");
 			
 			if (nextValues.remove(cmpnts[0]))

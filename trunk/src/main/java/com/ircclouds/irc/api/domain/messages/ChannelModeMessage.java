@@ -10,15 +10,15 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
  * @author
  * 
  */
-public class ChannelModeMessage implements IChannelMessage
+public class ChannelModeMessage implements IMessage
 {
-	private IRCUser user;
+	private ISource user;
 	private String channel;
 	private String modeStr;
 	private List<ChannelMode> addedModes;
 	private List<ChannelMode> removedModes;
 
-	public ChannelModeMessage(IRCUser aUser, String aChanName, String aModeStr, List<ChannelMode> aAddedModes, List<ChannelMode> aRemModes)
+	public ChannelModeMessage(ISource aUser, String aChanName, String aModeStr, List<ChannelMode> aAddedModes, List<ChannelMode> aRemModes)
 	{
 		user = aUser;
 		channel = aChanName;
@@ -32,7 +32,7 @@ public class ChannelModeMessage implements IChannelMessage
 		return channel;
 	}
 
-	public IRCUser getFromUser()
+	public ISource getSource()
 	{
 		return user;
 	}

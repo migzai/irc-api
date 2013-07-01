@@ -1,5 +1,6 @@
 package com.ircclouds.irc.api.listeners;
 
+import com.ircclouds.irc.api.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
 /**

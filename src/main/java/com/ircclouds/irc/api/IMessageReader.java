@@ -1,14 +1,12 @@
 package com.ircclouds.irc.api;
 
-import java.util.*;
-
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
-public interface IMessagesReader
+public interface IMessageReader
 {
 	boolean available();
 
-	List<IMessage> readMessages();
+	IMessage readMessage();
 	
 	void reset();
 }

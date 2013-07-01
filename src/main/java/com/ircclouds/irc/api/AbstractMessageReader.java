@@ -16,25 +16,24 @@ import com.ircclouds.irc.api.om.*;
  * 
  */
 
-public abstract class AbstractMessagesReader implements IMessagesReader, INeedsConnection
+public abstract class AbstractMessageReader implements IMessageReader, INeedsConnection
 {
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractMessagesReader.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageReader.class);
 	private static final String CRLF = "\r\n";
 
 	private AbstractMessageFactory msgFactory;
 	private String serverMsg = "";
-	private List<IMessage> messages = new ArrayList<IMessage>();
-
+	private Queue<String> strMessages = new LinkedList<String>();
 	private boolean canRead = true;
 	
-	public AbstractMessagesReader()
+	public AbstractMessageReader()
 	{
 		msgFactory = new AbstractMessageFactory()
 		{
 			@Override
 			protected IRCServerOptions getIRCServerOptions()
 			{
-				return AbstractMessagesReader.this.getIRCServerOptions();
+				return AbstractMessageReader.this.getIRCServerOptions();
 			}
 		};
 	}
@@ -43,18 +42,14 @@ public abstract class AbstractMessagesReader implements IMessagesReader, INeedsC
 	{
 		try
 		{
-			if (messages.isEmpty())
+			if (canRead)
 			{
-				if (canRead)
-				{
-					serverMsg += getConnection().read();
-					canRead = false;
-				}
-
-				return !serverMsg.isEmpty();
+				serverMsg += getConnection().read();				
+				canRead = false;
+				fetchNextBatch();
 			}
 
-			return true;
+			return !strMessages.isEmpty() || !serverMsg.isEmpty();
 		}
 		catch (IOException aExc)
 		{
@@ -63,22 +58,32 @@ public abstract class AbstractMessagesReader implements IMessagesReader, INeedsC
 		}
 	}
 
-	public List<IMessage> readMessages()
+	public IMessage readMessage()
 	{
-		canRead = true;
-		fetchNextBatch();
-
-		List<IMessage> _messages = new ArrayList<IMessage>(messages);
-		messages.clear();
-
-		return _messages;
+		IMessage _msg = IMessage.NULL_MESSAGE;
+		
+		if (strMessages.peek() != null)
+		{
+			try 
+			{
+				_msg =  msgFactory.build(strMessages.poll());
+			}
+			catch (IRCOMException aExc)
+			{
+				LOG.error("Error from the OM layer", aExc);
+			}
+		}
+		
+		canRead = strMessages.isEmpty();
+		
+		return _msg;
 	}
 
 	@Override
 	public void reset()
 	{
-		messages.clear();
-		
+		strMessages.clear();
+		serverMsg = "";
 		canRead = true;
 	}
 	
@@ -100,21 +105,7 @@ public abstract class AbstractMessagesReader implements IMessagesReader, INeedsC
 				serverMsg = "";
 			}
 
-			for (String _msg : _tempMsg.split(CRLF))
-			{
-				try
-				{
-					IMessage _iMsg = msgFactory.build(_msg);
-					if (_iMsg != IMessage.NULL_MESSAGE)
-					{
-						messages.add(_iMsg);
-					}	
-				}
-				catch (IRCOMException aExc)
-				{
-					LOG.error("Error from the OM layer", aExc);
-				}
-			}
+			strMessages.addAll(Arrays.asList(_tempMsg.split(CRLF)));
 		}
 	}
 }

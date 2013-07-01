@@ -1,5 +1,6 @@
 package com.ircclouds.irc.api.filters;
 
+import com.ircclouds.irc.api.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
 /**

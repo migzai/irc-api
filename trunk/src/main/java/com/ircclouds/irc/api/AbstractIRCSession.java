@@ -12,7 +12,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 {
 	private IMessageDispatcher dispatcher = new MessageDispatcherImpl();
 	private ICommandServer cmdServ;
-	private IMessagesReader reader;
+	private IMessageReader reader;
 	private AbstractApiDaemon daemon;
 	private IConnection conn;
 
@@ -27,7 +27,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 			}
 		};
 		
-		reader = new AbstractMessagesReader()
+		reader = new AbstractMessageReader()
 		{
 			@Override
 			protected IRCServerOptions getIRCServerOptions()

@@ -10,10 +10,10 @@ public abstract class AbstractApiDaemon extends Thread
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractApiDaemon.class);
 
-	private IMessagesReader reader;
+	private IMessageReader reader;
 	private IMessageDispatcher dispatcher;
 
-	public AbstractApiDaemon(IMessagesReader aReader, IMessageDispatcher aDispatcher)
+	public AbstractApiDaemon(IMessageReader aReader, IMessageDispatcher aDispatcher)
 	{
 		super("ApiDaemon");
 
@@ -27,7 +27,8 @@ public abstract class AbstractApiDaemon extends Thread
 		{
 			while (reader.available())
 			{
-				for (IMessage _msg : reader.readMessages())
+				IMessage _msg = reader.readMessage();
+				if (_msg != IMessage.NULL_MESSAGE)
 				{
 					dispatcher.dispatchToPrivateListeners(_msg);
 					

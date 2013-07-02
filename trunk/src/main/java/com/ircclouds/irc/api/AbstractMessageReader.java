@@ -22,8 +22,8 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 	private static final String CRLF = "\r\n";
 
 	private AbstractMessageFactory msgFactory;
-	private String serverMsg = "";
-	private Queue<String> strMessages = new LinkedList<String>();
+	private StringBuilder ircData = new StringBuilder();
+	private Queue<String> ircMessages = new LinkedList<String>();
 	private boolean canRead = true;
 	
 	public AbstractMessageReader()
@@ -44,12 +44,12 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 		{
 			if (canRead)
 			{
-				serverMsg += getConnection().read();				
+				ircData.append(getConnection().read());				
 				canRead = false;
 				fetchNextBatch();
 			}
 
-			return !strMessages.isEmpty() || !serverMsg.isEmpty();
+			return !ircMessages.isEmpty() || ircData.length() != 0;
 		}
 		catch (IOException aExc)
 		{
@@ -62,11 +62,11 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 	{
 		IMessage _msg = IMessage.NULL_MESSAGE;
 		
-		if (strMessages.peek() != null)
+		if (ircMessages.peek() != null)
 		{
 			try 
 			{
-				_msg =  msgFactory.build(strMessages.poll());
+				_msg =  msgFactory.build(ircMessages.poll());
 			}
 			catch (IRCOMException aExc)
 			{
@@ -74,7 +74,7 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 			}
 		}
 		
-		canRead = strMessages.isEmpty();
+		canRead = ircMessages.isEmpty();
 		
 		return _msg;
 	}
@@ -82,8 +82,8 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 	@Override
 	public void reset()
 	{
-		strMessages.clear();
-		serverMsg = "";
+		ircMessages.clear();
+		ircData.setLength(0);
 		canRead = true;
 	}
 	
@@ -91,21 +91,21 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 	
 	private void fetchNextBatch()
 	{
-		if (serverMsg.contains(CRLF))
+		if (ircData.indexOf(CRLF) != -1)
 		{
-			String _tempMsg = serverMsg;
-			if (!serverMsg.endsWith(CRLF))
+			String _tempMsg = ircData.toString();
+			if (ircData.lastIndexOf(CRLF) != ircData.length() - CRLF.length() - 1)
 			{
-				int _i = serverMsg.lastIndexOf(CRLF);
-				_tempMsg = serverMsg.substring(0, _i);
-				serverMsg = serverMsg.substring(_i + CRLF.length());
+				int _i = ircData.lastIndexOf(CRLF);
+				_tempMsg = ircData.substring(0, _i);
+				ircData = new StringBuilder(ircData.substring(_i + CRLF.length()));
 			}
 			else
 			{
-				serverMsg = "";
+				ircData.setLength(0);
 			}
 
-			strMessages.addAll(Arrays.asList(_tempMsg.split(CRLF)));
+			ircMessages.addAll(Arrays.asList(_tempMsg.split(CRLF)));
 		}
 	}
 }

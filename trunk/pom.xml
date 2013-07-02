@@ -12,6 +12,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<licenses>
+	    <license>
+	      	<name>The Apache Software License, Version 2.0</name>
+	      	<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	    	<distribution>repo</distribution>
+		</license>
+  	</licenses>
+
+	<scm>
+	    <connection>scm:svn:http://irc-api.googlecode.com/svn/trunk</connection>
+	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/trunk</developerConnection>
+		<url>http://irc-api.googlecode.com/svn/trunk/</url>	    
+  	</scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.googlecode.jmockit</groupId>

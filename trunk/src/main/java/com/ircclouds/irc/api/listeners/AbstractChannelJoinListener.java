@@ -33,7 +33,10 @@ public abstract class AbstractChannelJoinListener
 			if (_numcode == IRCServerNumerics.CHANNEL_FORWARD)
 			{
 				String _newName = aServerMessage.getText().split(" ")[1];
-				channel.setName(_newName);
+				if (channel != null)
+				{
+					channel.setName(_newName);
+				}
 			}
 			else if (_numcode == IRCServerNumerics.CHANNEL_NICKS_LIST)
 			{

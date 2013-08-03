@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ircclouds.irc</groupId>
 	<artifactId>irc-api</artifactId>
-	<version>1.0-0011-SNAPSHOT</version>
+	<version>1.0-0011</version>
 	<name>IRC API</name>
 	<packaging>jar</packaging>
 	<parent>
@@ -26,9 +25,9 @@
   	</licenses>
 
 	<scm>
-	    <connection>scm:svn:http://irc-api.googlecode.com/svn/trunk</connection>
-	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/trunk</developerConnection>
-		<url>http://irc-api.googlecode.com/svn/trunk/</url>	    
+	    <connection>scm:svn:http://irc-api.googlecode.com/svn/tags/irc-api-1.0-0011</connection>
+	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/tags/irc-api-1.0-0011</developerConnection>
+		<url>http://irc-api.googlecode.com/svn/tags/irc-api-1.0-0011</url>	    
   	</scm>
 
 	<dependencies>
@@ -57,7 +56,7 @@
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<scriptSourceDirectory></scriptSourceDirectory>
+		<scriptSourceDirectory />
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
 			<resource>

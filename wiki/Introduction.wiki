@@ -31,7 +31,7 @@ _api.joinChannel("#ircapi", new Callback<IRCChannel>()
 	}
 
 	@Override
-	public void onFailure(String aErrorMessage)
+	public void onFailure(Exception aException)
 	{
 	}
 });

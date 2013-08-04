@@ -30,14 +30,15 @@ public class IRCClient
 			}
 
 			@Override
-			public void onFailure(String aErrorMessage)
+			public void onFailure(Exception aErrorMessage)
 			{
 				throw new RuntimeException(aErrorMessage);
 			}
 		});
 	}
 
-	private static IServerParameters getServerParams(final String aNickname, final List<String> aAlternativeNicks, final String aRealname, final String aIdent, final String aServerName, final Boolean aIsSSLServer)
+	private static IServerParameters getServerParams(final String aNickname, final List<String> aAlternativeNicks, final String aRealname, final String aIdent,
+			final String aServerName, final Boolean aIsSSLServer)
 	{
 		return new IServerParameters()
 		{

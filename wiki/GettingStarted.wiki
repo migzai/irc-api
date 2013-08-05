@@ -47,3 +47,15 @@ A valid configuration of irc-api's dependencies jar file would include the follo
 <li>slf4j-log4j12-1.6.1.jar</li>
 <li>log4j-1.2.16</li>
 </ul>
+
+==LOG4J==
+Since this example uses log4j, you still need a basic log4j configuration.  A simple log4j.properties on your classpath will do:
+
+{{{
+log4j.rootLogger = INFO, Console
+log4j.appender.Console=org.apache.log4j.ConsoleAppender
+log4j.appender.Console.layout=org.apache.log4j.PatternLayout
+log4j.appender.Console.layout.conversionPattern=%m%n
+}}}
+
+And voilà, you can now move on to the more exciting stuff!

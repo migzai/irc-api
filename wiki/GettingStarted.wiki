@@ -42,6 +42,6 @@ A valid configuration of irc-api's core jar file would include the following jar
 
 A valid configuration of irc-api's dependencies jar file would include the following jar files on the classpath:
 <ul>
-<li>irc-api-1.0-0011.jar</li>
+<li>irc-api-1.0-0011-jar-with-dependencies.jar</li>
 <li>log4j-1.2.16</li>
 </ul>

@@ -40,8 +40,11 @@ public class SSLSocketChannelConnection implements IConnection
 			cipherSendBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
 			cipherRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
 			appRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
-
-			return (sChannel = SocketChannel.open()).connect(new InetSocketAddress(aHostname, aPort));
+			
+			sChannel = SocketChannel.open();
+			sChannel.configureBlocking(true);
+			
+			return sChannel.connect(new InetSocketAddress(aHostname, aPort));
 		}
 		catch (Exception aExc)
 		{

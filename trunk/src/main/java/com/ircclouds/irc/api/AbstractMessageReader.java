@@ -49,7 +49,7 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 				fetchNextBatch();
 			}
 
-			return !ircMessages.isEmpty() || ircData.length() != 0;
+			return true;
 		}
 		catch (IOException aExc)
 		{

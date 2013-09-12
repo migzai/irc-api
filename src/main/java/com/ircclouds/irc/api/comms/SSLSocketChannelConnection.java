@@ -153,7 +153,7 @@ public class SSLSocketChannelConnection implements IConnection
 					int bytesRead = sChannel.read(cipherRecvBuffer.compact());
 					if (bytesRead == -1)
 					{
-						throw new IOException("End of stream");
+						throw new EndOfStreamException();
 					}
 					remaingUnwraps += bytesRead;
 					cipherRecvBuffer.flip();					

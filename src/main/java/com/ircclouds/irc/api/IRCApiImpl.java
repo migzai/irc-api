@@ -484,8 +484,6 @@ public class IRCApiImpl implements IRCApi
 			@Override
 			public void onFailure(Exception aExc)
 			{
-				LOG.info("", aExc);
-				
 				synchronized (aDirty)
 				{
 					if (!aDirty.isDirty())

@@ -2,7 +2,6 @@ package com.ircclouds.irc.api;
 
 import org.slf4j.*;
 
-import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.filters.*;
 
@@ -43,11 +42,6 @@ public abstract class AbstractApiDaemon extends Thread
 					else
 					{
 						dispatcher.dispatch(_msg, TargetListeners.ALL);
-					}
-					
-					if (_msg instanceof ErrorMessage)
-					{
-						break;
 					}
 				}
 			}

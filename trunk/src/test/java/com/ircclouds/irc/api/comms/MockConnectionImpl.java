@@ -47,7 +47,10 @@ public class MockConnectionImpl implements IConnection
 	public String read() throws IOException
 	{
 		buffer.clear();
-		reader.read(buffer);
+		if (reader.read(buffer) == -1)
+		{
+			throw new EndOfStreamException();
+		}
 		buffer.flip();
 		return buffer.toString();
 	}

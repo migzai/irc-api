@@ -27,8 +27,10 @@ public class ConnectCmd implements ICommand
 
 	public String asString()
 	{
-		return new StringBuffer().append(USER).append(SPACE).append(ident).append(SPACE).append("0").append(SPACE).append("*").append(SPACE).append(COLUMN)
-				.append(realname).append(CRNL).append(NICK).append(SPACE).append(nick).append(CRNL).append(getPassword()).toString();
+		return new StringBuffer()
+				.append(NICK).append(SPACE).append(nick).append(CRNL)
+				.append(getPassword())
+				.append(USER).append(SPACE).append(ident).append(SPACE).append("0").append(SPACE).append("*").append(SPACE).append(COLUMN).append(realname).append(CRNL).toString();
 	}
 
 	private String getPassword()
@@ -37,7 +39,7 @@ public class ConnectCmd implements ICommand
 		{
 			return PASSWORD + " " + password + CRNL;
 		}
-		
+
 		return "";
 	}
 }

@@ -40,11 +40,8 @@ public class SSLSocketChannelConnection implements IConnection
 			cipherSendBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
 			cipherRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
 			appRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
-			
-			sChannel = SocketChannel.open();
-			sChannel.configureBlocking(true);
-			
-			return sChannel.connect(new InetSocketAddress(aHostname, aPort));
+						
+			return (sChannel = SocketChannel.open()).connect(new InetSocketAddress(aHostname, aPort));
 		}
 		catch (Exception aExc)
 		{
@@ -143,8 +140,18 @@ public class SSLSocketChannelConnection implements IConnection
 			}
 
 			_hRes = sslEngine.unwrap(cipherRecvBuffer, appRecvBuffer);
-			hStatus = _hRes.getHandshakeStatus();
+			hStatus = _hRes.getHandshakeStatus();			
 			remaingUnwraps -= _hRes.bytesConsumed();
+			
+			switch (_hRes.getStatus())
+			{				
+				case BUFFER_UNDERFLOW:
+					remaingUnwraps += sChannel.read(cipherRecvBuffer.compact());
+					cipherRecvBuffer.flip();					
+					break;
+				default:
+					break;				
+			}			
 		}
 	}
 

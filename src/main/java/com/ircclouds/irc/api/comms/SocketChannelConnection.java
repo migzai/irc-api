@@ -33,7 +33,10 @@ public class SocketChannelConnection implements IConnection
 	public String read() throws IOException
 	{
 		buffer.clear();
-		channel.read(buffer);
+		if (channel.read(buffer) == -1)
+		{
+			throw new EndOfStreamException();
+		}
 		buffer.flip();
 
 		byte[] _bytes = new byte[buffer.limit()];

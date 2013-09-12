@@ -6,6 +6,7 @@ import java.util.*;
 import org.slf4j.*;
 
 import com.ircclouds.irc.api.comms.*;
+import com.ircclouds.irc.api.comms.IConnection.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.om.*;
@@ -50,6 +51,11 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 			}
 
 			return true;
+		}
+		catch (EndOfStreamException aExc)
+		{
+			LOG.error("End of stream received.");
+			return false;
 		}
 		catch (IOException aExc)
 		{

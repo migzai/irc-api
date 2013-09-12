@@ -107,6 +107,8 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 		{
 			connectListener.onError(aMsg);
 		}
+		
+		((IRCStateImpl) (getIRCState())).setConnected(false);
 	}
 	
 	@Override

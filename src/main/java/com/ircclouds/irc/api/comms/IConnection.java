@@ -11,4 +11,8 @@ public interface IConnection
 	int write(String aMessage) throws IOException;
 
 	String read() throws IOException;
+	
+	public class EndOfStreamException extends IOException
+	{				
+	}
 }

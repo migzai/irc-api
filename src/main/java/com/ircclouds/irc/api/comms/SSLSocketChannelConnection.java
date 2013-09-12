@@ -134,6 +134,10 @@ public class SSLSocketChannelConnection implements IConnection
 			{
 				cipherRecvBuffer.clear();
 				int _readCount = sChannel.read(cipherRecvBuffer);
+				if (_readCount == -1)
+				{
+					throw new EndOfStreamException();					
+				}
 				remaingUnwraps += _readCount;
 				LOG.debug("Reading: " + _readCount);
 				cipherRecvBuffer.flip();
@@ -146,7 +150,12 @@ public class SSLSocketChannelConnection implements IConnection
 			switch (_hRes.getStatus())
 			{				
 				case BUFFER_UNDERFLOW:
-					remaingUnwraps += sChannel.read(cipherRecvBuffer.compact());
+					int bytesRead = sChannel.read(cipherRecvBuffer.compact());
+					if (bytesRead == -1)
+					{
+						throw new IOException("End of stream");
+					}
+					remaingUnwraps += bytesRead;
 					cipherRecvBuffer.flip();					
 					break;
 				default:

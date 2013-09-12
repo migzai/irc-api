@@ -125,8 +125,6 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 
 		execute(new QuitCmd(aQuitMessage));
-
-		((IRCStateImpl) (state)).setConnected(false);
 	}
 
 	@Override

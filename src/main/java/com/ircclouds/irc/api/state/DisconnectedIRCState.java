@@ -51,7 +51,7 @@ public class DisconnectedIRCState implements IIRCState
 	@Override
 	public IRCServerOptions getServerOptions()
 	{
-		return null;
+		return new IRCServerOptions(new Properties());
 	}
 
 	@Override

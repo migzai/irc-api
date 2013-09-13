@@ -25,9 +25,9 @@
   	</licenses>
 
 	<scm>
-	    <connection>scm:svn:http://irc-api.googlecode.com/svn/trunk</connection>
-	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/trunk</developerConnection>
-		<url>http://irc-api.googlecode.com/svn/trunk/</url>	    
+	    <connection>scm:svn:http://irc-api.googlecode.com/svn/tags/irc-api-1.0-0012</connection>
+	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/tags/irc-api-1.0-0012</developerConnection>
+		<url>http://irc-api.googlecode.com/svn/tags/irc-api-1.0-0012</url>	    
   	</scm>
 
 	<dependencies>

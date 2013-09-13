@@ -1,0 +1,95 @@
+NOTICE AUTH :*** Processing connection to irc.mzima.net
+NOTICE AUTH :*** Looking up your hostname...
+NOTICE AUTH :*** Checking Ident
+NOTICE AUTH :*** No Ident response
+NOTICE AUTH :*** Couldn't look up your hostname
+PING :3C69E2F2
+:irc.mzima.net 001 HAHAA :Welcome to the EFNet Internet Relay Chat Network HAHAA
+:irc.mzima.net 002 HAHAA :Your host is irc.mzima.net[216.193.223.223/6667], running version ircd-ratbox-2.2.3
+:irc.mzima.net 003 HAHAA :This server was created Mon Jul 24 2006 at 13:35:52 PDT
+:irc.mzima.net 004 HAHAA irc.mzima.net ircd-ratbox-2.2.3 oiwszcerkfydnxbauglZCD biklmnopstveI bkloveI
+:irc.mzima.net 005 HAHAA CHANTYPES=&# EXCEPTS INVEX CHANMODES=eIb,k,l,imnpst CHANLIMIT=&#:60 PREFIX=(ov)@+ MAXLIST=beI:100 NETWORK=EFNet MODES=4 STATUSMSG=@+ KNOCK CALLERID=g :are supported by this server
+:irc.mzima.net 005 HAHAA SAFELIST ELIST=U CASEMAPPING=rfc1459 CHARSET=ascii NICKLEN=9 CHANNELLEN=50 TOPICLEN=160 ETRACE CPRIVMSG CNOTICE DEAF=D MONITOR=120 :are supported by this server
+:irc.mzima.net 005 HAHAA TARGMAX=NAMES:1,LIST:1,KICK:1,WHOIS:1,PRIVMSG:10,NOTICE:10,ACCEPT:,MONITOR: :are supported by this server
+:irc.mzima.net 251 HAHAA :There are 7535 users and 28456 invisible on 43 servers
+:irc.mzima.net 252 HAHAA 238 :IRC Operators online
+:irc.mzima.net 253 HAHAA 4 :unknown connection(s)
+:irc.mzima.net 254 HAHAA 18523 :channels formed
+:irc.mzima.net 255 HAHAA :I have 662 clients and 1 servers
+:irc.mzima.net 265 HAHAA 662 2031 :Current local users 662, max 2031
+:irc.mzima.net 266 HAHAA 35991 42107 :Current global users 35991, max 42107
+:irc.mzima.net 250 HAHAA :Highest connection count: 2032 (2031 clients) (511824 connections received)
+:irc.mzima.net 375 HAHAA :- irc.mzima.net Message of the Day -
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-                               _.---------------.
+:irc.mzima.net 372 HAHAA :-                     _.---,-----_------,-,---.   `------.
+:irc.mzima.net 372 HAHAA :-                ,--------/-----+++--------+---`--.--.    `-----.
+:irc.mzima.net 372 HAHAA :-             ,-'--/----//--/++++---,+-+:`-.+-++--``+++-..--.---.`--.
+:irc.mzima.net 372 HAHAA :-         ,-,--+-+/--=.<'+-/++//--+-++`.):--:.-++--\ .-\\`-,-`--.--. `--.
+:irc.mzima.net 372 HAHAA :-      ,-','  /( /-''-+-+/<<,/;--(--//./`-.--`-.+,-.+\`-.\\-`-.-'\,-----.`-.
+:irc.mzima.net 372 HAHAA :-    -'  (,---\-+----;,-'\\\X-+-.+-<---',--`-.--`\`.-+`.++|\--+`.-`,-----.. `-.
+:irc.mzima.net 372 HAHAA :-  ./ ,-----,''++----|'-,\+\----<---+--------,`.-.\-`-+-+)+|-,-`-+(-:.  ) ).   \
+:irc.mzima.net 372 HAHAA :- ,' --   `/|----+----+;-;X------+-----,--------:-+:---++.'+----`.)`+----'( )   `.
+:irc.mzima.net 372 HAHAA :- `-. `-----|-.----'---+++----,-''--------------;'++-+-+--/------+---------'-+-,-'
+:irc.mzima.net 372 HAHAA :-   \-----.    `----(-'--`-' (`----. `-`-------'---+-----'--------'     _.----'
+:irc.mzima.net 372 HAHAA :-          `---------`--------`--.  `-----_\-'------'     _.----------''
+:irc.mzima.net 372 HAHAA :-                     `-------. `-------''  \       ----''
+:irc.mzima.net 372 HAHAA :-                             |  |    -\     \ \    |
+:irc.mzima.net 372 HAHAA :-                             |  |   /  :     \ \   |
+:irc.mzima.net 372 HAHAA :-                             |  :  ;   | \    : :  |
+:irc.mzima.net 372 HAHAA :-                              |\  ;|   |  :   ; ;  |
+:irc.mzima.net 372 HAHAA :-     _u__                     | : |    |  |  ; ;  |        ,---.
+:irc.mzima.net 372 HAHAA :-    /____\              ^     \ | :    |  ;  | ;  |       (     )       ^
+:irc.mzima.net 372 HAHAA :-    |[][]|      )      /.\    '.|  \   ; /   ;/   |        `-+-'       /.\
+:irc.mzima.net 372 HAHAA :-  /\|[]..|  /---        |      ||   : / /   //    |(.)   /\  |  /-----\ |
+:irc.mzima.net 372 HAHAA :- /  '--'''      \    /------------\    /-\     /--\ |/--/  \-+-/       \--\
+:irc.mzima.net 372 HAHAA :-                 \--/              \--/   \---/s!D \/                      \--\
+:irc.mzima.net 372 HAHAA :-                                                                               \
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            Welcome to EFnet. Your host is irc.mzima.net, usage of
+:irc.mzima.net 372 HAHAA :-            this server is available on the following ports:
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            194, 6665-6669
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            This server is sponsored by Mzima Networks.
+:irc.mzima.net 372 HAHAA :-            For more information, please visit http://www.mzima.net
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            This server may not be used for any illegal purposes,
+:irc.mzima.net 372 HAHAA :-            including but not limited to droning, cloning, flooding,
+:irc.mzima.net 372 HAHAA :-            distribution of copyrighted material, unsolicited
+:irc.mzima.net 372 HAHAA :-            advertising or any other actions that we, your
+:irc.mzima.net 372 HAHAA :-            Operators, regard as abuse. Any individual or group
+:irc.mzima.net 372 HAHAA :-            found to lead or participate in any abusive actions shall
+:irc.mzima.net 372 HAHAA :-            be permanently removed from this server.
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            The usage of bots is encouraged to help maintain your
+:irc.mzima.net 372 HAHAA :-            channel, however abusive bots will be removed post haste.
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            Should you need to contact someone from our staff, type
+:irc.mzima.net 372 HAHAA :-            /stats p and contact one of the people you get in the
+:irc.mzima.net 372 HAHAA :-            output.
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            Upon connecting to this server you are being scanned for
+:irc.mzima.net 372 HAHAA :-            insecure or open proxy/socks. If you do not consent to
+:irc.mzima.net 372 HAHAA :-            be scanned, please disconnect. These scans are being
+:irc.mzima.net 372 HAHAA :-            performed for security reasons only.
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            Mzima Networks, EFnet, and the Operators of this server
+:irc.mzima.net 372 HAHAA :-            are not to be held responsible for the actions implied
+:irc.mzima.net 372 HAHAA :-            or the opinions expressed by the users connecting to
+:irc.mzima.net 372 HAHAA :-            this server.
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            Please do not request to become an Oper.
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-            benvenuto alla nazione fjear
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-  768 days, 22 hours, 15 minutes and 24 seconds
+:irc.mzima.net 372 HAHAA :-
+:irc.mzima.net 372 HAHAA :-  [2004/6/23 01.32] Server Ready
+:irc.mzima.net 372 HAHAA :-  [2006/7/31 23.47] Server terminated by _SG!sg@damnlinux.fjear{sg}
+:irc.mzima.net 372 HAHAA :- -
+:irc.mzima.net 372 HAHAA :-  [2006/7/31 23.48] Server Ready
+:irc.mzima.net 372 HAHAA :-  [2011/5/5 15.34]  Server Terminating. SG[sg@damnlinux.fjear]
+:irc.mzima.net 376 HAHAA :End of /MOTD command.
+:hilts!hilts@mesothelioma.sucks PRIVMSG HAHAA :☺VERSION☺

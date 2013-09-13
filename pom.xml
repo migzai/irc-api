@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ircclouds.irc</groupId>
 	<artifactId>irc-api</artifactId>
-	<version>1.0-0013-SNAPSHOT</version>
+	<version>1.0-0013</version>
 	<name>IRC API</name>
 	<packaging>jar</packaging>
 	<parent>
@@ -25,9 +25,9 @@
   	</licenses>
 
 	<scm>
-	    <connection>scm:svn:http://irc-api.googlecode.com/svn/trunk/</connection>
-	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://irc-api.googlecode.com/svn/trunk/</url>	    
+	    <connection>scm:svn:http://irc-api.googlecode.com/svn/tags/irc-api-1.0-0013</connection>
+	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/tags/irc-api-1.0-0013</developerConnection>
+		<url>http://irc-api.googlecode.com/svn/tags/irc-api-1.0-0013</url>	    
   	</scm>
 
 	<dependencies>

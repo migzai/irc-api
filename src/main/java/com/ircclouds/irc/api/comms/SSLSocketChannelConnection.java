@@ -55,8 +55,11 @@ public class SSLSocketChannelConnection implements IConnection
 	{
 		doAnyPendingHandshake();
 
-		tryReadAndUnwrap();
-
+		if (!sslEngine.isInboundDone())
+		{
+			tryReadAndUnwrap();
+		}
+		
 		byte[] _bytes = new byte[appRecvBuffer.flip().limit()];
 		appRecvBuffer.get(_bytes);
 		appRecvBuffer.clear();
@@ -112,7 +115,14 @@ public class SSLSocketChannelConnection implements IConnection
 				wrapAndWrite();
 				break;
 			case NEED_UNWRAP:
-				tryReadAndUnwrap();
+				if (!sslEngine.isInboundDone())
+				{
+					tryReadAndUnwrap();
+				}
+				else
+				{
+					return false;
+				}
 				break;
 			case NEED_TASK:
 				executeTasks();
@@ -127,40 +137,36 @@ public class SSLSocketChannelConnection implements IConnection
 
 	private void tryReadAndUnwrap() throws IOException, SSLException
 	{
-		SSLEngineResult _hRes;
-		if (!sslEngine.isInboundDone())
+		if (remaingUnwraps == 0)
 		{
-			if (remaingUnwraps == 0)
+			cipherRecvBuffer.clear();
+			int _readCount = sChannel.read(cipherRecvBuffer);
+			if (_readCount == -1)
 			{
-				cipherRecvBuffer.clear();
-				int _readCount = sChannel.read(cipherRecvBuffer);
-				if (_readCount == -1)
-				{
-					throw new EndOfStreamException();					
-				}
-				remaingUnwraps += _readCount;
-				LOG.debug("Reading: " + _readCount);
-				cipherRecvBuffer.flip();
+				throw new EndOfStreamException();					
 			}
+			remaingUnwraps += _readCount;
+			LOG.debug("Reading: " + _readCount);
+			cipherRecvBuffer.flip();
+		}
 
-			_hRes = sslEngine.unwrap(cipherRecvBuffer, appRecvBuffer);
-			hStatus = _hRes.getHandshakeStatus();			
-			remaingUnwraps -= _hRes.bytesConsumed();
-			
-			switch (_hRes.getStatus())
-			{				
-				case BUFFER_UNDERFLOW:
-					int bytesRead = sChannel.read(cipherRecvBuffer.compact());
-					if (bytesRead == -1)
-					{
-						throw new EndOfStreamException();
-					}
-					remaingUnwraps += bytesRead;
-					cipherRecvBuffer.flip();					
-					break;
-				default:
-					break;				
-			}			
+		SSLEngineResult _hRes = sslEngine.unwrap(cipherRecvBuffer, appRecvBuffer);
+		hStatus = _hRes.getHandshakeStatus();			
+		remaingUnwraps -= _hRes.bytesConsumed();
+		
+		switch (_hRes.getStatus())
+		{				
+			case BUFFER_UNDERFLOW:
+				int bytesRead = sChannel.read(cipherRecvBuffer.compact());
+				if (bytesRead == -1)
+				{
+					throw new EndOfStreamException();
+				}
+				remaingUnwraps += bytesRead;
+				cipherRecvBuffer.flip();					
+				break;
+			default:
+				break;				
 		}
 	}
 

@@ -19,7 +19,7 @@ public abstract class AbstractCommandServerImpl implements ICommandServer, INeed
 		int _written = getConnection().write(_str);
 		if (_str.length() > _written)
 		{
-			LOG.error("Expected to write " + _str.length() + " bytes, but got" + _written);
+			LOG.error("Expected to write " + _str.length() + " bytes, but wrote " + _written);
 		}
 	}
 }

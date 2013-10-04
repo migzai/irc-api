@@ -7,6 +7,11 @@ public class QuitCmd implements ICommand
 
 	private String quitMsg;
 
+	public QuitCmd()
+	{
+		quitMsg = "";
+	}	
+	
 	public QuitCmd(String aQuitMsg)
 	{
 		quitMsg = aQuitMsg;

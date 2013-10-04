@@ -27,6 +27,11 @@ public interface IRCApi
 	 * @param aCallback A callback that will be invoked when the connection is established, and will return an {@link IIRCState} on success, or an {@link Exception} in case of failure
 	 */
 	void connect(IServerParameters aServerParameters, Callback<IIRCState> aCallback);
+
+	/**
+	 * Synchronous disconnect
+	 */
+	void disconnect();		
 	
 	/**
 	 * Synchronous disconnect

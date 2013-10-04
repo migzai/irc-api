@@ -128,6 +128,14 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
+	public void disconnect()
+	{
+		checkConnected();
+
+		execute(new QuitCmd());
+	}	
+	
+	@Override
 	public void joinChannel(String aChannelName)
 	{
 		joinChannel(aChannelName, "");

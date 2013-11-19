@@ -132,21 +132,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 
 	public void submitJoinChannelCallback(String aChanName, final Callback<IRCChannel> aCallback)
 	{
-		chanJoinListener.submit(aChanName, new Callback<IRCChannel>()
-		{
-			@Override
-			public void onSuccess(IRCChannel aChannel)
-			{
-				saveChan(aChannel);
-				aCallback.onSuccess(aChannel);
-			}
-
-			@Override
-			public void onFailure(Exception aExc)
-			{
-				aCallback.onFailure(aExc);
-			}
-		});
+		chanJoinListener.submit(aChanName, aCallback);
 	}
 
 	public void submitPartChannelCallback(String aChanName, Callback<String> aCallback)

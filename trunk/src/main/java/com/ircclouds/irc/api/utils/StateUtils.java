@@ -9,10 +9,12 @@ public class StateUtils
 {
 	public static IRCChannel cloneChannel(IRCChannel aChan)
 	{
-		IRCChannel _copy = new IRCChannel();
-		
+		IRCChannel _copy = new IRCChannel();		
 		_copy.setName(aChan.getName());
-		_copy.setTopic(cloneTopic(aChan.getTopic()));
+		if (aChan.getTopic() != null)
+		{
+			_copy.setTopic(cloneTopic(aChan.getTopic()));
+		}
 		_copy.setUsers(cloneUsers(aChan.getUsers()));
 		
 		return _copy;

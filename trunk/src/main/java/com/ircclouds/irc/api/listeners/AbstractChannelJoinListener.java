@@ -20,7 +20,7 @@ public abstract class AbstractChannelJoinListener
 
 	public void onChanJoinMessage(ChanJoinMessage aMsg)
 	{
-		channel = new IRCChannel(aMsg.getChannelName());
+		saveChannel(channel = new IRCChannel(aMsg.getChannelName()));
 	}
 
 	public void onServerMessage(ServerNumericMessage aServerMessage)
@@ -68,10 +68,6 @@ public abstract class AbstractChannelJoinListener
 				if (_chanCallback != null)
 				{
 					_chanCallback.onSuccess(channel);
-				}
-				else
-				{
-					saveChannel(channel);
 				}
 			}
 			else if (callbacks.containsKey(getChannelNameFrom(aServerMessage.getText())))

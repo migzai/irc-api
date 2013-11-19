@@ -150,6 +150,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	@Override
 	public void saveChan(IRCChannel aChannel)
 	{
+		System.out.println("saving");
 		getIRCStateImpl().getChannelsMutable().add(aChannel);
 	}
 

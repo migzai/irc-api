@@ -10,12 +10,23 @@ import java.util.*;
  */
 public class IRCTopic implements Serializable
 {
-	private String setBy;
 	private Date date;
+	private String setBy;
 	private String value;
+	
+	public IRCTopic()
+	{
+		this("", "");
+	}
 	
 	public IRCTopic(String aValue)
 	{
+		this("", aValue);
+	}
+	
+	public IRCTopic(String aSetBy, String aValue)
+	{
+		setBy = aSetBy;
 		value = aValue;
 	}
 	

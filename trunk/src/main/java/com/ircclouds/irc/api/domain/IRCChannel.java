@@ -25,7 +25,13 @@ public class IRCChannel
 
 	public IRCChannel(String aName)
 	{
+		this(aName, new IRCTopic());
+	}
+	
+	public IRCChannel(String aName, IRCTopic aTopic)
+	{
 		name = aName;
+		topic = aTopic;
 	}
 
 	public String getName()

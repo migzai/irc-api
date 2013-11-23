@@ -164,10 +164,10 @@ public class IRCApiImpl implements IRCApi
 			return;
 		}
 
-		aChannelName = prependChanType(aChannelName);
+		aChannelName = prependChanType(aChannelName).toLowerCase();
 
 		Dirty _d = new Dirty();
-		executeCmdListener.submitJoinChannelCallback(aChannelName.toLowerCase(), getDirtyCallback(aCallback, _d));
+		executeCmdListener.submitJoinChannelCallback(aChannelName, getDirtyCallback(aCallback, _d));
 		executeAsync(new JoinChanCmd(aChannelName, aKey), aCallback, _d);
 	}
 
@@ -199,9 +199,11 @@ public class IRCApiImpl implements IRCApi
 			aCallback.onFailure(new ApiException("Not connected!"));
 			return;
 		}
+		
+		aChannelName = prependChanType(aChannelName).toLowerCase();
 
 		Dirty _d = new Dirty();
-		executeCmdListener.submitPartChannelCallback(aChannelName.toLowerCase(), getDirtyCallback(aCallback, _d));
+		executeCmdListener.submitPartChannelCallback(aChannelName, getDirtyCallback(aCallback, _d));
 		executeAsync(new PartChanCmd(aChannelName, aPartMessage), aCallback, _d);
 	}
 

@@ -11,10 +11,7 @@ public class StateUtils
 	{
 		IRCChannel _copy = new IRCChannel();		
 		_copy.setName(aChan.getName());
-		if (aChan.getTopic() != null)
-		{
-			_copy.setTopic(cloneTopic(aChan.getTopic()));
-		}
+		_copy.setTopic(cloneTopic(aChan.getTopic()));
 		_copy.setUsers(cloneUsers(aChan.getUsers()));
 		
 		return _copy;

@@ -103,7 +103,7 @@ public class IRCStateImpl implements IIRCState
 
 	public IRCChannel getChannelByName(String aChannelName)
 	{
-		return getChannelByNameGeneric(aChannelName, new GetChannelCallback()
+		return getChannelByNameGeneric(prependChanType(aChannelName), new GetChannelCallback()
 		{
 			@Override
 			public IRCChannel onReady(IRCChannel aChan)
@@ -129,7 +129,20 @@ public class IRCStateImpl implements IIRCState
 	{
 		isConnected = aIsConnected;
 	}
-		
+	
+	private String prependChanType(String aChannelName)
+	{
+		for (Character _c : getServerOptions().getChanTypes())
+		{
+			if (_c.equals(aChannelName.charAt(0)))
+			{
+				return aChannelName;
+			}
+		}
+
+		return getServerOptions().getChanTypes().iterator().next() + aChannelName;
+	}
+	
 	private interface GetChannelCallback { IRCChannel onReady(IRCChannel aChan); };
 	
 	private IRCChannel getChannelByNameGeneric(String aChannelName, GetChannelCallback aCallback)

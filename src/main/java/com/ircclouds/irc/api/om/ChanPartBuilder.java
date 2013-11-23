@@ -13,7 +13,7 @@ public class ChanPartBuilder implements IBuilder<ChanPartMessage>
 		String[] _cmpnts = aMessage.split(" ");
 
 		IRCUser _info = ParseUtils.getUser(_cmpnts[0]);
-		String _chanName = _cmpnts[2];
+		String _chanName = _cmpnts[2].toLowerCase();
 		if (_chanName.startsWith(":"))
 		{
 			_chanName = _chanName.substring(1);

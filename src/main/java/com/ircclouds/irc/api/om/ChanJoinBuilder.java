@@ -15,6 +15,6 @@ public class ChanJoinBuilder implements IBuilder<ChanJoinMessage>
 			_chanName = _chanName.substring(1);
 		}
 		
-		return new ChanJoinMessage(ParseUtils.getUser(_cmpnts[0]), _chanName);
+		return new ChanJoinMessage(ParseUtils.getUser(_cmpnts[0]), _chanName.toLowerCase());
 	}
 }

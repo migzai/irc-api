@@ -20,7 +20,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 			
 			savedOldState(_chan);
 			
-			_chan.addUser(_user, new HashSet<IRCUserStatus>());
+			_chan.addUser(_user);
 		}
 	}
 

@@ -167,7 +167,7 @@ public class IRCApiImpl implements IRCApi
 		aChannelName = prependChanType(aChannelName);
 
 		Dirty _d = new Dirty();
-		executeCmdListener.submitJoinChannelCallback(aChannelName, getDirtyCallback(aCallback, _d));
+		executeCmdListener.submitJoinChannelCallback(aChannelName.toLowerCase(), getDirtyCallback(aCallback, _d));
 		executeAsync(new JoinChanCmd(aChannelName, aKey), aCallback, _d);
 	}
 
@@ -201,7 +201,7 @@ public class IRCApiImpl implements IRCApi
 		}
 
 		Dirty _d = new Dirty();
-		executeCmdListener.submitPartChannelCallback(aChannelName, getDirtyCallback(aCallback, _d));
+		executeCmdListener.submitPartChannelCallback(aChannelName.toLowerCase(), getDirtyCallback(aCallback, _d));
 		executeAsync(new PartChanCmd(aChannelName, aPartMessage), aCallback, _d);
 	}
 
@@ -519,22 +519,24 @@ public class IRCApiImpl implements IRCApi
 
 	private IStateAccessor getStateUpdater(Boolean aSaveIRCState)
 	{
-		IStateAccessor _stateUpdater = new AbstractIRCStateUpdater()
-		{
-			@Override
-			public IIRCState getIRCState()
-			{
-				return state;
-			}
-		};
-
 		if (aSaveIRCState)
 		{
-			session.addListeners(MESSAGE_VISIBILITY.PRIVATE, (AbstractIRCStateUpdater) _stateUpdater);
+			AbstractIRCStateUpdater _stateUpdater = new AbstractIRCStateUpdater()
+			{
+				@Override
+				public IIRCState getIRCState()
+				{
+					return state;
+				}
+			};
+
+			session.addListeners(MESSAGE_VISIBILITY.PRIVATE, _stateUpdater);
+			
+			return _stateUpdater;
 		}
 		else
 		{
-			_stateUpdater = new IStateAccessor()
+			return new IStateAccessor()
 			{
 				@Override
 				public void saveChan(IRCChannel aChannel)
@@ -567,8 +569,6 @@ public class IRCApiImpl implements IRCApi
 				}
 			};
 		}
-
-		return _stateUpdater;
 	}
 	
 	private void executeAsync(ICommand aCommand, Callback<?> aCallback, Dirty aDirty)

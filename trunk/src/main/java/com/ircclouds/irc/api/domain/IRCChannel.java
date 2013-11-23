@@ -38,6 +38,11 @@ public class IRCChannel
 		name = aName;
 	}
 
+	public Set<IRCUserStatus> addUser(IRCUser aUser)
+	{
+		return users.put(aUser, new HashSet<IRCUserStatus>());
+	}
+	
 	public Set<IRCUserStatus> addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
 	{
 		return users.put(aUser, aStatus);

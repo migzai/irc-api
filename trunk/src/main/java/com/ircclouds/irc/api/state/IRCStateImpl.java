@@ -11,7 +11,7 @@ public class IRCStateImpl implements IIRCState
 	private String realname;
 	private IRCServer ircServer;
 	private IRCServerOptions serverOptions;
-	private List<IRCChannel> channels = new ArrayList<IRCChannel>();
+	private List<WritableIRCChannel> channels = new ArrayList<WritableIRCChannel>();
 	private List<String> altNicks;
 	private boolean isConnected;
 	private IRCStateImpl previousState;
@@ -67,17 +67,17 @@ public class IRCStateImpl implements IIRCState
 		nickname = aNickname;
 	}
 
-	List<IRCChannel> getChannelsMutable()
+	List<WritableIRCChannel> getChannelsMutable()
 	{
 		return channels;
 	}
 
-	IRCChannel getChannelByNameMutable(String aChannelName)
+	WritableIRCChannel getWritableChannelByName(String aChannelName)
 	{
-		return getChannelByNameGeneric(aChannelName, new GetChannelCallback()
+		return getChannelByNameGeneric(aChannelName, new GetChannelCallback<WritableIRCChannel>()
 		{
 			@Override
-			public IRCChannel onReady(IRCChannel aChan)
+			public WritableIRCChannel onReady(WritableIRCChannel aChan)
 			{
 				return aChan;
 			}
@@ -93,9 +93,9 @@ public class IRCStateImpl implements IIRCState
 	public List<IRCChannel> getChannels()
 	{
 		List<IRCChannel> _ircChannels = new ArrayList<IRCChannel>();
-		for (IRCChannel _c : channels)
+		for (WritableIRCChannel _c : channels)
 		{
-			_ircChannels.add(new UnmodifiableIRCChannel(_c));
+			_ircChannels.add(new IRCChannel(_c));
 		}
 		
 		return Collections.unmodifiableList(_ircChannels);
@@ -103,12 +103,12 @@ public class IRCStateImpl implements IIRCState
 
 	public IRCChannel getChannelByName(String aChannelName)
 	{
-		return getChannelByNameGeneric(prependChanType(aChannelName), new GetChannelCallback()
+		return getChannelByNameGeneric(prependChanType(aChannelName), new GetChannelCallback<IRCChannel>()
 		{
 			@Override
-			public IRCChannel onReady(IRCChannel aChan)
+			public IRCChannel onReady(WritableIRCChannel aChan)
 			{
-				return new UnmodifiableIRCChannel(aChan);
+				return new IRCChannel(aChan);
 			}
 		});
 	}
@@ -143,11 +143,11 @@ public class IRCStateImpl implements IIRCState
 		return getServerOptions().getChanTypes().iterator().next() + aChannelName;
 	}
 	
-	private interface GetChannelCallback { IRCChannel onReady(IRCChannel aChan); };
-	
-	private IRCChannel getChannelByNameGeneric(String aChannelName, GetChannelCallback aCallback)
+	private interface GetChannelCallback<T> { T onReady(WritableIRCChannel aChan); };
+
+	private <T> T getChannelByNameGeneric(String aChannelName, GetChannelCallback<T> aCallback)
 	{
-		for (IRCChannel _c : channels)
+		for (WritableIRCChannel _c : channels)
 		{
 			if (_c.getName().equalsIgnoreCase(aChannelName))
 			{

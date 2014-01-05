@@ -1,7 +1,5 @@
 package com.ircclouds.irc.api.state;
 
-import java.util.*;
-
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
@@ -15,8 +13,8 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		if (!isForMe(aMsg))
 		{
-			IRCUser _user = aMsg.getSource();
-			IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+			WritableIRCUser _user = aMsg.getSource();
+			WritableIRCChannel _chan = getIRCStateImpl().getWritableChannelByName(aMsg.getChannelName());
 			
 			savedOldState(_chan);
 			
@@ -29,7 +27,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		if (!isForMe(aMsg))
 		{
-			IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+			WritableIRCChannel _chan = getIRCStateImpl().getWritableChannelByName(aMsg.getChannelName());
 			
 			savedOldState(_chan);
 
@@ -40,14 +38,14 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	@Override
 	public void onNickChange(NickMessage aMsg)
 	{
-		IRCUser _old = new IRCUser(aMsg.getSource().getNick());
-		IRCUser _new = new IRCUser(aMsg.getNewNick());
+		WritableIRCUser _old = new WritableIRCUser(aMsg.getSource().getNick());
+		WritableIRCUser _new = new WritableIRCUser(aMsg.getNewNick());
 		
-		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
+		for (WritableIRCChannel _chan : getIRCStateImpl().getChannelsMutable())
 		{
 			savedOldState(_chan);
 			
-			if (_chan.getUsers().containsKey(_old))
+			if (_chan.getUsers().contains(_old))
 			{
 				_chan.addUser(_new, _chan.removeUser(_old));
 			}
@@ -57,7 +55,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	@Override
 	public void onUserQuit(QuitMessage aMsg)
 	{
-		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
+		for (WritableIRCChannel _chan : getIRCStateImpl().getChannelsMutable())
 		{
 			savedOldState(_chan);
 			
@@ -68,32 +66,33 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	@Override
 	public void onTopicChange(TopicMessage aMsg)
 	{		
-		IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+		WritableIRCChannel _chan = getIRCStateImpl().getWritableChannelByName(aMsg.getChannelName());
 		
 		savedOldState(_chan);
 		
-		_chan.setTopic(aMsg.getTopic());	
+		_chan.getTopic().setDate(aMsg.getTopic().getDate());
+		_chan.getTopic().setSetBy(aMsg.getTopic().getSetBy());
+		_chan.getTopic().setValue(aMsg.getTopic().getValue());
 	}
 
 	@Override
 	public void onChannelKick(ChannelKick aMsg)
 	{
-		IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(aMsg.getChannelName());
+		WritableIRCChannel _chan = getIRCStateImpl().getWritableChannelByName(aMsg.getChannelName());
 		
 		savedOldState(_chan);
 		
-		_chan.removeUser(new IRCUser(aMsg.getKickedUser()));			
+		_chan.removeUser(new WritableIRCUser(aMsg.getKickedUser()));
 	}
 
 	@Override
 	public void onChannelMode(ChannelModeMessage aMsg)
 	{
 		String _chanName = aMsg.getChannelName();
-		IRCChannel _chan = getIRCStateImpl().getChannelByNameMutable(_chanName);
+		WritableIRCChannel _chan = getIRCStateImpl().getWritableChannelByName(_chanName);
 		
 		savedOldState(_chan);
 		
-		Map<IRCUser, Set<IRCUserStatus>> _users = _chan.getUsers();
 		for (ChannelMode _mode : aMsg.getAddedModes())
 		{
 			if (_mode instanceof IRCUserStatusMode)
@@ -108,7 +107,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 					IRCUserStatus _us = getAvailableUserStatuses().getUserStatus(_usm.getChannelModeType());
 					if (_us != null)
 					{
-						_users.get(new IRCUser(_usm.getUser())).add(_us);
+						_chan.getStatusesForUser(new WritableIRCUser(_usm.getUser())).add(_us);
 					}
 				}
 			}
@@ -121,7 +120,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 				IRCUserStatus _us = getAvailableUserStatuses().getUserStatus(_usm.getChannelModeType());
 				if (_us != null)
 				{
-					_users.get(new IRCUser(_usm.getUser())).remove(_us);
+					_chan.getStatusesForUser(new WritableIRCUser(_usm.getUser())).remove(_us);
 				}
 			}
 		}
@@ -148,7 +147,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	}
 
 	@Override
-	public void saveChan(IRCChannel aChannel)
+	public void saveChan(WritableIRCChannel aChannel)
 	{
 		getIRCStateImpl().getChannelsMutable().add(aChannel);
 	}
@@ -168,17 +167,17 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	@Override
 	public void deleteNickFromChan(String aChannel, String aNick)
 	{
-		for (IRCChannel _chan : getIRCStateImpl().getChannelsMutable())
+		for (WritableIRCChannel _chan : getIRCStateImpl().getChannelsMutable())
 		{
 			if (_chan.getName().equals(aChannel))
 			{
-				_chan.getUsers().remove(new IRCUser(aNick));
+				_chan.getUsers().remove(new WritableIRCUser(aNick));
 				break;
 			}
 		}
 	}
 	
-	private void savedOldState(IRCChannel aChan)
+	private void savedOldState(WritableIRCChannel aChan)
 	{
 		getPreviousIRCStateImpl().getChannelsMutable().remove(aChan);
 		getPreviousIRCStateImpl().getChannelsMutable().add(StateUtils.cloneChannel(aChan));

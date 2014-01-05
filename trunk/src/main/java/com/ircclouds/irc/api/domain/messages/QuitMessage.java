@@ -10,16 +10,16 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
  */
 public class QuitMessage implements IUserMessage
 {
-	private IRCUser user;
+	private WritableIRCUser user;
 	private String quitMsg;
 
-	public QuitMessage(IRCUser aFromUser, String aQuitMsg)
+	public QuitMessage(WritableIRCUser aFromUser, String aQuitMsg)
 	{
 		user = aFromUser;
 		quitMsg = aQuitMsg;
 	}
 	
-	public IRCUser getSource()
+	public WritableIRCUser getSource()
 	{
 		return user;
 	}

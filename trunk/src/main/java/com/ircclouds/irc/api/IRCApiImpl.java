@@ -541,7 +541,7 @@ public class IRCApiImpl implements IRCApi
 			return new IStateAccessor()
 			{
 				@Override
-				public void saveChan(IRCChannel aChannel)
+				public void saveChan(WritableIRCChannel aChannel)
 				{
 					// NOP
 				}

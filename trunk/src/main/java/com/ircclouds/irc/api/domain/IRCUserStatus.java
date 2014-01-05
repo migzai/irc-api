@@ -6,10 +6,10 @@ public final class IRCUserStatus
 	private Character prefix;
 	private int priority;
 	
-	public IRCUserStatus(Character aType, Character aPrexix, int aPriority)
+	public IRCUserStatus(Character aType, Character aPrefix, int aPriority)
 	{
 		type = aType;
-		prefix = aPrexix;
+		prefix = aPrefix;
 		priority = aPriority;
 	}
 	

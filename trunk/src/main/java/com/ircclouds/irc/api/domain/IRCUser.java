@@ -1,58 +1,27 @@
 package com.ircclouds.irc.api.domain;
 
-import java.io.*;
-
-import com.ircclouds.irc.api.domain.messages.interfaces.*;
-
-/**
- * 
- * @author
- * 
- */
-public class IRCUser implements ISource, Serializable
+public class IRCUser
 {
-	private String nick;
-	private String hostname;
-	private String ident;
-
-	public IRCUser()
+	private WritableIRCUser user;
+	
+	public IRCUser(WritableIRCUser aUser)
 	{
-		this("");
-	}
-
-	public IRCUser(String aNick)
-	{
-		nick = aNick;
+		user = aUser;
 	}
 
 	public String getNick()
 	{
-		return nick;
-	}
-
-	public void setNick(String aNick)
-	{
-		nick = aNick;
+		return user.getNick();
 	}
 
 	public String getHostname()
 	{
-		return hostname;
-	}
-
-	public void setHostname(String aHostname)
-	{
-		hostname = aHostname;
+		return user.getHostname();
 	}
 
 	public String getIdent()
 	{
-		return ident;
-	}
-
-	public void setIdent(String aIdent)
-	{
-		ident = aIdent;
+		return user.getIdent();
 	}
 
 	@Override
@@ -60,12 +29,7 @@ public class IRCUser implements ISource, Serializable
 	{
 		if (aObject != null)
 		{
-			if (aObject instanceof IRCUser)
-			{
-				return ((IRCUser) aObject).getNick().equals(nick);
-			}
-			
-			return aObject.equals(nick);
+			return aObject.equals(user.getNick());
 		}
 
 		return false;
@@ -74,11 +38,11 @@ public class IRCUser implements ISource, Serializable
 	@Override
 	public int hashCode()
 	{
-		return nick.hashCode();
+		return user.getNick().hashCode();
 	}
 	
 	public String toString()
 	{
-		return nick + "!" + ident + "@" + hostname;
+		return user.getNick() + "!" + user.getIdent() + "@" + user.getHostname();
 	}
 }

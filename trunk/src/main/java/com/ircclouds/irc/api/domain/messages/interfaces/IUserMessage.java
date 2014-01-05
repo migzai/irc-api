@@ -5,5 +5,5 @@ import com.ircclouds.irc.api.domain.*;
 public interface IUserMessage extends IMessage
 {
 	@Override
-	public IRCUser getSource();
+	public WritableIRCUser getSource();
 }

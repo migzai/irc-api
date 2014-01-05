@@ -75,4 +75,9 @@ public class IRCServer implements ISource
 	{
 		return isSSL;
 	}
+	
+	public String toString()
+	{
+		return hostname;
+	}
 }

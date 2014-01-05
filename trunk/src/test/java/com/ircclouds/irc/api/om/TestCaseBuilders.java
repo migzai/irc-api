@@ -18,11 +18,11 @@ public class TestCaseBuilders extends TestCase
 {
 
 	private static final String TEST_CHANNEL = "#math";
-	private static final IRCUser   TEST_USER;
+	private static final WritableIRCUser   TEST_USER;
 	
 	static 
 	{
-	    TEST_USER = new IRCUser();
+	    TEST_USER = new WritableIRCUser();
 	    TEST_USER.setHostname("dyoann.dyndns.org");
 	    TEST_USER.setIdent("k");
 	    TEST_USER.setNick("soka");
@@ -35,7 +35,7 @@ public class TestCaseBuilders extends TestCase
 	 * @param aUser
 	 * @param aChannel
 	 */
-	private void checkChannelAndUser(IRCUser aUser, String aChannel, boolean removeDash)
+	private void checkChannelAndUser(WritableIRCUser aUser, String aChannel, boolean removeDash)
 	{
 		if(removeDash)
 		{

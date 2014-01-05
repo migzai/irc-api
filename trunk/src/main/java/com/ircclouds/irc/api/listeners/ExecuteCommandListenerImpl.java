@@ -16,7 +16,7 @@ public class ExecuteCommandListenerImpl extends AbstractExecuteCommandListener
 	}
 
 	@Override
-	public void saveChan(IRCChannel aChannel)
+	public void saveChan(WritableIRCChannel aChannel)
 	{
 		updater.saveChan(aChannel);
 	}

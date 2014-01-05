@@ -7,20 +7,20 @@ import com.ircclouds.irc.api.domain.*;
 
 public class StateUtils
 {
-	public static IRCChannel cloneChannel(IRCChannel aChan)
+	public static WritableIRCChannel cloneChannel(WritableIRCChannel aChan)
 	{
-		IRCChannel _copy = new IRCChannel();		
+		WritableIRCChannel _copy = new WritableIRCChannel();		
 		_copy.setName(aChan.getName());
 		_copy.setTopic(cloneTopic(aChan.getTopic()));
-		_copy.setUsers(cloneUsers(aChan.getUsers()));
+		//_copy.setUsersStatuses(cloneUsers(aChan.getUsersStatuses()));
 		
 		return _copy;
 	}
 
-	public static Map<IRCUser, Set<IRCUserStatus>> cloneUsers(Map<IRCUser, Set<IRCUserStatus>> aUsers)
+	public static Map<WritableIRCUser, Set<IRCUserStatus>> cloneUsers(Map<WritableIRCUser, Set<IRCUserStatus>> aUsers)
 	{
-		Map<IRCUser, Set<IRCUserStatus>> _uCopy = new HashMap<IRCUser, Set<IRCUserStatus>>();
-		for (Entry<IRCUser, Set<IRCUserStatus>> _entry : aUsers.entrySet())
+		Map<WritableIRCUser, Set<IRCUserStatus>> _uCopy = new HashMap<WritableIRCUser, Set<IRCUserStatus>>();
+		for (Entry<WritableIRCUser, Set<IRCUserStatus>> _entry : aUsers.entrySet())
 		{
 			Set<IRCUserStatus> _cUS = new HashSet<IRCUserStatus>();
 			for (IRCUserStatus _us : _entry.getValue())
@@ -33,14 +33,14 @@ public class StateUtils
 		return _uCopy;
 	}
 	
-	public static IRCTopic cloneTopic(IRCTopic aTopic)
+	public static WritableIRCTopic cloneTopic(WritableIRCTopic aTopic)
 	{
-		return new IRCTopic(aTopic.getSetBy(), aTopic.getDate(), aTopic.getValue());
+		return new WritableIRCTopic(aTopic.getSetBy(), aTopic.getDate(), aTopic.getValue());
 	}
 	
-	public static IRCUser cloneUser(IRCUser aUser)
+	public static WritableIRCUser cloneUser(WritableIRCUser aUser)
 	{
-		IRCUser _copy = new IRCUser();
+		WritableIRCUser _copy = new WritableIRCUser();
 		_copy.setNick(aUser.getNick());
 		_copy.setIdent(aUser.getIdent());
 		_copy.setHostname(aUser.getHostname());

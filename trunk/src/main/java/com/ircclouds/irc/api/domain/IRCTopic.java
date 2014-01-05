@@ -1,64 +1,28 @@
 package com.ircclouds.irc.api.domain;
 
-import java.io.*;
 import java.util.*;
 
-/**
- * 
- * @author miguel
- * 
- */
-public class IRCTopic implements Serializable
-{
-	private Date date;
-	private String setBy;
-	private String value;
+public class IRCTopic
+{	
+	private WritableIRCTopic topic;
 	
-	public IRCTopic()
+	public IRCTopic(WritableIRCTopic aTopic)
 	{
-		this("", "");
+		topic = aTopic;
 	}
 	
-	public IRCTopic(String aValue)
-	{
-		this("", aValue);
-	}
-	
-	public IRCTopic(String aSetBy, String aValue)
-	{
-		setBy = aSetBy;
-		value = aValue;
-	}
-	
-	public IRCTopic(String aSetBy, Date aDate, String aValue)
-	{
-		setBy = aSetBy;
-		date = aDate;
-		value = aValue;
-	}
-
 	public String getValue()
 	{
-		return value;
+		return topic.getValue();
 	}
 
 	public String getSetBy()
 	{
-		return setBy;
+		return topic.getSetBy();
 	}
 	
 	public Date getDate()
 	{
-		return date;
-	}
-	
-	public void setSetBy(String aSetBy)
-	{
-		setBy = aSetBy;
-	}
-	
-	public void setDate(Date aDate)
-	{
-		date = aDate;
+		return topic.getDate();
 	}
 }

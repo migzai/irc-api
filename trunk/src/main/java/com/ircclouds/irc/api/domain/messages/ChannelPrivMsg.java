@@ -7,7 +7,7 @@ public class ChannelPrivMsg extends AbstractPrivMsg implements IChannelMessage
 {
 	private String channelName;
 
-	public ChannelPrivMsg(IRCUser aFromUser, String aText, String aChanName)
+	public ChannelPrivMsg(WritableIRCUser aFromUser, String aText, String aChanName)
 	{
 		super(aFromUser, aText);
 		channelName = aChanName;

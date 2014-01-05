@@ -9,7 +9,7 @@ import com.ircclouds.irc.api.domain.*;
  */
 public class UserCTCPMsg extends UserPrivMsg
 {
-	public UserCTCPMsg(IRCUser aFromUser, String aToUser, String aText)
+	public UserCTCPMsg(WritableIRCUser aFromUser, String aToUser, String aText)
 	{
 		super(aFromUser, aToUser, aText);
 	}

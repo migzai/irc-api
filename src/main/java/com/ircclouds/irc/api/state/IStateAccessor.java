@@ -4,7 +4,7 @@ import com.ircclouds.irc.api.domain.*;
 
 public interface IStateAccessor
 {
-	void saveChan(IRCChannel aChannel);
+	void saveChan(WritableIRCChannel aChannel);
 	
 	void deleteChan(String aChannelName);
 	

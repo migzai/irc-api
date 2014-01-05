@@ -10,8 +10,8 @@ public abstract class AbstractChannelJoinListener
 {
 	private Map<String, Callback<IRCChannel>> callbacks = new HashMap<String, Callback<IRCChannel>>();
 
-	private IRCChannel channel;
-	private IRCTopic topic;
+	private WritableIRCChannel channel;
+	private WritableIRCTopic topic;
 
 	public void submit(String aChannelName, Callback<IRCChannel> aCallback)
 	{
@@ -20,7 +20,7 @@ public abstract class AbstractChannelJoinListener
 
 	public void onChanJoinMessage(ChanJoinMessage aMsg)
 	{
-		saveChannel(channel = new IRCChannel(aMsg.getChannelName()));
+		saveChannel(channel = new WritableIRCChannel(aMsg.getChannelName()));
 	}
 
 	public void onServerMessage(ServerNumericMessage aServerMessage)
@@ -46,7 +46,7 @@ public abstract class AbstractChannelJoinListener
 				}
 				else if (_numcode == IRCServerNumerics.CHANNEL_TOPIC)
 				{
-					topic = new IRCTopic(getTopic(aServerMessage));
+					topic = new WritableIRCTopic(getTopic(aServerMessage));
 				}
 				else if (_numcode == IRCServerNumerics.TOPIC_USER_DATE)
 				{
@@ -60,7 +60,7 @@ public abstract class AbstractChannelJoinListener
 					Callback<IRCChannel> _chanCallback = callbacks.remove(channel.getName());
 					if (_chanCallback != null)
 					{
-						_chanCallback.onSuccess(channel);
+						_chanCallback.onSuccess(new IRCChannel(channel));
 					}
 					channel = null;
 					topic = null;
@@ -84,7 +84,7 @@ public abstract class AbstractChannelJoinListener
 		}
 	}
 
-	protected abstract void saveChannel(IRCChannel aChannel);
+	protected abstract void saveChannel(WritableIRCChannel aChannel);
 
 	protected abstract IRCUserStatuses getIRCUserStatuses();
 
@@ -102,7 +102,7 @@ public abstract class AbstractChannelJoinListener
 		{
 			if (_ucs.getPrefix().equals(_pref))
 			{
-				channel.addUser(new IRCUser(aNick.substring(1)), new HashSet<IRCUserStatus>()
+				channel.addUser(new WritableIRCUser(aNick.substring(1)), new HashSet<IRCUserStatus>()
 				{
 					{
 						add(_ucs);
@@ -115,7 +115,7 @@ public abstract class AbstractChannelJoinListener
 
 		if (_flag)
 		{
-			IRCUser _user = new IRCUser();
+			WritableIRCUser _user = new WritableIRCUser();
 			_user.setNick(aNick);
 			channel.addUser(_user, new HashSet<IRCUserStatus>());
 		}

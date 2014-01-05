@@ -5,10 +5,10 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
 public class NickMessage implements IUserMessage
 {
-	private IRCUser user;
+	private WritableIRCUser user;
 	private String newNick;
 	
-	public NickMessage(IRCUser aUser, String aNewNick)
+	public NickMessage(WritableIRCUser aUser, String aNewNick)
 	{
 		user = aUser;
 		newNick = aNewNick;
@@ -20,7 +20,7 @@ public class NickMessage implements IUserMessage
 	}
 
 	@Override
-	public IRCUser getSource()
+	public WritableIRCUser getSource()
 	{
 		return user;
 	}

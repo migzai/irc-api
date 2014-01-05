@@ -10,16 +10,16 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
  */
 public class UserNotice extends AbstractNotice implements IUserMessage
 {
-	private IRCUser fromUser;
+	private WritableIRCUser fromUser;
 
-	public UserNotice(IRCUser aFromUser, String aText)
+	public UserNotice(WritableIRCUser aFromUser, String aText)
 	{
 		super(aText);
 		
 		fromUser = aFromUser;
 	}
 	
-	public IRCUser getSource()
+	public WritableIRCUser getSource()
 	{
 		return fromUser;
 	}

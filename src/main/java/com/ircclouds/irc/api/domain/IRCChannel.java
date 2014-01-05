@@ -2,86 +2,69 @@ package com.ircclouds.irc.api.domain;
 
 import java.util.*;
 
-/**
- * The IRC channel object that will be returned when an asynchronous joinChannel succeeds.
- * 
- * The object stores the channel name, topic, channel modes, and a mapping of all channel users and their statuses.
- * 
- * @author miguel@lebane.se
- * 
- */
+import com.ircclouds.irc.api.utils.*;
+
 public class IRCChannel
 {
-	private String name;
-	private IRCTopic topic;
-	
-	private Map<IRCUser, Set<IRCUserStatus>> users = new LinkedHashMap<IRCUser, Set<IRCUserStatus>>();
-	private List<ChannelMode> chanModes = new ArrayList<ChannelMode>();
-	
-	public IRCChannel()
-	{
-		this("");
-	}
+	private WritableIRCChannel channel;
 
-	public IRCChannel(String aName)
+	private IRCTopic utopic;
+	private Set<ChannelMode> umodes;
+	private Set<IRCUser> uusers;
+
+	public IRCChannel(WritableIRCChannel aChannel)
 	{
-		this(aName, new IRCTopic());
-	}
-	
-	public IRCChannel(String aName, IRCTopic aTopic)
-	{
-		name = aName;
-		topic = aTopic;
+		channel = aChannel;
+		utopic = new IRCTopic(channel.getTopic());
+		umodes = Collections.unmodifiableSet(channel.getModes());
+		uusers = new UnmodifiableSetDelegate<WritableIRCUser, IRCUser>(channel.getUsers())
+		{
+			@Override
+			protected IRCUser newInstance(WritableIRCUser aT)
+			{
+				return new IRCUser(aT);
+			}
+		};
 	}
 
 	public String getName()
 	{
-		return name;
-	}
-
-	public void setName(String aName)
-	{
-		name = aName;
-	}
-
-	public Set<IRCUserStatus> addUser(IRCUser aUser)
-	{
-		return users.put(aUser, new HashSet<IRCUserStatus>());
-	}
-	
-	public Set<IRCUserStatus> addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
-	{
-		return users.put(aUser, aStatus);
-	}
-
-	public Set<IRCUserStatus> removeUser(IRCUser aUser)
-	{
-		return users.remove(aUser);
+		return channel.getName();
 	}
 
 	public IRCTopic getTopic()
 	{
-		return topic;
+		return utopic;
 	}
 
-	public void setTopic(IRCTopic aTopic)
+	public Set<ChannelMode> getModes()
 	{
-		topic = aTopic;
+		return umodes;
 	}
 
-	public Map<IRCUser, Set<IRCUserStatus>> getUsers()
+	public Set<IRCUser> getUsers()
 	{
-		return users;
+		return uusers;
 	}
 
-	public void setUsers(Map<IRCUser, Set<IRCUserStatus>> aUsers)
+	public boolean containsUser(IRCUser aUser)
 	{
-		users = aUsers;
+		return uusers.contains(new WritableIRCUser(aUser.getNick()));
 	}
 	
-	public List<ChannelMode> getModes()
+	public boolean containsUser(String aNickname)
 	{
-		return chanModes;
+		return uusers.contains(new WritableIRCUser(aNickname));
+	}
+
+	public Set<IRCUserStatus> getStatusesForUser(String aNickname)
+	{
+		return channel.getStatusesForUser(new WritableIRCUser(aNickname));
+	}
+	
+	public Set<IRCUserStatus> getStatusesForUser(IRCUser aUser)
+	{
+		return channel.getStatusesForUser(new WritableIRCUser(aUser.getNick()));
 	}
 
 	@Override
@@ -89,13 +72,13 @@ public class IRCChannel
 	{
 		if (aObject != null)
 		{
-			if (aObject instanceof IRCChannel)
+			if (aObject instanceof WritableIRCChannel)
 			{
-				return ((IRCChannel)aObject).getName().equals(name);
+				return ((WritableIRCChannel) aObject).getName().equals(channel.getName());
 			}
 			else if (aObject instanceof String)
 			{
-				return aObject.equals(name);
+				return aObject.equals(channel.getName());
 			}
 		}
 
@@ -105,6 +88,6 @@ public class IRCChannel
 	@Override
 	public int hashCode()
 	{
-		return name.hashCode();
+		return channel.hashCode();
 	}
 }

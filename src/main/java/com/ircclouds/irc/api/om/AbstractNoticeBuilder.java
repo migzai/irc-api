@@ -24,7 +24,7 @@ public abstract class AbstractNoticeBuilder implements IBuilder<IMessage>
 			return new ServerNotice(aMessage.substring(aMessage.indexOf(':', 1) + 1), new IRCServer(_components[0].substring(1)));
 		}
 
-		IRCUser _user = ParseUtils.getUser(_components[0]);
+		WritableIRCUser _user = ParseUtils.getUser(_components[0]);
 		
 		UserNotice _msg = null;
 		

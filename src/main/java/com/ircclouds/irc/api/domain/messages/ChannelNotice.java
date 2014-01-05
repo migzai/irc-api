@@ -7,7 +7,7 @@ public class ChannelNotice extends UserNotice implements IChannelMessage
 {
 	private String channelName;
 
-	public ChannelNotice(IRCUser aFromUser, String aText, String aChannelName)
+	public ChannelNotice(WritableIRCUser aFromUser, String aText, String aChannelName)
 	{
 		super(aFromUser, aText);
 		

@@ -24,6 +24,6 @@ public class TopicMessageBuilder implements IBuilder<TopicMessage>
 		String _chan = aMessage.substring(idx2 + 1, idx3);
 		String _topic = aMessage.substring(idx3 + 1, aMessage.length()).substring(1);
 
-		return new TopicMessage(_chan, new IRCTopic(_user, new Date(), _topic));
+		return new TopicMessage(_chan, new WritableIRCTopic(_user, new Date(), _topic));
 	}
 }

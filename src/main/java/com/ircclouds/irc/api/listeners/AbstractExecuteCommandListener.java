@@ -20,7 +20,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 		chanJoinListener = new AbstractChannelJoinListener()
 		{
 			@Override
-			public void saveChannel(IRCChannel aChannel)
+			public void saveChannel(WritableIRCChannel aChannel)
 			{
 				saveChan(aChannel);
 			}
@@ -117,7 +117,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 	@Override
 	public void onNickChange(NickMessage aMsg)
 	{
-		if (aMsg.getSource().getNick().equals(getIRCState().getNickname()))
+		if (isForMe(aMsg))
 		{
 			nickChangeListener.onNickChange(aMsg);
 			

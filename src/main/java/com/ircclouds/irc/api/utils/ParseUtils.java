@@ -16,12 +16,12 @@ public final class ParseUtils
 
 	}
 
-	public static IRCUser getUser(String aString)
+	public static WritableIRCUser getUser(String aString)
 	{
 		String[] _cmpnts1 = aString.split("@");
 		String[] _cmpnts2 = _cmpnts1[0].split("!");
 
-		IRCUser _user = new IRCUser();
+		WritableIRCUser _user = new WritableIRCUser();
 		_user.setHostname(_cmpnts1[1]);
 		_user.setNick(_cmpnts2[0].substring(1));
 		_user.setIdent(_cmpnts2[1]);
@@ -36,6 +36,6 @@ public final class ParseUtils
 			return getUser(aString);
 		}
 		
-		return new IRCServer(aString);
+		return new IRCServer(aString.substring(1));
 	}
 }

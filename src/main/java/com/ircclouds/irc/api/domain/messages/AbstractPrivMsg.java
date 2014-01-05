@@ -10,16 +10,16 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
  */
 public abstract class AbstractPrivMsg implements IUserMessage, IHasText
 {
-	private IRCUser fromUser;
+	private WritableIRCUser fromUser;
 	private String text;
 
-	public AbstractPrivMsg(IRCUser aFromUser, String aText)
+	public AbstractPrivMsg(WritableIRCUser aFromUser, String aText)
 	{
 		fromUser = aFromUser;
 		text = aText;
 	}
 	
-	public IRCUser getSource()
+	public WritableIRCUser getSource()
 	{
 		return fromUser;
 	}

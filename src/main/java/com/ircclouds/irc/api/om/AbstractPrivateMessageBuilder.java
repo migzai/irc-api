@@ -17,7 +17,7 @@ public abstract class AbstractPrivateMessageBuilder implements IBuilder<Abstract
 	public AbstractPrivMsg build(String aMessage)
 	{
 		String _components[] = aMessage.split(EMPTY);
-		IRCUser _user = ParseUtils.getUser(_components[0]);
+		WritableIRCUser _user = ParseUtils.getUser(_components[0]);
 
 		AbstractPrivMsg _msg = null;
 		String _m = aMessage.substring(aMessage.indexOf(':', 1) + 1);

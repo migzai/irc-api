@@ -142,6 +142,8 @@ public abstract class UnmodifiableSetDelegate<T, D> implements Set<D>
 			return cache.get(aT);
 		}
 		
-		return cache.put(aT, newInstance(aT));
+		D _d = newInstance(aT);
+		cache.put(aT, _d);
+		return _d;
 	}
 }

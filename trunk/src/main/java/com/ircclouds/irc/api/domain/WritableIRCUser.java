@@ -64,6 +64,10 @@ public class WritableIRCUser implements ISource, Serializable
 			{
 				return ((WritableIRCUser) aObject).getNick().equals(nick);
 			}
+			else if (aObject instanceof IRCUser)
+			{
+				return ((IRCUser) aObject).getNick().equals(nick);
+			}
 			
 			return aObject.equals(nick);
 		}

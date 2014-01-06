@@ -84,9 +84,9 @@ public class WritableIRCChannel
 		return usersStatuses.remove(aUser);
 	}
 
-	public Set<WritableIRCUser> getUsers()
+	public List<WritableIRCUser> getUsers()
 	{
-		return usersStatuses.keySet();
+		return new ArrayList<WritableIRCUser>(usersStatuses.keySet());
 	}
 
 	@Override

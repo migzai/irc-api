@@ -115,9 +115,7 @@ public abstract class AbstractChannelJoinListener
 
 		if (_flag)
 		{
-			WritableIRCUser _user = new WritableIRCUser();
-			_user.setNick(aNick);
-			channel.addUser(_user, new HashSet<IRCUserStatus>());
+			channel.addUser(new WritableIRCUser(aNick));
 		}
 	}
 

@@ -21,12 +21,7 @@ public final class ParseUtils
 		String[] _cmpnts1 = aString.split("@");
 		String[] _cmpnts2 = _cmpnts1[0].split("!");
 
-		WritableIRCUser _user = new WritableIRCUser();
-		_user.setHostname(_cmpnts1[1]);
-		_user.setNick(_cmpnts2[0].substring(1));
-		_user.setIdent(_cmpnts2[1]);
-
-		return _user;
+		return new WritableIRCUser(_cmpnts2[0].substring(1), _cmpnts2[1], _cmpnts1[1]);
 	}
 
 	public static ISource getSource(String aString)

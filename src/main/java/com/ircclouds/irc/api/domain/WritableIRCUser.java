@@ -4,11 +4,6 @@ import java.io.*;
 
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
-/**
- * 
- * @author
- * 
- */
 public class WritableIRCUser implements ISource, Serializable
 {
 	private String nick;
@@ -22,9 +17,16 @@ public class WritableIRCUser implements ISource, Serializable
 
 	public WritableIRCUser(String aNick)
 	{
-		nick = aNick;
+		this(aNick, "", "");
 	}
 
+	public WritableIRCUser(String aNick, String aIdent, String aHostname)
+	{
+		nick = aNick;
+		ident = aIdent;
+		hostname = aHostname;
+	}	
+	
 	public String getNick()
 	{
 		return nick;
@@ -40,19 +42,9 @@ public class WritableIRCUser implements ISource, Serializable
 		return hostname;
 	}
 
-	public void setHostname(String aHostname)
-	{
-		hostname = aHostname;
-	}
-
 	public String getIdent()
 	{
 		return ident;
-	}
-
-	public void setIdent(String aIdent)
-	{
-		ident = aIdent;
 	}
 
 	@Override
@@ -68,11 +60,9 @@ public class WritableIRCUser implements ISource, Serializable
 			{
 				return ((IRCUser) aObject).getNick().equals(nick);
 			}
-			
-			return aObject.equals(nick);
 		}
 
-		return false;
+		return nick.equals(aObject);
 	}
 
 	@Override

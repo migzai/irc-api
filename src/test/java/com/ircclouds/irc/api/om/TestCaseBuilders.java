@@ -22,10 +22,7 @@ public class TestCaseBuilders extends TestCase
 	
 	static 
 	{
-	    TEST_USER = new WritableIRCUser();
-	    TEST_USER.setHostname("dyoann.dyndns.org");
-	    TEST_USER.setIdent("k");
-	    TEST_USER.setNick("soka");
+	    TEST_USER = new WritableIRCUser("soka", "k", "dyoann.dyndns.org");
 	}
 	
 	private static final String USER_STRING  = ":"+TEST_USER.getNick()+"!"+TEST_USER.getIdent()+"@"+TEST_USER.getHostname();

@@ -70,9 +70,10 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 		
 		savedOldState(_chan);
 		
-		_chan.getTopic().setDate(aMsg.getTopic().getDate());
-		_chan.getTopic().setSetBy(aMsg.getTopic().getSetBy());
-		_chan.getTopic().setValue(aMsg.getTopic().getValue());
+		WritableIRCTopic _wit = (WritableIRCTopic) _chan.getTopic();
+		_wit.setDate(aMsg.getTopic().getDate());
+		_wit.setSetBy(aMsg.getTopic().getSetBy());
+		_wit.setValue(aMsg.getTopic().getValue());
 	}
 
 	@Override

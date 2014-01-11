@@ -1,87 +1,76 @@
 package com.ircclouds.irc.api.domain;
 
+import java.io.*;
 import java.util.*;
 
-import com.ircclouds.irc.api.utils.*;
-
-public class IRCChannel
+public class IRCChannel implements Serializable
 {
-	private WritableIRCChannel channel;
+	/**
+	 * The IRC channel object that will be returned when an asynchronous
+	 * joinChannel succeeds.
+	 * 
+	 * The object stores the channel name, topic, channel modes, and a mapping
+	 * of all channel users and their statuses.
+	 * 
+	 * @author miguel@lebane.se
+	 * 
+	 */
 
-	private IRCTopic utopic;
-	private Set<ChannelMode> umodes;
-	private List<IRCUser> uusers;
-
-	public IRCChannel(WritableIRCChannel aChannel)
+	String name;
+	IRCTopic topic;
+	Set<ChannelMode> chanModes = new HashSet<ChannelMode>();
+	Map<IRCUser, Set<IRCUserStatus>> usersStatuses = new LinkedHashMap<IRCUser, Set<IRCUserStatus>>();
+	
+	public IRCChannel(String aName)
 	{
-		channel = aChannel;
-		utopic = new IRCTopic(channel.getTopic());
-		umodes = Collections.unmodifiableSet(channel.getModes());
-		uusers = new UnmodifiableListDelegate<WritableIRCUser, IRCUser>(channel.getUsers())
-		{
-			@Override
-			protected IRCUser newInstance(WritableIRCUser aT)
-			{
-				return new IRCUser(aT);
-			}
-		};
+		this(aName, new IRCTopic());
+	}
+
+	public IRCChannel(String aName, IRCTopic aTopic)
+	{
+		name = aName;
+		topic = aTopic;
 	}
 
 	public String getName()
 	{
-		return channel.getName();
+		return name;
 	}
 
 	public IRCTopic getTopic()
 	{
-		return utopic;
+		return topic;
 	}
 
 	public Set<ChannelMode> getModes()
 	{
-		return umodes;
+		return Collections.unmodifiableSet(chanModes);
+	}
+
+	public Set<IRCUserStatus> getStatusesForUser(IRCUser aUser)
+	{
+		return Collections.unmodifiableSet(usersStatuses.get(aUser));
 	}
 
 	public List<IRCUser> getUsers()
 	{
-		return uusers;
-	}
-	
-	public boolean containsUser(String aNickname)
-	{
-		return uusers.contains(new WritableIRCUser(aNickname));
-	}
-
-	public Set<IRCUserStatus> getStatusesForUser(String aNickname)
-	{
-		return channel.getStatusesForUser(new WritableIRCUser(aNickname));
+		return Collections.unmodifiableList(new ArrayList<IRCUser>(usersStatuses.keySet()));
 	}
 
 	@Override
 	public boolean equals(Object aObject)
 	{
-		if (aObject != null)
+		if (aObject != null && aObject instanceof WritableIRCChannel)
 		{
-			if (aObject instanceof WritableIRCChannel)
-			{
-				return ((WritableIRCChannel) aObject).getName().equals(channel.getName());
-			}
-			else if (aObject instanceof IRCChannel)
-			{
-				return ((IRCChannel) aObject).getName().equals(channel.getName());
-			}			
-			else if (aObject instanceof String)
-			{
-				return aObject.equals(channel.getName());
-			}
+			return ((WritableIRCChannel) aObject).getName().equals(name);
 		}
 
-		return false;
+		return name.equals(aObject);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return channel.hashCode();
+		return name.hashCode();
 	}
 }

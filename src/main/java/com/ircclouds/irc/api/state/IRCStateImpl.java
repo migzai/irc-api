@@ -9,10 +9,13 @@ public class IRCStateImpl implements IIRCState
 	private String nickname;
 	private String ident;
 	private String realname;
+	private List<String> altNicks;
+	
 	private IRCServer ircServer;
 	private IRCServerOptions serverOptions;
-	private List<WritableIRCChannel> channels = new ArrayList<WritableIRCChannel>();
-	private List<String> altNicks;
+	
+	private List<? extends IRCChannel> channels = new ArrayList<WritableIRCChannel>();
+
 	private boolean isConnected;
 	private IRCStateImpl previousState;
 	
@@ -67,9 +70,10 @@ public class IRCStateImpl implements IIRCState
 		nickname = aNickname;
 	}
 
+	@SuppressWarnings("unchecked")
 	List<WritableIRCChannel> getChannelsMutable()
 	{
-		return channels;
+		return (List<WritableIRCChannel>) (channels);
 	}
 
 	WritableIRCChannel getWritableChannelByName(String aChannelName)
@@ -92,13 +96,7 @@ public class IRCStateImpl implements IIRCState
 	
 	public List<IRCChannel> getChannels()
 	{
-		List<IRCChannel> _ircChannels = new ArrayList<IRCChannel>();
-		for (WritableIRCChannel _c : channels)
-		{
-			_ircChannels.add(new IRCChannel(_c));
-		}
-		
-		return Collections.unmodifiableList(_ircChannels);
+		return Collections.unmodifiableList(channels);
 	}
 
 	public IRCChannel getChannelByName(String aChannelName)
@@ -108,7 +106,7 @@ public class IRCStateImpl implements IIRCState
 			@Override
 			public IRCChannel onReady(WritableIRCChannel aChan)
 			{
-				return new IRCChannel(aChan);
+				return aChan;
 			}
 		});
 	}
@@ -130,6 +128,12 @@ public class IRCStateImpl implements IIRCState
 		isConnected = aIsConnected;
 	}
 	
+	@Override
+	public IIRCState getPrevious()
+	{
+		return previousState;
+	}
+	
 	private String prependChanType(String aChannelName)
 	{
 		for (Character _c : getServerOptions().getChanTypes())
@@ -147,20 +151,14 @@ public class IRCStateImpl implements IIRCState
 
 	private <T> T getChannelByNameGeneric(String aChannelName, GetChannelCallback<T> aCallback)
 	{
-		for (WritableIRCChannel _c : channels)
+		for (IRCChannel _c : channels)
 		{
 			if (_c.getName().equalsIgnoreCase(aChannelName))
 			{
-				return aCallback.onReady(_c);
+				return aCallback.onReady((WritableIRCChannel)_c);
 			}
 		}
 		
 		return null;
-	}
-
-	@Override
-	public IIRCState getPrevious()
-	{
-		return previousState;
 	}
 }

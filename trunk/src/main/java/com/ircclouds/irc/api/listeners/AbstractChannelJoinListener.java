@@ -5,6 +5,7 @@ import java.util.*;
 import com.ircclouds.irc.api.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
+import com.ircclouds.irc.api.utils.*;
 
 public abstract class AbstractChannelJoinListener
 {
@@ -102,12 +103,12 @@ public abstract class AbstractChannelJoinListener
 		{
 			if (_ucs.getPrefix().equals(_pref))
 			{
-				channel.addUser(new WritableIRCUser(aNick.substring(1)), new HashSet<IRCUserStatus>()
+				channel.addUser(new WritableIRCUser(aNick.substring(1)), new SynchronizedUnmodifiableSet<IRCUserStatus>(new HashSet<IRCUserStatus>()
 				{
 					{
 						add(_ucs);
 					}
-				});
+				}));
 				_flag = false;
 				break;
 			}

@@ -2,6 +2,8 @@ package com.ircclouds.irc.api.domain;
 
 import java.util.*;
 
+import com.ircclouds.irc.api.utils.*;
+
 public class WritableIRCChannel extends IRCChannel
 {
 	public WritableIRCChannel(String aName)
@@ -24,18 +26,20 @@ public class WritableIRCChannel extends IRCChannel
 		name = aName;
 	}
 
-	public Set<IRCUserStatus> addUser(IRCUser aUser)
+	public void addUser(IRCUser aUser)
 	{
-		return usersStatuses.put(aUser, new HashSet<IRCUserStatus>());
+		addUser(aUser, new SynchronizedUnmodifiableSet<IRCUserStatus>(new HashSet<IRCUserStatus>()));
 	}
 
-	public Set<IRCUserStatus> addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
+	public void addUser(IRCUser aUser, Set<IRCUserStatus> aStatus)
 	{
-		return usersStatuses.put(aUser, aStatus);
+		users.addElement(aUser);
+		usersStatuses.put(aUser, aStatus);
 	}
 
 	public Set<IRCUserStatus> removeUser(IRCUser aUser)
 	{
+		users.removeElement(aUser);
 		return usersStatuses.remove(aUser);
 	}
 }

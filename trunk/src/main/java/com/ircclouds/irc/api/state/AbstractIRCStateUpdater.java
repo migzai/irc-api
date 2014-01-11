@@ -108,7 +108,8 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 					IRCUserStatus _us = getAvailableUserStatuses().getUserStatus(_usm.getChannelModeType());
 					if (_us != null)
 					{
-						_chan.getStatusesForUser(new WritableIRCUser(_usm.getUser())).add(_us);
+						SynchronizedUnmodifiableSet<IRCUserStatus> _uStatuses = (SynchronizedUnmodifiableSet<IRCUserStatus>) _chan.getStatusesForUser(new WritableIRCUser(_usm.getUser()));
+						_uStatuses.addElement(_us);
 					}
 				}
 			}
@@ -121,7 +122,8 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 				IRCUserStatus _us = getAvailableUserStatuses().getUserStatus(_usm.getChannelModeType());
 				if (_us != null)
 				{
-					_chan.getStatusesForUser(new WritableIRCUser(_usm.getUser())).remove(_us);
+					SynchronizedUnmodifiableSet<IRCUserStatus> _uStatuses = (SynchronizedUnmodifiableSet<IRCUserStatus>) _chan.getStatusesForUser(new WritableIRCUser(_usm.getUser()));
+					_uStatuses.removeElement(_us);
 				}
 			}
 		}
@@ -150,13 +152,13 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	@Override
 	public void saveChan(WritableIRCChannel aChannel)
 	{
-		getIRCStateImpl().getChannelsMutable().add(aChannel);
+		getIRCStateImpl().getChannelsMutable().addElement(aChannel);
 	}
 
 	@Override
 	public void deleteChan(String aChannelName)
 	{
-		getIRCStateImpl().getChannelsMutable().remove(aChannelName);
+		getIRCStateImpl().getChannelsMutable().removeElement(aChannelName);
 	}
 	
 	@Override
@@ -180,7 +182,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	
 	private void savedOldState(WritableIRCChannel aChan)
 	{
-		getPreviousIRCStateImpl().getChannelsMutable().remove(aChan);
-		getPreviousIRCStateImpl().getChannelsMutable().add(StateUtils.cloneChannel(aChan));
+		getPreviousIRCStateImpl().getChannelsMutable().removeElement(aChan);
+		getPreviousIRCStateImpl().getChannelsMutable().addElement(StateUtils.cloneChannel(aChan));
 	}
 }

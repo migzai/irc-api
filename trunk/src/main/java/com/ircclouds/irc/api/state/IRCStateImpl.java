@@ -3,6 +3,7 @@ package com.ircclouds.irc.api.state;
 import java.util.*;
 
 import com.ircclouds.irc.api.domain.*;
+import com.ircclouds.irc.api.utils.*;
 
 public class IRCStateImpl implements IIRCState
 {
@@ -14,7 +15,7 @@ public class IRCStateImpl implements IIRCState
 	private IRCServer ircServer;
 	private IRCServerOptions serverOptions;
 	
-	private List<? extends IRCChannel> channels = new ArrayList<WritableIRCChannel>();
+	private SynchronizedUnmodifiableList<? extends IRCChannel> channels = new SynchronizedUnmodifiableList<WritableIRCChannel>(new ArrayList<WritableIRCChannel>());
 
 	private boolean isConnected;
 	private IRCStateImpl previousState;
@@ -71,9 +72,9 @@ public class IRCStateImpl implements IIRCState
 	}
 
 	@SuppressWarnings("unchecked")
-	List<WritableIRCChannel> getChannelsMutable()
+	SynchronizedUnmodifiableList<WritableIRCChannel> getChannelsMutable()
 	{
-		return (List<WritableIRCChannel>) (channels);
+		return (SynchronizedUnmodifiableList<WritableIRCChannel>) channels;
 	}
 
 	WritableIRCChannel getWritableChannelByName(String aChannelName)
@@ -94,9 +95,10 @@ public class IRCStateImpl implements IIRCState
 		return ircServer;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<IRCChannel> getChannels()
 	{
-		return Collections.unmodifiableList(channels);
+		return (List<IRCChannel>) channels;
 	}
 
 	public IRCChannel getChannelByName(String aChannelName)

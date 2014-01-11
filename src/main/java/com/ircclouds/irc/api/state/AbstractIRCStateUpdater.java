@@ -45,7 +45,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 		{
 			savedOldState(_chan);
 			
-			if (_chan.getUsers().contains(_old))
+			if (_chan.contains(_old))
 			{
 				_chan.addUser(_new, _chan.removeUser(_old));
 			}
@@ -83,7 +83,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 		
 		savedOldState(_chan);
 		
-		_chan.removeUser(new WritableIRCUser(aMsg.getKickedUser()));
+		_chan.removeUser(new WritableIRCUser(aMsg.getKickedNickname()));
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public abstract class KickUserListener
 		if (callbacks.containsKey(aChanKick))
 		{
 			callbacks.get(aChanKick).onSuccess("");
-			delChanUser(aChanKick.getChannelName(), aChanKick.getKickedUser());
+			delChanUser(aChanKick.getChannelName(), aChanKick.getKickedNickname());
 		}
 	}
 

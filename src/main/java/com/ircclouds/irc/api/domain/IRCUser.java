@@ -9,7 +9,7 @@ public class IRCUser implements ISource, Serializable
 	String nick;
 	String hostname;
 	String ident;
-	
+
 	public IRCUser()
 	{
 		this("");
@@ -25,8 +25,8 @@ public class IRCUser implements ISource, Serializable
 		nick = aNick;
 		ident = aIdent;
 		hostname = aHostname;
-	}	
-	
+	}
+
 	public String getNick()
 	{
 		return nick;
@@ -45,19 +45,12 @@ public class IRCUser implements ISource, Serializable
 	@Override
 	public boolean equals(Object aObject)
 	{
-		if (aObject != null)
+		if (aObject instanceof IRCUser)
 		{
-			if (aObject instanceof WritableIRCUser)
-			{
-				return ((WritableIRCUser) aObject).getNick().equals(nick);
-			}
-			else if (aObject instanceof IRCUser)
-			{
-				return ((IRCUser) aObject).getNick().equals(nick);
-			}
+			return nick.equals(((IRCUser) aObject).getNick());
 		}
 
-		return nick.equals(aObject);
+		return false;
 	}
 
 	@Override
@@ -65,7 +58,7 @@ public class IRCUser implements ISource, Serializable
 	{
 		return nick.hashCode();
 	}
-	
+
 	public String toString()
 	{
 		return nick + "!" + ident + "@" + hostname;

@@ -4,17 +4,17 @@ import com.ircclouds.irc.api.domain.*;
 
 public class ChannelKick extends ChannelPrivMsg
 {
-	private String kickedUser;
+	private String kickedNick;
 	
-	public ChannelKick(WritableIRCUser aFromUser, String aText, String aChanName, String aKickedUser)
+	public ChannelKick(WritableIRCUser aFromUser, String aText, String aChanName, String aKickedNick)
 	{
 		super(aFromUser, aText, aChanName);
 		
-		kickedUser = aKickedUser;
+		kickedNick = aKickedNick;
 	}
 	
-	public String getKickedUser()
+	public String getKickedNickname()
 	{
-		return kickedUser;
+		return kickedNick;
 	}
 }

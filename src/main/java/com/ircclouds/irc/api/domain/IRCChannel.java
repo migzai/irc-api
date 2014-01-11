@@ -49,6 +49,16 @@ public class IRCChannel implements Serializable
 	{
 		return chanModes;
 	}
+	
+	public boolean contains(String aNick)
+	{
+		return contains(new IRCUser(aNick));
+	}
+	
+	public boolean contains(IRCUser aUser)
+	{
+		return users.contains(aUser);
+	}
 
 	public Set<IRCUserStatus> getStatusesForUser(IRCUser aUser)
 	{
@@ -63,12 +73,12 @@ public class IRCChannel implements Serializable
 	@Override
 	public boolean equals(Object aObject)
 	{
-		if (aObject != null && aObject instanceof WritableIRCChannel)
+		if (aObject instanceof IRCChannel)
 		{
-			return ((WritableIRCChannel) aObject).getName().equals(name);
+			return name.equals(((IRCChannel) aObject).getName());
 		}
 
-		return name.equals(aObject);
+		return false;
 	}
 
 	@Override

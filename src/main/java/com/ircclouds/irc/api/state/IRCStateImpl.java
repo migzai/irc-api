@@ -81,9 +81,9 @@ public class IRCStateImpl implements IIRCState
 		return getChannelByNameGeneric(aChannelName, new GetChannelCallback<WritableIRCChannel>()
 		{
 			@Override
-			public WritableIRCChannel onReady(WritableIRCChannel aChan)
+			public WritableIRCChannel onReady(IRCChannel aChan)
 			{
-				return aChan;
+				return (WritableIRCChannel) aChan;
 			}
 		});
 	}	
@@ -104,7 +104,7 @@ public class IRCStateImpl implements IIRCState
 		return getChannelByNameGeneric(prependChanType(aChannelName), new GetChannelCallback<IRCChannel>()
 		{
 			@Override
-			public IRCChannel onReady(WritableIRCChannel aChan)
+			public IRCChannel onReady(IRCChannel aChan)
 			{
 				return aChan;
 			}
@@ -147,7 +147,7 @@ public class IRCStateImpl implements IIRCState
 		return getServerOptions().getChanTypes().iterator().next() + aChannelName;
 	}
 	
-	private interface GetChannelCallback<T> { T onReady(WritableIRCChannel aChan); };
+	private interface GetChannelCallback<T> { T onReady(IRCChannel aChan); };
 
 	private <T> T getChannelByNameGeneric(String aChannelName, GetChannelCallback<T> aCallback)
 	{
@@ -155,7 +155,7 @@ public class IRCStateImpl implements IIRCState
 		{
 			if (_c.getName().equalsIgnoreCase(aChannelName))
 			{
-				return aCallback.onReady((WritableIRCChannel)_c);
+				return aCallback.onReady(_c);
 			}
 		}
 		

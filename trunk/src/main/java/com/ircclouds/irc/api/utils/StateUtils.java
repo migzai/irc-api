@@ -6,7 +6,7 @@ import com.ircclouds.irc.api.domain.*;
 
 public class StateUtils
 {
-	public static WritableIRCChannel cloneChannel(WritableIRCChannel aChan)
+	public static WritableIRCChannel cloneChannel(IRCChannel aChan)
 	{
 		WritableIRCChannel _copy = new WritableIRCChannel(aChan.getName());
 		_copy.setTopic(cloneTopic(aChan.getTopic()));
@@ -14,9 +14,9 @@ public class StateUtils
 		return _copy;
 	}
 
-	public static void cloneUsers(WritableIRCChannel aChan, WritableIRCChannel aCopy)
+	public static void cloneUsers(IRCChannel aChan, WritableIRCChannel aCopy)
 	{
-		for (WritableIRCUser _user : aChan.getUsers())
+		for (IRCUser _user : aChan.getUsers())
 		{
 			Set<IRCUserStatus> _cUS = new HashSet<IRCUserStatus>();
 			for (IRCUserStatus _us : aChan.getStatusesForUser(_user))
@@ -27,12 +27,12 @@ public class StateUtils
 		}
 	}
 	
-	public static WritableIRCTopic cloneTopic(WritableIRCTopic aTopic)
+	public static WritableIRCTopic cloneTopic(IRCTopic aTopic)
 	{
 		return new WritableIRCTopic(aTopic.getSetBy(), aTopic.getDate(), aTopic.getValue());
 	}
 	
-	public static WritableIRCUser cloneUser(WritableIRCUser aUser)
+	public static WritableIRCUser cloneUser(IRCUser aUser)
 	{
 		return new WritableIRCUser(aUser.getNick(), aUser.getIdent(), aUser.getHostname());
 	}

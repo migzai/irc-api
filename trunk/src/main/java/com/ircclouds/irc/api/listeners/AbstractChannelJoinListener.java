@@ -60,7 +60,7 @@ public abstract class AbstractChannelJoinListener
 					Callback<IRCChannel> _chanCallback = callbacks.remove(channel.getName());
 					if (_chanCallback != null)
 					{
-						_chanCallback.onSuccess(new IRCChannel(channel));
+						_chanCallback.onSuccess(channel);
 					}
 					channel = null;
 					topic = null;

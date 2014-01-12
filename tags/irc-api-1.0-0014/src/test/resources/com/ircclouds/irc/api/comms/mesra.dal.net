@@ -1,0 +1,27 @@
+:punch.va.us.dal.net NOTICE AUTH :*** Looking up your hostname...
+:punch.va.us.dal.net NOTICE AUTH :*** Checking Ident
+:punch.va.us.dal.net NOTICE AUTH :*** No Ident response
+:punch.va.us.dal.net NOTICE AUTH :*** Found your hostname
+:punch.va.us.dal.net 001 hasdd :Welcome to the DALnet IRC Network hasdd!~u1@89.108.161.129
+:punch.va.us.dal.net 002 hasdd :Your host is punch.va.us.dal.net, running version bahamut-2.0.1
+:punch.va.us.dal.net 003 hasdd :This server was created Tue Jan 3 2012 at 22:32:01 GMT
+:punch.va.us.dal.net 004 hasdd punch.va.us.dal.net bahamut-2.0.1 aAbcCdefFghiIjkKmnoOrRsSwxXy bceiIjklLmMnoOprRsStv
+:punch.va.us.dal.net 005 hasdd NETWORK=DALnet SAFELIST MAXBANS=200 MAXCHANNELS=20 CHANNELLEN=32 KICKLEN=307 NICKLEN=30 TOPICLEN=307 MODES=6 CHANTYPES=# CHANLIMIT=#:20 PREFIX=(ov)@+ STATUSMSG=@+ :are available on this server
+:punch.va.us.dal.net 005 hasdd CASEMAPPING=ascii WATCH=128 SILENCE=10 ELIST=cmntu EXCEPTS INVEX CHANMODES=beI,k,jl,cimMnOprRsSt MAXLIST=b:200,e:100,I:100 TARGMAX=DCCALLOW:,JOIN:,KICK:4,KILL:20,NOTICE:20,PART:,PRIVMSG:20,WHOIS:,WHOWAS: :are available on this server
+:punch.va.us.dal.net 251 hasdd :There are 54 users and 13540 invisible on 36 servers
+:punch.va.us.dal.net 252 hasdd 83 :IRC Operators online
+:punch.va.us.dal.net 254 hasdd 7440 :channels formed
+:punch.va.us.dal.net 255 hasdd :I have 3434 clients and 1 servers
+:punch.va.us.dal.net 265 hasdd :Current local users: 3434 Max: 14910
+:punch.va.us.dal.net 266 hasdd :Current global users: 13594 Max: 67731
+:punch.va.us.dal.net NOTICE hasdd :*** Notice -- motd was last changed at 23/12/2010 19:37
+:punch.va.us.dal.net NOTICE hasdd :*** Notice -- Please read the motd if you haven't read it
+:punch.va.us.dal.net 375 hasdd :- punch.va.us.dal.net Message of the Day -
+:punch.va.us.dal.net 372 hasdd :- Welcome to DALnet <http://www.dal.net/>
+:punch.va.us.dal.net 372 hasdd :- This is punch.va.us.dal.net
+:punch.va.us.dal.net 376 hasdd :End of /MOTD command.
+:punch.va.us.dal.net NOTICE hasdd :*** Notice -- This server runs an open proxy monitor to prevent abuse.
+:punch.va.us.dal.net NOTICE hasdd :*** Notice -- If you see connections on various ports from irc.dal.net
+:punch.va.us.dal.net NOTICE hasdd :*** Notice -- please disregard them, as they are the monitor in action.
+:punch.va.us.dal.net NOTICE hasdd :*** Notice -- For more information please visit http://kline.dal.net/proxy/
+:hasdd MODE hasdd :+i

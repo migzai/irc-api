@@ -7,6 +7,6 @@ public class QuitMessageBuilder implements IBuilder<QuitMessage>
 {
 	public QuitMessage build(String aMsg)
 	{
-		return new QuitMessage(ParseUtils.getUser(aMsg.split(" ")[0]), aMsg.substring(aMsg.indexOf(':', 1) + 1));
+		return new QuitMessage(ParseUtils.getUser(aMsg.split(" ")[0]), aMsg.substring(aMsg.indexOf(" :") + 2));
 	}
 }

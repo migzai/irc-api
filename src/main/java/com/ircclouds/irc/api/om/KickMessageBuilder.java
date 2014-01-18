@@ -10,6 +10,6 @@ public class KickMessageBuilder implements IBuilder<ChannelKick>
 	{
 		String[] _cmpnts = aMessage.split(" ");
 
-		return new ChannelKick(ParseUtils.getUser(aMessage), aMessage.substring(aMessage.indexOf(':', 1) + 1), _cmpnts[2], _cmpnts[3]);
+		return new ChannelKick(ParseUtils.getUser(_cmpnts[0]), aMessage.substring(aMessage.indexOf(" :") + 2), _cmpnts[2], _cmpnts[3]);
 	}
 }

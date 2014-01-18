@@ -26,7 +26,7 @@ public class IRCChannel implements Serializable
 	
 	public IRCChannel(String aName)
 	{
-		this(aName, new IRCTopic());
+		this(aName, new WritableIRCTopic(""));
 	}
 
 	public IRCChannel(String aName, IRCTopic aTopic)

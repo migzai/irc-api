@@ -27,9 +27,7 @@ public abstract class AbstractNoticeBuilder implements IBuilder<IMessage>
 		WritableIRCUser _user = ParseUtils.getUser(_components[0]);
 		
 		UserNotice _msg = null;
-		
-		String _newMsg = aMessage.substring(1);
-		String _text = _newMsg.substring(_newMsg.indexOf(':') + 1);
+		String _text = aMessage.substring(aMessage.indexOf(" :") + 2);
 
 		if (getChannelTypes().contains(_components[2].charAt(0)))
 		{

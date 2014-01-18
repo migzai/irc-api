@@ -6,7 +6,7 @@ public class ChannelKick extends ChannelPrivMsg
 {
 	private String kickedNick;
 	
-	public ChannelKick(WritableIRCUser aFromUser, String aText, String aChanName, String aKickedNick)
+	public ChannelKick(IRCUser aFromUser, String aText, String aChanName, String aKickedNick)
 	{
 		super(aFromUser, aText, aChanName);
 		

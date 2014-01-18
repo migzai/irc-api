@@ -11,15 +11,15 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
 public class ChanPartMessage implements IChannelMessage, IUserMessage
 {
 	private String chanName;
-	private WritableIRCUser user;
+	private IRCUser user;
 	private String partMsg;
 
-	public ChanPartMessage(String aChanName, WritableIRCUser aUser)
+	public ChanPartMessage(String aChanName, IRCUser aUser)
 	{
 		this(aChanName, aUser, "");
 	}
 	
-	public ChanPartMessage(String aChanName, WritableIRCUser aUser, String aPartMsg)
+	public ChanPartMessage(String aChanName, IRCUser aUser, String aPartMsg)
 	{
 		chanName = aChanName;
 		user = aUser;
@@ -36,7 +36,7 @@ public class ChanPartMessage implements IChannelMessage, IUserMessage
 		return chanName;
 	}
 
-	public WritableIRCUser getSource()
+	public IRCUser getSource()
 	{
 		return user;
 	}

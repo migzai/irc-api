@@ -32,7 +32,7 @@ public class TestCaseBuilders extends TestCase
 	 * @param aUser
 	 * @param aChannel
 	 */
-	private void checkChannelAndUser(WritableIRCUser aUser, String aChannel, boolean removeDash)
+	private void checkChannelAndUser(IRCUser aUser, String aChannel, boolean removeDash)
 	{
 		if(removeDash)
 		{

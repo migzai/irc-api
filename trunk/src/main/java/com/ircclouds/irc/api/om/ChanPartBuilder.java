@@ -22,7 +22,7 @@ public class ChanPartBuilder implements IBuilder<ChanPartMessage>
 		ChanPartMessage _msg = null;
 		if (_cmpnts.length > 3)
 		{
-			 _msg = new ChanPartMessage(_chanName, _info, _cmpnts[3].substring(1));
+			 _msg = new ChanPartMessage(_chanName, _info, aMessage.substring(aMessage.indexOf(" :") + 2));
 		}
 		else
 		{

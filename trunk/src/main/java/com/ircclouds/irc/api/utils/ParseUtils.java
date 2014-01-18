@@ -10,19 +10,18 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
  */
 public final class ParseUtils
 {
-	public static void main(String[] asd)
-	{
-		System.out.println(getNick(":what53!m@2001:0:53aa:64c:38b6:13a1:bd22:ff77 NICK :sdfsdf"));
-	}
-
 	private ParseUtils()
 	{
 
 	}
 	
-	public static String getNick(String aMessage)
+	public static String getTextWithoutPrefix(String aText, String aPrefix)
 	{
-		return aMessage.substring(aMessage.indexOf("NICK :")+6);
+		if (aText.startsWith(aPrefix)) {
+			return aText.substring(aPrefix.length());
+		}
+		
+		return aText;
 	}
 	
 	public static WritableIRCUser getUser(String aString)

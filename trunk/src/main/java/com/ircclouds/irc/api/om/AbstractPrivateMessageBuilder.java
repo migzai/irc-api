@@ -20,7 +20,7 @@ public abstract class AbstractPrivateMessageBuilder implements IBuilder<Abstract
 		WritableIRCUser _user = ParseUtils.getUser(_components[0]);
 
 		AbstractPrivMsg _msg = null;
-		String _m = aMessage.substring(aMessage.indexOf(':', 1) + 1);
+		String _m = aMessage.substring(aMessage.indexOf(" :") + 2);
 
 		if (getChannelTypes().contains(_components[2].charAt(0)))
 		{

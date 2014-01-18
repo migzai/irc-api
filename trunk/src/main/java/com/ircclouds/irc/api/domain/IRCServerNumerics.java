@@ -28,6 +28,7 @@ public final class IRCServerNumerics
 	public static final int NICKNAME_IN_USE = 433;
 	public static final int ERR_NICKTOOFAST = 438;
 	public static final int CHANNEL_FORWARD = 470;
+	public static final int CHANNEL_CANNOT_JOIN_FULL = 471;
 	public static final int CHANNEL_CANNOT_JOIN_INVITE = 473;
 	public static final int CHANNEL_CANNOT_JOIN_BANNED = 474;
 	public static final int CHANNEL_CANNOT_JOIN_KEYED = 475;

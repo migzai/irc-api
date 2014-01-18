@@ -29,7 +29,8 @@ public abstract class AbstractChannelJoinListener
 		int _numcode = aServerMessage.getNumericCode();
 		if (_numcode == IRCServerNumerics.CHANNEL_FORWARD || _numcode == IRCServerNumerics.TOPIC_USER_DATE || _numcode == IRCServerNumerics.CHANNEL_NICKS_LIST
 				|| _numcode == IRCServerNumerics.CHANNEL_TOPIC || _numcode == IRCServerNumerics.CHANNEL_NICKS_END_OF_LIST
-				|| _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_INVITE || _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_KEYED)
+				|| _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_INVITE || _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_KEYED
+				|| _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_FULL)
 		{
 			if (channel != null)
 			{
@@ -81,6 +82,10 @@ public abstract class AbstractChannelJoinListener
 				{
 					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(new IRCException(aServerMessage.getText()));
 				}
+				else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_FULL)
+				{
+					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(new IRCException(aServerMessage.getText()));
+				}				
 			}			
 		}
 	}

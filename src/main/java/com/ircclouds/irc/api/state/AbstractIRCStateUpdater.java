@@ -13,7 +13,7 @@ public abstract class AbstractIRCStateUpdater extends VariousMessageListenerAdap
 	{
 		if (!isForMe(aMsg))
 		{
-			WritableIRCUser _user = aMsg.getSource();
+			IRCUser _user = aMsg.getSource();
 			WritableIRCChannel _chan = getIRCStateImpl().getWritableChannelByName(aMsg.getChannelName());
 			
 			savedOldState(_chan);

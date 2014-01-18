@@ -6,9 +6,9 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
 public class TopicMessage implements IChannelMessage, IUserMessage
 {
 	private String channel;
-	private WritableIRCTopic topic;
+	private IRCTopic topic;
 
-	public TopicMessage(String aChannel, WritableIRCTopic aTopic)
+	public TopicMessage(String aChannel, IRCTopic aTopic)
 	{
 		channel = aChannel;
 		topic = aTopic;
@@ -19,7 +19,7 @@ public class TopicMessage implements IChannelMessage, IUserMessage
 		return channel;
 	}
 
-	public WritableIRCTopic getTopic()
+	public IRCTopic getTopic()
 	{
 		return topic;
 	}

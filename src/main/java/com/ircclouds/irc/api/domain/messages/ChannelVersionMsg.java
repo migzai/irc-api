@@ -9,7 +9,7 @@ import com.ircclouds.irc.api.domain.*;
  */
 public class ChannelVersionMsg extends ChannelCTCPMsg
 {
-	public ChannelVersionMsg(WritableIRCUser aFromUser, String aText, String aChanName)
+	public ChannelVersionMsg(IRCUser aFromUser, String aText, String aChanName)
 	{
 		super(aFromUser, aText, aChanName);
 	}

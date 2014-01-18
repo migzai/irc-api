@@ -9,7 +9,7 @@ import com.ircclouds.irc.api.domain.*;
  */
 public class ChannelPingMsg extends ChannelCTCPMsg
 {
-	public ChannelPingMsg(WritableIRCUser aFromUser, String aText, String aChanName)
+	public ChannelPingMsg(IRCUser aFromUser, String aText, String aChanName)
 	{
 		super(aFromUser, aText, aChanName);
 	}

@@ -6,7 +6,7 @@ public class UserPrivMsg extends AbstractPrivMsg
 {
 	private String toUser;
 
-	public UserPrivMsg(WritableIRCUser aFromUser, String aToUser, String aText)
+	public UserPrivMsg(IRCUser aFromUser, String aToUser, String aText)
 	{
 		super(aFromUser, aText);
 		

@@ -22,4 +22,10 @@ public class ServerPing implements IHasText, IServerMessage
 	{
 		return null;
 	}
+
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append("PING :").append(text).toString();
+	}
 }

@@ -10,8 +10,16 @@ public interface IMessage extends Serializable
 		public ISource getSource()
 		{
 			return ISource.NULL_SOURCE;
+		}
+
+		@Override
+		public String asRaw()
+		{
+			return "";
 		}		
 	};
 	
-	ISource getSource();	
+	ISource getSource();
+	
+	String asRaw();
 }

@@ -18,14 +18,14 @@ public class ChanPartMessage implements IChannelMessage, IUserMessage
 	{
 		this(aChanName, aUser, "");
 	}
-	
+
 	public ChanPartMessage(String aChanName, IRCUser aUser, String aPartMsg)
 	{
 		chanName = aChanName;
 		user = aUser;
 		partMsg = aPartMsg;
 	}
-	
+
 	public String getPartMsg()
 	{
 		return partMsg;
@@ -39,5 +39,11 @@ public class ChanPartMessage implements IChannelMessage, IUserMessage
 	public IRCUser getSource()
 	{
 		return user;
+	}
+
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(user).append(" PART ").append(chanName).append(partMsg != null ? " :" + partMsg : "").toString();
 	}
 }

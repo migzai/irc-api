@@ -17,4 +17,10 @@ public class ChannelKick extends ChannelPrivMsg
 	{
 		return kickedNick;
 	}
+	
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(":").append(fromUser).append(" KICK ").append(channelName).append(" ").append(kickedNick).append(" :").append(text).toString();
+	}	
 }

@@ -28,4 +28,10 @@ public class QuitMessage implements IUserMessage
 	{
 		return quitMsg;
 	}
+	
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(user).append(" QUIT :").toString();
+	}
 }

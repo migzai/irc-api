@@ -7,9 +7,11 @@ public class TopicMessage implements IChannelMessage, IUserMessage
 {
 	private String channel;
 	private IRCTopic topic;
+	private IRCUser user;
 
-	public TopicMessage(String aChannel, IRCTopic aTopic)
+	public TopicMessage(IRCUser aUser, String aChannel, IRCTopic aTopic)
 	{
+		user = aUser;
 		channel = aChannel;
 		topic = aTopic;
 	}
@@ -25,8 +27,14 @@ public class TopicMessage implements IChannelMessage, IUserMessage
 	}
 
 	@Override
-	public WritableIRCUser getSource()
+	public IRCUser getSource()
 	{
-		return null;
+		return user;
+	}
+
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(":").append(user).append(" TOPIC ").append(channel).append(" :").append(topic.getValue()).toString();
 	}
 }

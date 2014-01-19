@@ -4,7 +4,7 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
 public abstract class AbstractNotice implements IHasText
 {
-	private String text;
+	String text;
 
 	public AbstractNotice(String aText)
 	{

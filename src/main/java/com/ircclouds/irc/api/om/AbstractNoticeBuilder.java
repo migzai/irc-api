@@ -35,7 +35,7 @@ public abstract class AbstractNoticeBuilder implements IBuilder<IMessage>
 		}
 		else
 		{
-			_msg = new UserNotice(_user, _text);
+			_msg = new UserNotice(_user, _text, _components[2]);
 		}
 
 		return _msg;

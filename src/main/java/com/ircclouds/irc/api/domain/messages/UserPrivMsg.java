@@ -9,12 +9,18 @@ public class UserPrivMsg extends AbstractPrivMsg
 	public UserPrivMsg(IRCUser aFromUser, String aToUser, String aText)
 	{
 		super(aFromUser, aText);
-		
+
 		toUser = aToUser;
 	}
 
 	public String getToUser()
 	{
 		return toUser;
-	}	
+	}
+
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(":").append(fromUser).append(" PRIVMSG ").append(toUser).append(" :").append(text).toString();
+	}
 }

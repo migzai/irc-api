@@ -23,4 +23,10 @@ public class ErrorMessage implements IServerMessage, IHasText
 	{
 		return null;
 	}
+
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append("ERROR :").append(text).toString();
+	}
 }

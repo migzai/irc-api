@@ -24,4 +24,10 @@ public class NickMessage implements IUserMessage
 	{
 		return user;
 	}
+	
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(user).append(" NICK :").append(newNick).toString();
+	}	
 }

@@ -14,7 +14,7 @@ public class ServerMessageBuilder implements IBuilder<ServerNumericMessage>
 
 		String[] _firstPartCmpnts = _firstPart.split(" ");
 
-		return new ServerNumericMessage(getNumberFrom(_firstPartCmpnts[1]), _secondPart, new IRCServer(_firstPartCmpnts[0].substring(1)));
+		return new ServerNumericMessage(getNumberFrom(_firstPartCmpnts[1]), _firstPartCmpnts[2], _secondPart, new IRCServer(_firstPartCmpnts[0].substring(1)));
 	}
 
 	private Integer getNumberFrom(String aString)

@@ -1,5 +1,9 @@
 package com.ircclouds.irc.api.utils;
 
+import java.util.*;
+
+import com.ircclouds.irc.api.domain.*;
+
 /**
  * 
  * @author
@@ -11,6 +15,17 @@ public final class StringUtils
 	private StringUtils()
 	{
 
+	}
+	
+	public static String join(List<ChannelMode> aList)
+	{
+		StringBuffer _sb = new StringBuffer();
+		for (ChannelMode _s : aList)
+		{
+			_sb.append(_s.getChannelModeType());
+		}
+		
+		return _sb.toString();
 	}
 
 	public static int indexOf(char aChar, int aCount, String aString)

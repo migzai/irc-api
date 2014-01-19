@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
+import com.ircclouds.irc.api.utils.*;
 
 /**
  * 
@@ -24,6 +25,6 @@ public class TopicMessageBuilder implements IBuilder<TopicMessage>
 		String _chan = aMessage.substring(idx2 + 1, idx3);
 		String _topic = aMessage.substring(idx3 + 1, aMessage.length()).substring(1);
 
-		return new TopicMessage(_chan, new WritableIRCTopic(_user, new Date(), _topic));
+		return new TopicMessage(ParseUtils.getUser(aMessage.substring(0, idx1)), _chan, new WritableIRCTopic(_user, new Date(), _topic));
 	}
 }

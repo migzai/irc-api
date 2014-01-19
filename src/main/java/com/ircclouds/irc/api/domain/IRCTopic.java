@@ -11,7 +11,7 @@ public class IRCTopic implements Serializable
 	
 	public IRCTopic()
 	{
-		this("", "");
+		this("");
 	}
 	
 	public IRCTopic(String aValue)
@@ -21,8 +21,7 @@ public class IRCTopic implements Serializable
 	
 	public IRCTopic(String aSetBy, String aValue)
 	{
-		setBy = aSetBy;
-		value = aValue;
+		this(aSetBy, null, aValue);
 	}
 	
 	public IRCTopic(String aSetBy, Date aDate, String aValue)

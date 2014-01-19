@@ -18,7 +18,7 @@ public class ChanJoinMessage implements IChannelMessage, IUserMessage
 		user = aUser;
 		chanName = aChanName;
 	}
-	
+
 	public String getChannelName()
 	{
 		return chanName;
@@ -27,5 +27,11 @@ public class ChanJoinMessage implements IChannelMessage, IUserMessage
 	public IRCUser getSource()
 	{
 		return user;
+	}
+
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(":").append(user).append(" JOIN :").append(chanName).toString();
 	}
 }

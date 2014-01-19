@@ -19,4 +19,10 @@ public class ServerNotice extends AbstractNotice implements IServerMessage
 	{
 		return server;
 	}
+
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(":").append(server).append(" NOTICE AUTH :").append(text).toString();
+	}
 }

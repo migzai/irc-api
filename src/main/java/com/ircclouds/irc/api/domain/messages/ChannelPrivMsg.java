@@ -5,7 +5,7 @@ import com.ircclouds.irc.api.domain.messages.interfaces.*;
 
 public class ChannelPrivMsg extends AbstractPrivMsg implements IChannelMessage
 {
-	private String channelName;
+	String channelName;
 
 	public ChannelPrivMsg(IRCUser aFromUser, String aText, String aChanName)
 	{
@@ -16,5 +16,11 @@ public class ChannelPrivMsg extends AbstractPrivMsg implements IChannelMessage
 	public String getChannelName()
 	{
 		return channelName;
+	}
+	
+	@Override
+	public String asRaw()
+	{
+		return new StringBuffer().append(":").append(fromUser).append(" PRIVMSG ").append(channelName).append(" :").append(text).toString();
 	}
 }

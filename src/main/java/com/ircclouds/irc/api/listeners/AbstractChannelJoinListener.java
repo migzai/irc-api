@@ -34,11 +34,7 @@ public abstract class AbstractChannelJoinListener
 		{
 			if (channel != null)
 			{
-				if (_numcode == IRCServerNumerics.CHANNEL_FORWARD)
-				{
-					channel.setName(aServerMessage.getText().split(" ")[1]);
-				}
-				else if (_numcode == IRCServerNumerics.CHANNEL_NICKS_LIST)
+				if (_numcode == IRCServerNumerics.CHANNEL_NICKS_LIST)
 				{
 					String _nicks[] = aServerMessage.getText().substring(aServerMessage.getText().indexOf(":") + 1).split(" ");
 					for (String _nick : _nicks)
@@ -85,8 +81,17 @@ public abstract class AbstractChannelJoinListener
 				else if (_numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_FULL)
 				{
 					callbacks.remove(getChannelNameFrom(aServerMessage.getText())).onFailure(new IRCException(aServerMessage.getText()));
-				}				
-			}			
+				}
+				else if (_numcode == IRCServerNumerics.CHANNEL_FORWARD)
+				{
+					String[] _components = aServerMessage.getText().split(" ");
+					Callback<IRCChannel> callback = callbacks.remove(_components[0]);
+					if (callback != null)
+					{
+						callbacks.put(_components[1], callback);
+					}
+				}					
+			}		
 		}
 	}
 

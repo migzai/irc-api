@@ -102,7 +102,10 @@ public class SSLSocketChannelConnection implements IConnection
 		}
 		finally
 		{
-			sChannel.close();
+			if (sChannel.isOpen())
+			{
+				sChannel.close();
+			}
 		}
 	}
 

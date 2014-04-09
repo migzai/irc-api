@@ -1,15 +1,23 @@
 package com.ircclouds.irc.api.comms;
 
-import java.io.*;
-import java.net.*;
-import java.nio.*;
-import java.nio.channels.*;
-import java.security.*;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLEngineResult;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+import javax.net.ssl.SSLException;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SSLSocketChannelConnection implements IConnection
 {
@@ -26,11 +34,11 @@ public class SSLSocketChannelConnection implements IConnection
 	private HandshakeStatus hStatus;
 	private int remaingUnwraps;
 
-	public boolean open(String aHostname, int aPort) throws IOException
+	public boolean open(String aHostname, int aPort, SSLContext aContext) throws IOException
 	{
 		try
 		{
-			sslEngine = getInitializedSSLContext().createSSLEngine(aHostname, aPort);
+			sslEngine  = aContext != null ? aContext.createSSLEngine(aHostname, aPort) : getDefaultSSLContext().createSSLEngine(aHostname, aPort);			
 			sslEngine.setNeedClientAuth(false);
 			sslEngine.setUseClientMode(true);
 			sslEngine.beginHandshake();
@@ -193,8 +201,8 @@ public class SSLSocketChannelConnection implements IConnection
 
 		hStatus = sslEngine.getHandshakeStatus();
 	}
-
-	private SSLContext getInitializedSSLContext() throws NoSuchAlgorithmException, KeyManagementException
+	
+	private SSLContext getDefaultSSLContext() throws NoSuchAlgorithmException, KeyManagementException
 	{
 		SSLContext _sslCtx = SSLContext.getInstance("SSL");
 		_sslCtx.init(null, new TrustManager[] { new X509TrustManager()

@@ -5,6 +5,8 @@ import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
 
+import javax.net.ssl.SSLContext;
+
 public class SocketChannelConnection implements IConnection
 {
 	private SocketChannel channel;
@@ -17,7 +19,7 @@ public class SocketChannelConnection implements IConnection
 	}
 
 	@Override
-	public boolean open(String aHostname, int aPort) throws IOException
+	public boolean open(String aHostname, int aPort, SSLContext aCtx) throws IOException
 	{
 		if (channel == null || !channel.isConnected())
 		{

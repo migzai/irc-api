@@ -2,6 +2,8 @@ package com.ircclouds.irc.api;
 
 import java.io.*;
 
+import javax.net.ssl.SSLContext;
+
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.comms.*;
 import com.ircclouds.irc.api.domain.*;
@@ -101,7 +103,13 @@ public abstract class AbstractIRCSession implements IIRCSession
 			conn = new SSLSocketChannelConnection();
 		}
 		
-		if (conn.open(aServer.getHostname(), aServer.getPort()))
+		SSLContext _ctx = null;
+		if (aServer instanceof SecureIRCServer)
+		{
+			_ctx = ((SecureIRCServer) aServer).getSSLContext();
+		}
+		
+		if (conn.open(aServer.getHostname(), aServer.getPort(), _ctx))
 		{
 			if (!daemon.isAlive())
 			{

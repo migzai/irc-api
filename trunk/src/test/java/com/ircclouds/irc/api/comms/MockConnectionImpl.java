@@ -3,6 +3,8 @@ package com.ircclouds.irc.api.comms;
 import java.io.*;
 import java.nio.*;
 
+import javax.net.ssl.SSLContext;
+
 import mockit.*;
 
 public class MockConnectionImpl implements IConnection
@@ -17,7 +19,7 @@ public class MockConnectionImpl implements IConnection
 	}
 	
 	@Mock
-	public boolean open(String aHostname, int aPort) throws IOException
+	public boolean open(String aHostname, int aPort, SSLContext aCtx) throws IOException
 	{
 		InputStream _resourceAsStream = MockConnectionImpl.class.getResourceAsStream(filename);
 		if (_resourceAsStream != null)

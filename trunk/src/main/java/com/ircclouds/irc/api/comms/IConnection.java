@@ -2,9 +2,11 @@ package com.ircclouds.irc.api.comms;
 
 import java.io.*;
 
+import javax.net.ssl.SSLContext;
+
 public interface IConnection
 {
-	boolean open(String aHostname, int aPort) throws IOException;
+	boolean open(String aHostname, int aPort, SSLContext aContext) throws IOException;
 	
 	void close() throws IOException;
 

@@ -107,6 +107,7 @@ public class IRCApiImpl implements IRCApi
 		}
 		catch (IOException aExc)
 		{
+			_isOpen = true;
 			LOG.error("Error opening session", aExc);
 			aCallback.onFailure(aExc);
 		}

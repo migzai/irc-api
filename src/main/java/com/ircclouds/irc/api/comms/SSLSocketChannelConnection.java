@@ -1,23 +1,15 @@
 package com.ircclouds.irc.api.comms;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.io.*;
+import java.net.*;
+import java.nio.*;
+import java.nio.channels.*;
+import java.security.*;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLEngineResult;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
-import javax.net.ssl.SSLException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 public class SSLSocketChannelConnection implements IConnection
 {
@@ -36,27 +28,18 @@ public class SSLSocketChannelConnection implements IConnection
 
 	public boolean open(String aHostname, int aPort, SSLContext aContext) throws IOException
 	{
-		try
-		{
-			sslEngine  = aContext != null ? aContext.createSSLEngine(aHostname, aPort) : getDefaultSSLContext().createSSLEngine(aHostname, aPort);			
-			sslEngine.setNeedClientAuth(false);
-			sslEngine.setUseClientMode(true);
-			sslEngine.beginHandshake();
-			hStatus = sslEngine.getHandshakeStatus();
+		sslEngine  = aContext != null ? aContext.createSSLEngine(aHostname, aPort) : getDefaultSSLContext().createSSLEngine(aHostname, aPort);			
+		sslEngine.setNeedClientAuth(false);
+		sslEngine.setUseClientMode(true);
+		sslEngine.beginHandshake();
+		hStatus = sslEngine.getHandshakeStatus();
 
-			appSendBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
-			cipherSendBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
-			cipherRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
-			appRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
-						
-			return (sChannel = SocketChannel.open()).connect(new InetSocketAddress(aHostname, aPort));
-		}
-		catch (Exception aExc)
-		{
-			LOG.error("", aExc);
-		}
-
-		return false;
+		appSendBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
+		cipherSendBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
+		cipherRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
+		appRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
+					
+		return (sChannel = SocketChannel.open()).connect(new InetSocketAddress(aHostname, aPort));
 	}
 
 	public String read() throws IOException
@@ -66,6 +49,10 @@ public class SSLSocketChannelConnection implements IConnection
 		if (!sslEngine.isInboundDone())
 		{
 			tryReadAndUnwrap();
+		}
+		else
+		{
+			throw new EndOfStreamException();
 		}
 		
 		byte[] _bytes = new byte[appRecvBuffer.flip().limit()];
@@ -205,25 +192,32 @@ public class SSLSocketChannelConnection implements IConnection
 		hStatus = sslEngine.getHandshakeStatus();
 	}
 	
-	private SSLContext getDefaultSSLContext() throws NoSuchAlgorithmException, KeyManagementException
+	private SSLContext getDefaultSSLContext()
 	{
-		SSLContext _sslCtx = SSLContext.getInstance("SSL");
-		_sslCtx.init(null, new TrustManager[] { new X509TrustManager()
+		try
 		{
-			public java.security.cert.X509Certificate[] getAcceptedIssuers()
+			SSLContext _sslCtx = SSLContext.getInstance("SSL");
+			_sslCtx.init(null, new TrustManager[] { new X509TrustManager()
 			{
-				return null;
-			}
+				public java.security.cert.X509Certificate[] getAcceptedIssuers()
+				{
+					return null;
+				}
 
-			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType)
-			{
-			}
+				public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				{
+				}
 
-			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType)
-			{
-			}
-		} }, new SecureRandom());
-
-		return _sslCtx;
+				public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				{
+				}
+			} }, new SecureRandom());
+			
+			return _sslCtx;
+		}
+		catch (Exception aExc)
+		{
+			throw new RuntimeException(aExc);
+		}
 	}
 }

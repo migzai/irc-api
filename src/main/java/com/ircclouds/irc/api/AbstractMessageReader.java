@@ -59,6 +59,7 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 		}
 		catch (IOException aExc)
 		{
+			getConnection().setReadError();
 			LOG.error("Error reading from connection", aExc);
 			return false;
 		}

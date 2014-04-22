@@ -2,7 +2,7 @@ package com.ircclouds.irc.api;
 
 import java.io.*;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.comms.*;

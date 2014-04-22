@@ -5,7 +5,7 @@ import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 
 public class SocketChannelConnection implements IConnection
 {
@@ -53,5 +53,10 @@ public class SocketChannelConnection implements IConnection
 		{
 			channel.close();
 		}
+	}
+
+	@Override
+	public void setReadError()
+	{
 	}
 }

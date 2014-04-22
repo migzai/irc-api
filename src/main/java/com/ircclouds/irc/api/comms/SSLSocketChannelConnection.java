@@ -25,6 +25,7 @@ public class SSLSocketChannelConnection implements IConnection
 
 	private HandshakeStatus hStatus;
 	private int remaingUnwraps;
+	private boolean readError;
 
 	public boolean open(String aHostname, int aPort, SSLContext aContext) throws IOException
 	{
@@ -79,12 +80,18 @@ public class SSLSocketChannelConnection implements IConnection
 			if (!sslEngine.isOutboundDone())
 			{
 				sslEngine.closeOutbound();
-				doAnyPendingHandshake();
+				if (!readError)
+				{
+					doAnyPendingHandshake();
+				}
 			}
 			else if (!sslEngine.isInboundDone())
 			{
 				sslEngine.closeInbound();
-				processHandshake();
+				if (!readError) 
+				{
+					processHandshake();
+				}
 			}
 		}
 		finally
@@ -96,6 +103,13 @@ public class SSLSocketChannelConnection implements IConnection
 		}
 	}
 
+
+	@Override
+	public void setReadError()
+	{
+		readError = true;
+	}	
+	
 	private synchronized void doAnyPendingHandshake() throws IOException
 	{
 		while (processHandshake())

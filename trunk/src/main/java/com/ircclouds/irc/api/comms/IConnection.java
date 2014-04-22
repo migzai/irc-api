@@ -2,7 +2,7 @@ package com.ircclouds.irc.api.comms;
 
 import java.io.*;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 
 public interface IConnection
 {
@@ -13,6 +13,8 @@ public interface IConnection
 	int write(String aMessage) throws IOException;
 
 	String read() throws IOException;
+	
+	void setReadError();
 	
 	public class EndOfStreamException extends IOException
 	{				

@@ -5,7 +5,9 @@ import static com.ircclouds.irc.api.DCCManagerImpl.*;
 import java.io.*;
 import java.net.*;
 
+import org.apache.log4j.*;
 import org.slf4j.*;
+import org.slf4j.Logger;
 
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.ctcp.*;
@@ -52,6 +54,9 @@ public class IRCApiImpl implements IRCApi
 	 */
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
+		org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
+		root.addAppender(new ConsoleAppender(
+		    new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));		
 		state = new DisconnectedIRCState();
 		session = new AbstractIRCSession()
 		{

@@ -3,7 +3,7 @@ package com.ircclouds.irc.api.comms;
 import java.io.*;
 import java.nio.*;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 
 import mockit.*;
 
@@ -55,5 +55,12 @@ public class MockConnectionImpl implements IConnection
 		}
 		buffer.flip();
 		return buffer.toString();
+	}
+
+	@Override
+	public void setReadError()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

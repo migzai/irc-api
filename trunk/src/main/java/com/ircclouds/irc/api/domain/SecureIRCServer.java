@@ -1,6 +1,6 @@
 package com.ircclouds.irc.api.domain;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 
 public class SecureIRCServer extends IRCServer
 {

@@ -56,8 +56,6 @@ public abstract class AbstractApiDaemon extends Thread
 		catch (IOException aExc)
 		{
 			LOG.error(this.getName(), aExc);
-
-			reader.setReadError();
 			
 			signalExceptionToApi(aExc);
 		}

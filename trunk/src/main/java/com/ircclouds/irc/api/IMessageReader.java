@@ -11,6 +11,4 @@ public interface IMessageReader
 	IMessage readMessage();
 	
 	void reset();
-	
-	void setReadError();
 }

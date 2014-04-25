@@ -54,6 +54,7 @@ public class IRCApiImpl implements IRCApi
 	 */
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
+		state = new DisconnectedIRCState();
 		session = new AbstractIRCSession()
 		{
 			@Override

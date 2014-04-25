@@ -1,7 +1,10 @@
 package com.ircclouds.irc.api;
 
+import java.io.*;
+
 import org.slf4j.*;
 
+import com.ircclouds.irc.api.comms.IConnection.EndOfStreamException;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.filters.*;
 
@@ -46,6 +49,18 @@ public abstract class AbstractApiDaemon extends Thread
 				}
 			}
 		}
+		catch (EndOfStreamException aExc)
+		{
+			LOG.error(this.getName(), aExc);
+		}
+		catch (IOException aExc)
+		{
+			LOG.error(this.getName(), aExc);
+
+			reader.setReadError();
+			
+			signalExceptionToApi(aExc);
+		}
 		finally
 		{
 			LOG.debug("ApiDaemon Exiting..");
@@ -53,6 +68,8 @@ public abstract class AbstractApiDaemon extends Thread
 			onExit();
 		}
 	}
+
+	protected abstract void signalExceptionToApi(Exception aExc);
 
 	protected abstract void onExit();
 	

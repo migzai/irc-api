@@ -9,6 +9,7 @@ import com.ircclouds.irc.api.comms.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
+import com.ircclouds.irc.api.state.*;
 
 public abstract class AbstractIRCSession implements IIRCSession
 {
@@ -17,6 +18,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 	private IMessageReader reader;
 	private AbstractApiDaemon daemon;
 	private IConnection conn;
+	private Callback<IIRCState> callback;
 
 	public AbstractIRCSession()
 	{
@@ -42,6 +44,12 @@ public abstract class AbstractIRCSession implements IIRCSession
 			{
 				return conn;
 			}
+
+			@Override
+			public void setReadError()
+			{
+				conn.setReadError();
+			}
 		};
 		
 		daemon = new AbstractApiDaemon(reader, dispatcher)
@@ -63,6 +71,12 @@ public abstract class AbstractIRCSession implements IIRCSession
 			protected IMessageFilter getMessageFilter()
 			{
 				return AbstractIRCSession.this.getMessageFilter();
+			}
+
+			@Override
+			protected void signalExceptionToApi(Exception aExc)
+			{
+				callback.onFailure(aExc);
 			}
 		};
 	}
@@ -92,8 +106,10 @@ public abstract class AbstractIRCSession implements IIRCSession
 	}
 
 	@Override
-	public boolean open(IRCServer aServer) throws IOException
+	public boolean open(IRCServer aServer, Callback<IIRCState> aCallback) throws IOException
 	{
+		callback = aCallback;
+		
 		if (!aServer.isSSL())
 		{
 			conn = new SocketChannelConnection();

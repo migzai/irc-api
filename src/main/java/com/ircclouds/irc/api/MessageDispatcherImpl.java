@@ -54,7 +54,7 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 	{
 		for (IMessageListener _listener : aListeners)
 		{
-		//	LOG.debug("Dispatching " + aMessage.getClass().getSimpleName() + " to " +  _listener.getClass().getSimpleName());
+			LOG.debug("Dispatching " + aMessage.getClass().getSimpleName() + " to " +  _listener.getClass().getSimpleName());
 			try
 			{
 				if (_listener instanceof IVariousMessageListener)

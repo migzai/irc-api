@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.slf4j.*;
 
-import com.ircclouds.irc.api.comms.IConnection.EndOfStreamException;
 import com.ircclouds.irc.api.comms.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
@@ -39,30 +38,16 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 		};
 	}
 
-	public boolean available()
+	public boolean available() throws IOException
 	{
-		try
+		if (canRead)
 		{
-			if (canRead)
-			{
-				ircData.append(getConnection().read());				
-				canRead = false;
-				fetchNextBatch();
-			}
+			ircData.append(getConnection().read());				
+			canRead = false;
+			fetchNextBatch();
+		}
 
-			return true;
-		}
-		catch (EndOfStreamException aExc)
-		{
-			LOG.error("End of stream received.");
-			return false;
-		}
-		catch (IOException aExc)
-		{
-			getConnection().setReadError();
-			LOG.error("Error reading from connection", aExc);
-			return false;
-		}
+		return true;
 	}
 
 	public IMessage readMessage()

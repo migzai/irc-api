@@ -5,6 +5,7 @@ import java.io.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
+import com.ircclouds.irc.api.state.*;
 
 public interface IIRCSession
 {
@@ -14,7 +15,7 @@ public interface IIRCSession
 	
 	void removeListener(IMessageListener aListener);
 	
-	boolean open(IRCServer aServer) throws IOException;
+	boolean open(IRCServer aServer, Callback<IIRCState> aCallback) throws IOException;
 	
 	void close() throws IOException;
 

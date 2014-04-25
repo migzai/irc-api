@@ -96,7 +96,7 @@ public class IRCApiImpl implements IRCApi
 		boolean _isOpen = false;
 		try
 		{
-			if (_isOpen = session.open(aServerParameters.getServer()))
+			if (_isOpen = session.open(aServerParameters.getServer(), aCallback))
 			{
 				executeAsync(new ConnectCmd(aServerParameters), aCallback, _d);
 			}

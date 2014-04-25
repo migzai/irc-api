@@ -16,13 +16,13 @@ import com.ircclouds.irc.api.state.*;
 import com.ircclouds.irc.api.utils.*;
 
 /**
- * The main implementation of {@link IRCApi}. It offers the ability to save the IRC state, and 
- * allows for extensibility through {@link #getCommandServer()}.
+ * The main implementation of {@link IRCApi}. It offers the ability to save the
+ * IRC state, and allows for extensibility through {@link #getCommandServer()}.
  * 
  * This implementation provides logging via slf4j.
  * 
  * @author miguel@lebane.se
- *
+ * 
  */
 public class IRCApiImpl implements IRCApi
 {
@@ -43,16 +43,17 @@ public class IRCApiImpl implements IRCApi
 			return filter;
 		}
 	};
-	
+
 	private DCCManagerImpl dccManager;
 
 	/**
 	 * 
-	 * @param aSaveIRCState A flag to allow saving the IRC state that will be obtained by {@link #connect(IServerParameters, Callback)}
+	 * @param aSaveIRCState
+	 *            A flag to allow saving the IRC state that will be obtained by
+	 *            {@link #connect(IServerParameters, Callback)}
 	 */
 	public IRCApiImpl(Boolean aSaveIRCState)
 	{
-		state = new DisconnectedIRCState();
 		session = new AbstractIRCSession()
 		{
 			@Override
@@ -77,7 +78,7 @@ public class IRCApiImpl implements IRCApi
 
 		session.addListeners(MESSAGE_VISIBILITY.PRIVATE, executeCmdListener = new ExecuteCommandListenerImpl(session, getStateUpdater(aSaveIRCState)), new PingVersionListenerImpl(
 				session));
-		
+
 		dccManager = new DCCManagerImpl(this);
 	}
 
@@ -91,12 +92,13 @@ public class IRCApiImpl implements IRCApi
 		}
 
 		Dirty _d = new Dirty();
-		executeCmdListener.submitConnectCallback(newConnectCallback(aCallback, _d), aServerParameters);
+		Callback<IIRCState> _connectCallback = newConnectCallback(aCallback, _d);
+		executeCmdListener.submitConnectCallback(_connectCallback, aServerParameters);
 
 		boolean _isOpen = false;
 		try
 		{
-			if (_isOpen = session.open(aServerParameters.getServer(), aCallback))
+			if (_isOpen = session.open(aServerParameters.getServer(), _connectCallback))
 			{
 				executeAsync(new ConnectCmd(aServerParameters), aCallback, _d);
 			}
@@ -109,13 +111,14 @@ public class IRCApiImpl implements IRCApi
 		{
 			_isOpen = true;
 			LOG.error("Error opening session", aExc);
-			aCallback.onFailure(aExc);
+
+			tryInvokeCallback(aCallback, _d, aExc);
 		}
 		finally
 		{
 			if (!_isOpen)
 			{
-				closeSession(aCallback);
+				closeSession(aCallback, _d);
 			}
 		}
 	}
@@ -134,8 +137,8 @@ public class IRCApiImpl implements IRCApi
 		checkConnected();
 
 		execute(new QuitCmd());
-	}	
-	
+	}
+
 	@Override
 	public void joinChannel(String aChannelName)
 	{
@@ -200,7 +203,7 @@ public class IRCApiImpl implements IRCApi
 			aCallback.onFailure(new ApiException("Not connected!"));
 			return;
 		}
-		
+
 		aChannelName = prependChanType(aChannelName).toLowerCase();
 
 		Dirty _d = new Dirty();
@@ -228,7 +231,7 @@ public class IRCApiImpl implements IRCApi
 		Dirty _d = new Dirty();
 		executeCmdListener.submitSendMessageCallback(asyncId, getDirtyCallback(aCallback, _d));
 		apiFilter.addValue(asyncId);
-		
+
 		executeAsync(new SendPrivateMessage(aTarget, aMessage, asyncId++), aCallback, _d);
 	}
 
@@ -236,7 +239,7 @@ public class IRCApiImpl implements IRCApi
 	public void act(String aTarget, String aActionMessage)
 	{
 		checkConnected();
-		
+
 		execute(new SendActionMessage(aTarget, aActionMessage));
 	}
 
@@ -255,12 +258,12 @@ public class IRCApiImpl implements IRCApi
 
 		executeAsync(new SendActionMessage(aTarget, aActionMessage, asyncId++), aCallback, _d);
 	}
-	
+
 	@Override
 	public void notice(String aTarget, String aText)
 	{
 		checkConnected();
-		
+
 		execute(new SendNoticeMessage(aTarget, aText));
 	}
 
@@ -272,14 +275,14 @@ public class IRCApiImpl implements IRCApi
 			aCallback.onFailure(new ApiException("Not connected!"));
 			return;
 		}
-		
+
 		Dirty _d = new Dirty();
 		executeCmdListener.submitSendMessageCallback(asyncId, getDirtyCallback(aCallback, _d));
 		apiFilter.addValue(asyncId);
-		
+
 		executeAsync(new SendNoticeMessage(aTarget, aText, asyncId++), aCallback, _d);
 	}
-	
+
 	@Override
 	public void kick(String aChannel, String aNick)
 	{
@@ -291,12 +294,12 @@ public class IRCApiImpl implements IRCApi
 	{
 		kick(aChannel, aNick, "", aCallback);
 	}
-	
+
 	@Override
 	public void kick(String aChannel, String aNick, String aKickMessage)
 	{
 		checkConnected();
-		
+
 		execute(new KickUserCmd(aChannel, aNick, aKickMessage));
 	}
 
@@ -308,13 +311,13 @@ public class IRCApiImpl implements IRCApi
 			aCallback.onFailure(new ApiException("Not connected!"));
 			return;
 		}
-		
+
 		Dirty _d = new Dirty();
 		executeCmdListener.submitKickUserCallback(aChannel, getDirtyCallback(aCallback, _d));
-		
+
 		executeAsync(new KickUserCmd(aChannel, aNick, aKickMessage), aCallback, _d);
 	}
-	
+
 	@Override
 	public void changeNick(String aNewNick)
 	{
@@ -322,7 +325,7 @@ public class IRCApiImpl implements IRCApi
 
 		execute(new ChangeNickCmd(aNewNick));
 	}
-	
+
 	@Override
 	public void changeNick(String aNewNickname, final Callback<String> aCallback)
 	{
@@ -426,14 +429,14 @@ public class IRCApiImpl implements IRCApi
 	public void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback)
 	{
 		dccManager.dccResume(aFile, aResumePosition, aSize, aAddress, aCallback);
-	}	
-	
+	}
+
 	@Override
 	public DCCManager getDCCManager()
 	{
 		return dccManager;
 	}
-	
+
 	/**
 	 * Returns the interface responsible for executing IRC commands
 	 * 
@@ -457,7 +460,7 @@ public class IRCApiImpl implements IRCApi
 		return state.getServerOptions().getChanTypes().iterator().next() + aChannelName;
 	}
 
-	private void closeSession(Callback<IIRCState> aCallback)
+	private void closeSession(Callback<IIRCState> aCallback, Dirty _d)
 	{
 		try
 		{
@@ -465,7 +468,7 @@ public class IRCApiImpl implements IRCApi
 		}
 		catch (IOException aExc)
 		{
-			aCallback.onFailure(aExc);
+			tryInvokeCallback(aCallback, _d, aExc);
 			LOG.error("Error Closing Session.", aExc);
 		}
 	}
@@ -495,18 +498,23 @@ public class IRCApiImpl implements IRCApi
 			@Override
 			public void onFailure(Exception aExc)
 			{
-				synchronized (aDirty)
-				{
-					if (!aDirty.isDirty())
-					{
-						aCallback.onFailure(aExc);
-						aDirty.setDirty();
-					}
-				}
+				tryInvokeCallback(aCallback, aDirty, aExc);
 			}
 		};
 	}
-	
+
+	private void tryInvokeCallback(final Callback<?> aCallback, Dirty aDirty, Exception aExc)
+	{
+		synchronized (aDirty)
+		{
+			if (!aDirty.isDirty())
+			{
+				aCallback.onFailure(aExc);
+				aDirty.setDirty();
+			}
+		}
+	}
+
 	private void execute(ICommand aCommand)
 	{
 		try
@@ -534,7 +542,7 @@ public class IRCApiImpl implements IRCApi
 			};
 
 			session.addListeners(MESSAGE_VISIBILITY.PRIVATE, _stateUpdater);
-			
+
 			return _stateUpdater;
 		}
 		else
@@ -573,7 +581,7 @@ public class IRCApiImpl implements IRCApi
 			};
 		}
 	}
-	
+
 	private void executeAsync(ICommand aCommand, Callback<?> aCallback, Dirty aDirty)
 	{
 		try
@@ -583,18 +591,11 @@ public class IRCApiImpl implements IRCApi
 		catch (IOException aExc)
 		{
 			LOG.error("Error executing command", aExc);
-			
-			synchronized (aDirty)
-			{
-				if (!aDirty.isDirty())
-				{
-					aCallback.onFailure(aExc);
-					aDirty.setDirty();
-				}
-			}
+
+			tryInvokeCallback(aCallback, aDirty, aExc);
 		}
-	}	
-	
+	}
+
 	private <R> Callback<R> getDirtyCallback(final Callback<R> aCallback, final Dirty aDirty)
 	{
 		return new Callback<R>()
@@ -609,28 +610,21 @@ public class IRCApiImpl implements IRCApi
 			public void onFailure(Exception aExc)
 			{
 				LOG.info("", aExc);
-				
-				synchronized (aDirty)
-				{
-					if (!aDirty.isDirty())
-					{
-						aCallback.onFailure(aExc);
-						aDirty.setDirty();
-					}
-				}
+
+				tryInvokeCallback(aCallback, aDirty, aExc);
 			}
 		};
 	}
-	
+
 	private class Dirty
 	{
 		boolean dirty;
-		
+
 		void setDirty()
 		{
 			dirty = true;
 		}
-		
+
 		boolean isDirty()
 		{
 			return dirty == true;

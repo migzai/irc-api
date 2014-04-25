@@ -56,11 +56,4 @@ public class MockConnectionImpl implements IConnection
 		buffer.flip();
 		return buffer.toString();
 	}
-
-	@Override
-	public void setReadError()
-	{
-		// TODO Auto-generated method stub
-		
-	}
 }

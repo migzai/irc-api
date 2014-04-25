@@ -44,12 +44,6 @@ public abstract class AbstractIRCSession implements IIRCSession
 			{
 				return conn;
 			}
-
-			@Override
-			public void setReadError()
-			{
-				conn.setReadError();
-			}
 		};
 		
 		daemon = new AbstractApiDaemon(reader, dispatcher)

@@ -54,9 +54,4 @@ public class SocketChannelConnection implements IConnection
 			channel.close();
 		}
 	}
-
-	@Override
-	public void setReadError()
-	{
-	}
 }

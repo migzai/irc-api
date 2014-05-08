@@ -19,7 +19,7 @@ import com.ircclouds.irc.api.om.*;
 public abstract class AbstractMessageReader implements IMessageReader, INeedsConnection
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageReader.class);
-	private static final String CRLF = "\r\n";
+	private static String CRLF = null;
 
 	private AbstractMessageFactory msgFactory;
 	private StringBuilder ircData = new StringBuilder();
@@ -44,6 +44,8 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 		{
 			ircData.append(getConnection().read());				
 			canRead = false;
+			
+			trySetNewLine();
 			fetchNextBatch();
 		}
 
@@ -80,6 +82,22 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 	}
 	
 	protected abstract IRCServerOptions getIRCServerOptions();
+
+	private void trySetNewLine()
+	{
+		if (CRLF != null)
+		{
+			return;
+		}
+		else if (ircData.indexOf("\r\n") != -1)
+		{
+			CRLF = "\r\n";
+		}
+		else if (ircData.indexOf("\n") != -1)
+		{
+			CRLF = "\n";
+		}
+	}	
 	
 	private void fetchNextBatch()
 	{

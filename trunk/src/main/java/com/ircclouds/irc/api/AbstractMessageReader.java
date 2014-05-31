@@ -19,8 +19,8 @@ import com.ircclouds.irc.api.om.*;
 public abstract class AbstractMessageReader implements IMessageReader, INeedsConnection
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageReader.class);
-	private static String CRLF = null;
-
+	
+	private String crlf = null;
 	private AbstractMessageFactory msgFactory;
 	private StringBuilder ircData = new StringBuilder();
 	private Queue<String> ircMessages = new LinkedList<String>();
@@ -85,37 +85,37 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 
 	private void trySetNewLine()
 	{
-		if (CRLF != null)
+		if (crlf != null)
 		{
 			return;
 		}
 		else if (ircData.indexOf("\r\n") != -1)
 		{
-			CRLF = "\r\n";
+			crlf = "\r\n";
 		}
 		else if (ircData.indexOf("\n") != -1)
 		{
-			CRLF = "\n";
+			crlf = "\n";
 		}
 	}	
 	
 	private void fetchNextBatch()
 	{
-		if (ircData.indexOf(CRLF) != -1)
+		if (ircData.indexOf(crlf) != -1)
 		{
 			String _tempMsg = ircData.toString();
-			if (ircData.lastIndexOf(CRLF) != ircData.length() - CRLF.length() - 1)
+			if (ircData.lastIndexOf(crlf) != ircData.length() - crlf.length() - 1)
 			{
-				int _i = ircData.lastIndexOf(CRLF);
+				int _i = ircData.lastIndexOf(crlf);
 				_tempMsg = ircData.substring(0, _i);
-				ircData = new StringBuilder(ircData.substring(_i + CRLF.length()));
+				ircData = new StringBuilder(ircData.substring(_i + crlf.length()));
 			}
 			else
 			{
 				ircData.setLength(0);
 			}
 
-			ircMessages.addAll(Arrays.asList(_tempMsg.split(CRLF)));
+			ircMessages.addAll(Arrays.asList(_tempMsg.split(crlf)));
 		}
 	}
 }

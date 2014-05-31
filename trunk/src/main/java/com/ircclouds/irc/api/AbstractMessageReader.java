@@ -9,6 +9,7 @@ import com.ircclouds.irc.api.comms.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.om.*;
+import com.ircclouds.irc.api.utils.*;
 
 /**
  * 
@@ -20,7 +21,7 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageReader.class);
 	
-	private String crlf = null;
+	private String crlf = "";
 	private AbstractMessageFactory msgFactory;
 	private StringBuilder ircData = new StringBuilder();
 	private Queue<String> ircMessages = new LinkedList<String>();
@@ -85,7 +86,7 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 
 	private void trySetNewLine()
 	{
-		if (crlf != null)
+		if (StringUtils.isEmpty(crlf))
 		{
 			return;
 		}

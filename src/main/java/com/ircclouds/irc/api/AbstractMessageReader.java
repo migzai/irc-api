@@ -86,7 +86,7 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 
 	private void trySetNewLine()
 	{
-		if (StringUtils.isEmpty(crlf))
+		if (!StringUtils.isEmpty(crlf))
 		{
 			return;
 		}

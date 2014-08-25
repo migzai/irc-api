@@ -51,7 +51,7 @@ public abstract class AbstractApiDaemon extends Thread
 		}
 		catch (EndOfStreamException aExc)
 		{
-			LOG.error(this.getName(), aExc);
+			LOG.debug("Received end of stream, closing connection", aExc);
 		}
 		catch (IOException aExc)
 		{

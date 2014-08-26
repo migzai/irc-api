@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ircclouds.irc</groupId>
@@ -17,18 +18,18 @@
 	</properties>
 
 	<licenses>
-	    <license>
-	      	<name>The Apache Software License, Version 2.0</name>
-	      	<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-	    	<distribution>repo</distribution>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
 		</license>
-  	</licenses>
+	</licenses>
 
 	<scm>
-	    <connection>scm:svn:http://irc-api.googlecode.com/svn/trunk/</connection>
-	    <developerConnection>scm:svn:https://irc-api.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://irc-api.googlecode.com/svn/trunk/</url>	    
-  	</scm>
+		<connection>scm:svn:http://irc-api.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://irc-api.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://irc-api.googlecode.com/svn/trunk/</url>
+	</scm>
 
 	<dependencies>
 		<dependency>
@@ -89,10 +90,34 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+			    <groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
-			</plugin>		
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<instructions>
+						<Export-Package>com.ircclouds.irc.api.*</Export-Package>
+						<Import-Package>*</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

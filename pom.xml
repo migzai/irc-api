@@ -6,6 +6,7 @@
 	<artifactId>irc-api</artifactId>
 	<version>1.0-0015-SNAPSHOT</version>
 	<name>IRC API</name>
+	<description>Open source Java IRC API</description>
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>

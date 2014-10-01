@@ -30,7 +30,7 @@ public abstract class AbstractChannelJoinListener
 		if (_numcode == IRCServerNumerics.CHANNEL_FORWARD || _numcode == IRCServerNumerics.TOPIC_USER_DATE || _numcode == IRCServerNumerics.CHANNEL_NICKS_LIST
 				|| _numcode == IRCServerNumerics.CHANNEL_TOPIC || _numcode == IRCServerNumerics.CHANNEL_NICKS_END_OF_LIST
 				|| _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_INVITE || _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_KEYED
-				|| _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_FULL)
+				|| _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_FULL || _numcode == IRCServerNumerics.CHANNEL_CANNOT_JOIN_BANNED)
 		{
 			if (channel != null)
 			{

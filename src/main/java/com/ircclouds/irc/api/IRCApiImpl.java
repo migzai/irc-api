@@ -510,11 +510,8 @@ public class IRCApiImpl implements IRCApi
 		{
 			if (!aDirty.isDirty())
 			{
-				if (!state.isConnected())
-				{
-					aCallback.onFailure(aExc);
-					aDirty.setDirty();
-				}
+				aCallback.onFailure(aExc);
+				aDirty.setDirty();
 			}
 		}
 	}

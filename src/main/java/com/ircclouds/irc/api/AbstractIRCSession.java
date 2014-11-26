@@ -13,10 +13,10 @@ import com.ircclouds.irc.api.state.*;
 
 public abstract class AbstractIRCSession implements IIRCSession
 {
-	private IMessageDispatcher dispatcher = new MessageDispatcherImpl();
-	private ICommandServer cmdServ;
-	private IMessageReader reader;
-	private AbstractApiDaemon daemon;
+	private final IMessageDispatcher dispatcher = new MessageDispatcherImpl();
+	private final ICommandServer cmdServ;
+	private final IMessageReader reader;
+	private final AbstractApiDaemon daemon;
 	private IConnection conn;
 	private Callback<IIRCState> callback;
 

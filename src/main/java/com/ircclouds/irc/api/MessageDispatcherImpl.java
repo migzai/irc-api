@@ -46,7 +46,7 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 
 	public void unregister(IMessageListener aListener)
 	{
-		listenersMap.get(MESSAGE_VISIBILITY.PUBLIC).remove(aListener);
+		listenersMap.get(MESSAGE_VISIBILITY.PRIVATE).remove(aListener);
 		listenersMap.get(MESSAGE_VISIBILITY.PUBLIC).remove(aListener);
 	}
 	

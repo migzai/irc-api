@@ -39,9 +39,9 @@ public abstract class AbstractMessageFactory
 	private static final QuitMessageBuilder QUIT_MESSAGE_BUILDER = new QuitMessageBuilder();
 	private static final ErrorMessageBuilder ERROR_MESSAGE_BUILDER = new ErrorMessageBuilder();
 	
-	private static AbstractPrivateMessageBuilder PRIVATE_MESSAGE_BUILDER;
-	private static AbstractNoticeBuilder NOTICE_BUILDER;
-	private static AbstractChanModeBuilder CHAN_MODE_BUILDER;
+	private final AbstractPrivateMessageBuilder PRIVATE_MESSAGE_BUILDER;
+	private final AbstractNoticeBuilder NOTICE_BUILDER;
+	private final AbstractChanModeBuilder CHAN_MODE_BUILDER;
 			
 	public AbstractMessageFactory()
 	{

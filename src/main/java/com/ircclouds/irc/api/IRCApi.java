@@ -19,14 +19,28 @@ import com.ircclouds.irc.api.state.*;
  *  @author miguel@lebane.se  
  */
 public interface IRCApi
-{	
+{
 	/**
 	 * Asynchronous connect
 	 * 
-	 * @param aServerParameters The IRC Server connection parameters
-	 * @param aCallback A callback that will be invoked when the connection is established, and will return an {@link IIRCState} on success, or an {@link Exception} in case of failure
+	 * @param aServerParameters
+	 *            The IRC Server connection parameters
+	 * @param aCallback
+	 *            A callback that will be invoked when the connection is
+	 *            established, and will return an {@link IIRCState} on success,
+	 *            or an {@link Exception} in case of failure
+	 * @param negotiator
+	 *            CAP negotiator instance used when establishing the IRC
+	 *            connection. <b>Note</b> that the negotiator is expected to
+	 *            take over (transparently, irc-api will not signal the
+	 *            instance) when CAP negotiation has started. For this purpose,
+	 *            the provided negotiator instance is added to the private
+	 *            listeners collection such that it will receive communications.
+	 *            After CAP END has been sent, as by spec the server will resume
+	 *            the normal registration process starting with message 001 and
+	 *            irc-api will then continue its standard procedure.
 	 */
-	void connect(IServerParameters aServerParameters, Callback<IIRCState> aCallback);
+	void connect(IServerParameters aServerParameters, Callback<IIRCState> aCallback, CapabilityNegotiator negotiator);
 
 	/**
 	 * Synchronous disconnect

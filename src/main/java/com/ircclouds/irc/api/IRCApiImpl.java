@@ -84,7 +84,7 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void connect(final IServerParameters aServerParameters, Callback<IIRCState> aCallback)
+	public void connect(final IServerParameters aServerParameters, final Callback<IIRCState> aCallback, final CapabilityNegotiator negotiator)
 	{
 		if (state.isConnected())
 		{
@@ -101,7 +101,17 @@ public class IRCApiImpl implements IRCApi
 		{
 			if (_isOpen = session.open(aServerParameters.getServer(), _connectCallback))
 			{
-				executeAsync(new ConnectCmd(aServerParameters), aCallback, _d);
+				final CapCmd initCmd;
+				if (negotiator == null)
+				{
+					initCmd = null;
+				}
+				else
+				{
+					session.addListeners(MESSAGE_VISIBILITY.PRIVATE, negotiator);
+					initCmd = negotiator.initiate(this);
+				}
+				executeAsync(new ConnectCmd(aServerParameters, initCmd), aCallback, _d);
 			}
 			else
 			{

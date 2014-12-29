@@ -13,10 +13,7 @@ public class CapReqCmd extends CapCmd {
 	public CapReqCmd(String extension, String... extensions)
 	{
 		this.extensions.add(extension);
-		for (String ext : extensions)
-		{
-			this.extensions.add(ext);
-		}
+                this.extensions.addAll(Arrays.asList(extensions));
 	}
 
 	@Override

@@ -7,14 +7,22 @@ import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.domain.messages.ServerNumericMessage;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SaslNegotiator extends VariousMessageListenerAdapter implements CapabilityNegotiator {
 	private static final Logger LOG = LoggerFactory.getLogger(SaslNegotiator.class);
+
+	private static final String SASL_CAPABILITY_ID = "sasl";
+
 	private static final String AUTHENTICATE = "AUTHENTICATE ";
-	private static final String AUTHENTICATE_ABORT = "AUTHENTICATE *\r\n";
+	private static final String AUTHENTICATE_ABORT = "AUTHENTICATE *";
+
+	private static final Pattern CAPABILITY_ACKNOWLEDGEMENT = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+ACK\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
+	private static final Pattern AUTHENTICATE_CONFIRMATION = Pattern.compile("AUTHENTICATE\\s+(\\+)\\s*$", 0);
 
 	// AUTHENTICATE numeric replies
 	private static final int RPL_LOGGEDIN = 900;
@@ -34,7 +42,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 	private State state;
 	private IRCApi irc;
 
-	// TODO how to handle time-outs?
+	// TODO how to handle time-outs? (though not crucial since IRC server will also time-out)
 	// TODO move more intelligence into the state implementations to the point
 	// where negotiator only passes on information and does not make intelligent
 	// decisions anymore
@@ -58,7 +66,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 		this.irc = irc;
 		this.state = this.state.init();
-		return new CapReqCmd("sasl");
+		return new CapReqCmd(SASL_CAPABILITY_ID);
 	}
 
 	@Override
@@ -66,28 +74,40 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("SERVER: " + msg.asRaw());
 		}
+		final String rawmsg = msg.asRaw();
+		final Matcher capAck = CAPABILITY_ACKNOWLEDGEMENT.matcher(rawmsg);
+		final Matcher confirmation = AUTHENTICATE_CONFIRMATION.matcher(rawmsg);
 		try {
 			// TODO implement CAP command builder with specialized message type
-			if (msg.asRaw().contains("CAP * ACK :sasl")) {
-				// FIXME convert to regex
-				// FIXME support both <nick> and *
+			if (capAck.find() && saslAcknowledged(capAck.group(2))) {
+				// FIXME support both <nick> and * (but be more restrictive than the current "not-whitespace" requirement)
 				this.state = this.state.ack();
 				final StringBuilder reply = new StringBuilder(AUTHENTICATE);
 				for (String mechanism : this.state.mechanisms()) {
 					reply.append(mechanism).append(" ");
 				}
 				send(reply);
-			} else if (msg.asRaw().contains(AUTHENTICATE + "+")) {
-				this.state = this.state.confirm("+");
+			} else if (confirmation.find()) {
+				this.state = this.state.confirm(confirmation.group(1));
 				final String challenge = this.state.credentials(this.authzid, this.user, this.pass);
 				send(AUTHENTICATE + challenge);
 			} else {
 				// IGNORING, currently ...
 			}
 		} catch (RuntimeException e) {
-			LOG.error("Error occurred during CAP negotiation. Ending CAP negotiation phase and continuing registration as is.", e);
+			LOG.error("Error occurred during CAP negotiation. Prematurely ending CAP negotiation phase and continuing IRC registration as is.", e);
 			send(new CapEndCmd());
 		}
+	}
+
+	private boolean saslAcknowledged(final String acknowledged) {
+		final String[] caps = acknowledged.split("\\s+");
+		for (String cap : caps) {
+			if (SASL_CAPABILITY_ID.equals(cap)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

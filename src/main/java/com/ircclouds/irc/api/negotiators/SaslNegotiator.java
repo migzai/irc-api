@@ -31,7 +31,8 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 	private static final String AUTHENTICATE = "AUTHENTICATE ";
 	private static final String AUTHENTICATE_ABORT = "AUTHENTICATE *";
 
-	private static final Pattern CAPABILITY_ACKNOWLEDGEMENT = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+ACK\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
+	private static final Pattern CAPABILITY_ACK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+ACK\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
+	private static final Pattern CAPABILITY_NAK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+NAK");
 	private static final Pattern AUTHENTICATE_CONFIRMATION = Pattern.compile("AUTHENTICATE\\s+(\\+)\\s*$", 0);
 
 	// AUTHENTICATE numeric replies
@@ -90,7 +91,8 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 			LOG.debug("SERVER: " + msg.asRaw());
 		}
 		final String rawmsg = msg.asRaw();
-		final Matcher capAck = CAPABILITY_ACKNOWLEDGEMENT.matcher(rawmsg);
+		final Matcher capAck = CAPABILITY_ACK.matcher(rawmsg);
+		final Matcher capNak = CAPABILITY_NAK.matcher(rawmsg);
 		final Matcher confirmation = AUTHENTICATE_CONFIRMATION.matcher(rawmsg);
 		try
 		{
@@ -99,6 +101,10 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 			{
 				// FIXME support both <nick> and * (but be more restrictive than the current "not-whitespace" requirement)
 				this.state = this.state.ack(capAck.group(1));
+			}
+			else if (capNak.find())
+			{
+				this.state = this.state.fail();
 			}
 			else if (confirmation.find())
 			{
@@ -359,7 +365,8 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		@Override
 		State fail()
 		{
-			throw new IllegalStateException("SASL not acknowledged. Awaiting acknowledgement of request.");
+			// If we failed to CAP REQ sasl extension, then we cannot continue.
+			return abort();
 		}
 
 		@Override

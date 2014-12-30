@@ -12,7 +12,8 @@ import com.ircclouds.irc.api.listeners.*;
  *
  * @author Danny van Heumen
  */
-public interface CapabilityNegotiator extends IMessageListener {
+public interface CapabilityNegotiator extends IMessageListener
+{
 
 	/**
 	 * Initiate the negotiator with the provided irc instance.
@@ -27,8 +28,7 @@ public interface CapabilityNegotiator extends IMessageListener {
 	 * order to respond to incoming CAP negoation messages.
 	 * </p>
 	 *
-	 * @param irc
-	 *            the current IRCApi instance
+	 * @param irc the current IRCApi instance
 	 * @return returns initialization command for CAP negotiation
 	 */
 	CapCmd initiate(IRCApi irc);

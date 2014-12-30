@@ -29,7 +29,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 	private static final String SASL_CAPABILITY_ID = "sasl";
 
 	private static final String AUTHENTICATE = "AUTHENTICATE ";
-	private static final String AUTHENTICATE_ABORT = "AUTHENTICATE *";
+	private static final String AUTHENTICATE_ABORT = AUTHENTICATE + "*";
 
 	private static final Pattern CAPABILITY_ACK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+ACK\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
 	private static final Pattern CAPABILITY_NAK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+NAK");
@@ -54,7 +54,6 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 	private IRCApi irc;
 
 	// TODO How to handle time-outs? (though not crucial since IRC server will also time-out)
-	// TODO How to handle failure() messages? Retry everything once?
 	public SaslNegotiator(final String user, final String pass, final String authzid)
 	{
 		if (user == null)
@@ -96,11 +95,9 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		final Matcher confirmation = AUTHENTICATE_CONFIRMATION.matcher(rawmsg);
 		try
 		{
-			// TODO implement CAP command builder with specialized message type
 			if (capAck.find() && saslAcknowledged(capAck.group(2)))
 			{
-				// FIXME support both <nick> and * (but be more restrictive than the current "not-whitespace" requirement)
-				this.state = this.state.ack(capAck.group(1));
+				this.state = this.state.ack();
 			}
 			else if (capNak.find())
 			{
@@ -154,12 +151,14 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 				break;
 			case ERR_SASLFAIL:
 				this.state = this.state.fail();
-				// FIXME next attempt or abort?
 				break;
-			case ERR_SASLABORTED:
+			case ERR_NICKLOCKED:
+				LOG.error("SASL account locked. Aborting authentication procedure.");
 				this.state = this.state.abort();
 				break;
+			case ERR_SASLABORTED:
 			case ERR_SASLALREADY:
+			case ERR_SASLTOOLONG:
 				this.state = this.state.abort();
 				break;
 			default:
@@ -189,7 +188,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		 *
 		 * @return returns new state
 		 */
-		abstract State ack(String user);
+		abstract State ack();
 
 		/**
 		 * Confirm proposed mechanism with optional max response length
@@ -267,6 +266,12 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
+	/**
+	 * The initial state of the SASL negotiator. This is the state before
+	 * anything has happened and neither CAP negotiation nor SASL authentication
+	 * are in the picture yet. Upon initialization, we transition to a new state
+	 * and we await acknowledgement of CAP REQ request.
+	 */
 	public static final class InitialState extends State
 	{
 
@@ -281,7 +286,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 
 		@Override
-		State ack(final String user)
+		State ack()
 		{
 			throw new IllegalStateException("SASL not initialized.");
 		}
@@ -307,7 +312,11 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		@Override
 		State fail()
 		{
-			throw new IllegalStateException("SASL not initialized.");
+			// Silently fail as we are not in a state in which we can act on
+			// anything specific. This could mean that we haven't started CAP
+			// negotiation yet or that we are completely done with CAP
+			// negotiation and SASL authentication.
+			return this;
 		}
 
 		@Override
@@ -317,8 +326,14 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
+	/**
+	 * A CAP REQ for sasl has been requested. In this state we await ACK of the
+	 * sasl extension. Upon acknowledgement we immediately start SASL
+	 * authentication by sending a mechanism proposal.
+	 */
 	public static final class SaslRequested extends State
 	{
+
 		private final IRCApi irc;
 
 		private SaslRequested(final IRCApi irc)
@@ -337,9 +352,8 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 
 		@Override
-		State ack(final String user)
+		State ack()
 		{
-			// FIXME need to verify user?
 			send(this.irc, AUTHENTICATE + "PLAIN");
 			return new SaslAcknowledged(irc);
 		}
@@ -377,8 +391,14 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
+	/**
+	 * CAP REQ is acknowledged and mechanism proposal has been sent. Upon
+	 * confirmation of the authentication mechanism we send the proper
+	 * authentication credentials.
+	 */
 	public static final class SaslAcknowledged extends State
 	{
+
 		private final IRCApi irc;
 
 		private SaslAcknowledged(final IRCApi irc)
@@ -397,7 +417,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 
 		@Override
-		State ack(final String user)
+		State ack()
 		{
 			// Not a big issue that we acknowledge twice, since we haven't gone further yet.
 			return this;
@@ -406,6 +426,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		@Override
 		State confirm(final String parameters, final String authzid, final String user, final String pass)
 		{
+			// FIXME should check for message length, i.e. <= 400 bytes
 			send(this.irc, AUTHENTICATE + encode(authzid, user, pass));
 			return new SaslConfirmed(this.irc);
 		}
@@ -425,8 +446,8 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		@Override
 		State fail()
 		{
-			// FIXME fail handling: In this state we expect acceptance of proposed authentication mechanism. In a retry we can revert to a less preferred mechanism, if any.
-			throw new IllegalStateException("SASL not confirmed yet. Awaiting acceptance of AUTHENTICATE proposal.");
+			// Only PLAIN mechanism support and proposal fails, so abort.
+			return abort();
 		}
 
 		@Override
@@ -437,8 +458,15 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
+	/**
+	 * SASL authentication credentials have been sent. Upon receiving a logged
+	 * in message and a successful sasl authentication message, we transition
+	 * back to InitialState and we are now completely done. CAP END is sent to
+	 * close CAP negotiation.
+	 */
 	public static final class SaslConfirmed extends State
 	{
+
 		private final IRCApi irc;
 		private boolean loggedIn;
 		private boolean successful;
@@ -459,7 +487,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 
 		@Override
-		State ack(final String user)
+		State ack()
 		{
 			throw new IllegalStateException("SASL already acknowledged. Awaiting confirmation of successful log in.");
 		}
@@ -467,8 +495,6 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		@Override
 		State confirm(final String parameters, final String authzid, final String user, final String pass)
 		{
-			// FIXME store authentication requirement parameters
-			// FIXME resend challenge?
 			return this;
 		}
 
@@ -502,8 +528,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		@Override
 		State fail()
 		{
-			reset();
-			return this;
+			return abort();
 		}
 
 		@Override

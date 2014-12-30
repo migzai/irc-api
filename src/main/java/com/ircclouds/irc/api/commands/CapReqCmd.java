@@ -20,9 +20,10 @@ public class CapReqCmd extends CapCmd {
 	public String asString()
 	{
 		final StringBuilder req = new StringBuilder("CAP REQ :");
-		for (String ext : extensions) {
+		for (String ext : extensions)
+		{
 			req.append(ext).append(" ");
 		}
-		return req.append(CRNL).toString();
+		return req.toString();
 	}
 }

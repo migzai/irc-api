@@ -11,6 +11,6 @@ public class CapEndCmd extends CapCmd
 	@Override
 	public String asString()
 	{
-		return "CAP END" + CRNL;
+		return "CAP END";
 	}
 }

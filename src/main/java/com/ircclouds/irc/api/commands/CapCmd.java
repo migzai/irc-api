@@ -7,5 +7,4 @@ package com.ircclouds.irc.api.commands;
  */
 public abstract class CapCmd implements ICommand
 {
-	protected static final String CRNL = "\r\n";
 }

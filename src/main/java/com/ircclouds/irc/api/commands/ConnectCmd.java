@@ -32,7 +32,7 @@ public class ConnectCmd implements ICommand
 	public String asString()
 	{
 		return new StringBuffer()
-				.append(capInitCmd == null ? "" : capInitCmd.asString())
+				.append(capInitCmd == null ? "" : capInitCmd.asString() + CRNL)
 				.append(getPassword())
 				.append(NICK).append(SPACE).append(nick).append(CRNL)
 				.append(USER).append(SPACE).append(ident).append(SPACE).append("0").append(SPACE).append("*").append(SPACE).append(COLUMN).append(realname).append(CRNL).toString();

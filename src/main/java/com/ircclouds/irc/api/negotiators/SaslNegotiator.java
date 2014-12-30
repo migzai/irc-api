@@ -217,7 +217,10 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
-	private static final class InitialState extends State {
+	public static final class InitialState extends State {
+
+		public InitialState() {
+		}
 
 		@Override
 		State init(final IRCApi irc) {
@@ -255,7 +258,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
-	private static final class SaslRequested extends State {
+	public static final class SaslRequested extends State {
 		private final IRCApi irc;
 
 		private SaslRequested(final IRCApi irc) {
@@ -304,7 +307,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
-	private static final class SaslAcknowledged extends State {
+	public static final class SaslAcknowledged extends State {
 		private final IRCApi irc;
 
 		private SaslAcknowledged(final IRCApi irc) {
@@ -353,7 +356,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		}
 	}
 
-	private static final class SaslConfirmed extends State {
+	public static final class SaslConfirmed extends State {
 		private final IRCApi irc;
 		private boolean loggedIn;
 		private boolean successful;

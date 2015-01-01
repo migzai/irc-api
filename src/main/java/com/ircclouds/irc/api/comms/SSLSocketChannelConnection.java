@@ -11,6 +11,8 @@ import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
 import org.slf4j.*;
 
+import nl.dannyvanheumen.nio.*;
+
 public class SSLSocketChannelConnection implements IConnection
 {
 	private static final Logger LOG = LoggerFactory.getLogger(SSLSocketChannelConnection.class);
@@ -26,7 +28,8 @@ public class SSLSocketChannelConnection implements IConnection
 	private HandshakeStatus hStatus;
 	private int remaingUnwraps;
 
-	public boolean open(String aHostname, int aPort, SSLContext aContext) throws IOException
+	@Override
+	public boolean open(String aHostname, int aPort, SSLContext aContext, Proxy aProxy) throws IOException
 	{
 		sslEngine  = aContext != null ? aContext.createSSLEngine(aHostname, aPort) : getDefaultSSLContext().createSSLEngine(aHostname, aPort);			
 		sslEngine.setNeedClientAuth(false);
@@ -38,10 +41,20 @@ public class SSLSocketChannelConnection implements IConnection
 		cipherSendBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
 		cipherRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
 		appRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
-					
-		return (sChannel = SocketChannel.open()).connect(new InetSocketAddress(aHostname, aPort));
+
+		if (aProxy != null && aProxy.type() == Proxy.Type.SOCKS)
+		{
+			sChannel = new ProxiedSocketChannel(aProxy);
+		}
+		else
+		{
+			// Configured to not use a proxy, using the original SocketChannel.
+			sChannel = SocketChannel.open();
+		}
+		return sChannel.connect(new InetSocketAddress(aHostname, aPort));
 	}
 
+	@Override
 	public String read() throws IOException
 	{
 		doAnyPendingHandshake();
@@ -62,6 +75,7 @@ public class SSLSocketChannelConnection implements IConnection
 		return new String(_bytes);
 	}
 
+	@Override
 	public int write(String aMessage) throws IOException
 	{
 		doAnyPendingHandshake();
@@ -72,6 +86,7 @@ public class SSLSocketChannelConnection implements IConnection
 		return wrapAndWrite();
 	}
 
+	@Override
 	public void close() throws IOException
 	{
 		try
@@ -158,7 +173,7 @@ public class SSLSocketChannelConnection implements IConnection
 		remaingUnwraps -= _hRes.bytesConsumed();
 		
 		switch (_hRes.getStatus())
-		{				
+		{
 			case BUFFER_UNDERFLOW:
 				int bytesRead = sChannel.read(cipherRecvBuffer.compact());
 				if (bytesRead == -1)

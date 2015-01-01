@@ -80,6 +80,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 		cmdServ.execute(aCommand);
 	}
 
+	@Override
 	public void addListeners(MESSAGE_VISIBILITY aListenerLevel, IMessageListener... aListeners)
 	{
 		for (IMessageListener _listener : aListeners)
@@ -88,6 +89,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 		}
 	}
 	
+	@Override
 	public ICommandServer getCommandServer()
 	{
 		return cmdServ;

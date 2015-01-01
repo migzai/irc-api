@@ -534,6 +534,12 @@ public class IRCApiImpl implements IRCApi
 		{
 			getCommandServer().execute(aCommand);
 		}
+		catch (SocketException aExc)
+		{
+			((IRCStateImpl) this.state).setConnected(false);
+			dispatchError(aExc);
+			throw new RuntimeException(aExc);
+		}
 		catch (IOException aExc)
 		{
 			LOG.error("Error executing command", aExc);
@@ -601,12 +607,25 @@ public class IRCApiImpl implements IRCApi
 		{
 			getCommandServer().execute(aCommand);
 		}
+		catch (SocketException aExc)
+		{
+			((IRCStateImpl) this.state).setConnected(false);
+			dispatchError(aExc);
+			tryInvokeCallback(aCallback, aDirty, aExc);
+		}
 		catch (IOException aExc)
 		{
 			LOG.error("Error executing command", aExc);
 
 			tryInvokeCallback(aCallback, aDirty, aExc);
 		}
+	}
+
+	private void dispatchError(Exception aExc)
+	{
+		LOG.debug("Connectivity error: socket exception are non-recoverable, dispatching error message.", aExc);
+		// FIXME consider making dispatchError an interface method
+		((AbstractIRCSession) this.session).dispatchError(aExc.getMessage());
 	}
 
 	private <R> Callback<R> getDirtyCallback(final Callback<R> aCallback, final Dirty aDirty)

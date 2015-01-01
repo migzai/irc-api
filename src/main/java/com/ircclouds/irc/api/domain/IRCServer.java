@@ -1,6 +1,7 @@
 package com.ircclouds.irc.api.domain;
 
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
+import java.net.Proxy;
 
 /**
  * 
@@ -12,10 +13,11 @@ public class IRCServer implements ISource
 	private static final int DEFAULT_IRC_SERVER_PORT = 6667;
 	private static final int DEFAULT_SSL_IRC_SERVER_PORT = 6697;
 
-	private String hostname;
-	private String password;
-	private int port = DEFAULT_IRC_SERVER_PORT;
-	private Boolean isSSL;
+	private final String hostname;
+	private final String password;
+	private final int port;
+	private final Boolean isSSL;
+	private final Proxy proxy;
 
 	public IRCServer(String aHostname)
 	{
@@ -30,30 +32,36 @@ public class IRCServer implements ISource
 		}
 		else
 		{
-			 port = DEFAULT_IRC_SERVER_PORT;
+			port = DEFAULT_IRC_SERVER_PORT;
 		}
-		
 		hostname = aHostname;
 		password = "";
 		isSSL = aSSLServer;
+		proxy = null;
 	}
 
 	public IRCServer(String aHostname, int aPort)
 	{
-		this(aHostname, aPort, "", false);
+		this(aHostname, aPort, "", false, null);
 	}
 
 	public IRCServer(String aHostname, int aPort, Boolean aIsSSL)
 	{
-		this(aHostname, aPort, "", aIsSSL);
+		this(aHostname, aPort, "", aIsSSL, null);
 	}
 
 	public IRCServer(String aHostname, int aPort, String aPassword, Boolean aIsSSL)
+	{
+		this(aHostname, aPort, aPassword, aIsSSL, null);
+	}
+
+	public IRCServer(String aHostname, int aPort, String aPassword, Boolean aIsSSL, Proxy aProxy)
 	{
 		hostname = aHostname;
 		port = aPort;
 		password = aPassword;
 		isSSL = aIsSSL;
+		proxy = aProxy;
 	}
 
 	public String getPassword()
@@ -75,7 +83,13 @@ public class IRCServer implements ISource
 	{
 		return isSSL;
 	}
+
+	public Proxy getProxy()
+	{
+		return proxy;
+	}
 	
+	@Override
 	public String toString()
 	{
 		return hostname;

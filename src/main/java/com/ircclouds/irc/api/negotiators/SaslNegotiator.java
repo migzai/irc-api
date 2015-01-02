@@ -269,7 +269,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 			{
 				response.append(authzid);
 			}
-			response.append('\u0000').append(user).append('\u0000').append(pass);
+			response.append('\0').append(user).append('\0').append(pass);
 			try
 			{
 				return Base64.encodeBase64String(response.toString().getBytes("UTF-8"));
@@ -441,9 +441,21 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		@Override
 		State confirm(final String parameters, final String authzid, final String user, final String pass)
 		{
-			// FIXME should check for message length, i.e. <= 400 bytes
-			send(this.irc, AUTHENTICATE + encode(authzid, user, pass));
+			send(this.irc, createAuthenticateMessage(authzid, user, pass));
 			return new SaslConfirmed(this.irc);
+		}
+
+		private String createAuthenticateMessage(final String authzid, final String user, final String pass)
+		{
+			final String msg = AUTHENTICATE + encode(authzid, user, pass);
+			if (msg.length() <= 400)
+			{
+				return msg;
+			}
+			else
+			{
+				return msg.substring(0, 400);
+			}
 		}
 
 		@Override

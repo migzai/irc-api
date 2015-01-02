@@ -621,11 +621,10 @@ public class IRCApiImpl implements IRCApi
 		}
 	}
 
-	private void dispatchError(Exception aExc)
+	private void dispatchError(final Exception aExc)
 	{
 		LOG.debug("Connectivity error: socket exception are non-recoverable, dispatching error message.", aExc);
-		// FIXME consider making dispatchError an interface method
-		((AbstractIRCSession) this.session).dispatchError(aExc.getMessage());
+		this.session.dispatchClientError(aExc);
 	}
 
 	private <R> Callback<R> getDirtyCallback(final Callback<R> aCallback, final Dirty aDirty)

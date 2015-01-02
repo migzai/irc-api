@@ -33,6 +33,8 @@ public interface IVariousMessageListener extends IMessageListener
 	void onUserQuit(QuitMessage aMsg);
 	
 	void onError(ErrorMessage aMsg);
+
+	void onClientError(ClientErrorMessage aMsg);
 	
 	void onChannelMode(ChannelModeMessage aMsg);
 	

@@ -146,6 +146,10 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 		{
 			aListener.onError((ErrorMessage) aMessage);
 		}
+		else if (aMessage instanceof ClientErrorMessage)
+		{
+			aListener.onClientError((ClientErrorMessage) aMessage);
+		}
 		else if (aMessage instanceof ChannelModeMessage)
 		{
 			aListener.onChannelMode((ChannelModeMessage) aMessage);

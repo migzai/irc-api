@@ -20,4 +20,6 @@ public interface IIRCSession
 	void close() throws IOException;
 
 	IMessageFilter getMessageFilter();
+
+	void dispatchClientError(Exception e);
 }

@@ -95,15 +95,18 @@ public class SSLSocketChannelConnection implements IConnection
 	{
 		try
 		{
-			if (!sslEngine.isOutboundDone())
+			if (sChannel.isConnected())
 			{
-				sslEngine.closeOutbound();
-				doAnyPendingHandshake();
-			}
-			else if (!sslEngine.isInboundDone())
-			{
-				sslEngine.closeInbound();
-				processHandshake();
+				if (!sslEngine.isOutboundDone())
+				{
+					sslEngine.closeOutbound();
+					doAnyPendingHandshake();
+				}
+				else if (!sslEngine.isInboundDone())
+				{
+					sslEngine.closeInbound();
+					processHandshake();
+				}
 			}
 		}
 		catch (IOException aExc)

@@ -42,16 +42,20 @@ public class SSLSocketChannelConnection implements IConnection
 		cipherRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
 		appRecvBuffer = ByteBuffer.allocate(sslEngine.getSession().getApplicationBufferSize());
 
+		final InetSocketAddress address;
 		if (aProxy != null && aProxy.type() == Proxy.Type.SOCKS)
 		{
+			// FIXME how to determine whether to resolve immediately or use SOCKS5 proxy resolve feature
 			sChannel = new ProxiedSocketChannel(aProxy);
+			address = InetSocketAddress.createUnresolved(aHostname, aPort);
 		}
 		else
 		{
 			// Configured to not use a proxy, using the original SocketChannel.
 			sChannel = SocketChannel.open();
+			address = new InetSocketAddress(aHostname, aPort);
 		}
-		return sChannel.connect(new InetSocketAddress(aHostname, aPort));
+		return sChannel.connect(address);
 	}
 
 	@Override

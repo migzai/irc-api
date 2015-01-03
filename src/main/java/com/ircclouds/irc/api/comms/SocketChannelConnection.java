@@ -25,15 +25,19 @@ public class SocketChannelConnection implements IConnection
 	{
 		if (channel == null || !channel.isConnected())
 		{
+			final InetSocketAddress address;
 			if (aProxy != null && aProxy.type() == Proxy.Type.SOCKS)
 			{
+				// FIXME how to determine whether to resolve immediately or use SOCKS5 proxy resolve feature
 				channel = new ProxiedSocketChannel(aProxy);
+				address = InetSocketAddress.createUnresolved(aHostname, aPort);
 			}
 			else
 			{
 				channel = SocketChannel.open();
+				address = new InetSocketAddress(aHostname, aPort);
 			}
-			return channel.connect(new InetSocketAddress(aHostname, aPort));
+			return channel.connect(address);
 		}
 		else
 		{

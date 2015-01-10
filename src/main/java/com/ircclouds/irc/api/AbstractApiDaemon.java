@@ -5,6 +5,7 @@ import java.io.*;
 import org.slf4j.*;
 
 import com.ircclouds.irc.api.comms.IConnection.EndOfStreamException;
+import com.ircclouds.irc.api.domain.messages.ClientErrorMessage;
 import com.ircclouds.irc.api.domain.messages.interfaces.*;
 import com.ircclouds.irc.api.filters.*;
 
@@ -56,8 +57,9 @@ public abstract class AbstractApiDaemon extends Thread
 		catch (IOException aExc)
 		{
 			LOG.error(this.getName(), aExc);
-			
+
 			signalExceptionToApi(aExc);
+			dispatcher.dispatch(new ClientErrorMessage(aExc), TargetListeners.ALL);
 		}
 		finally
 		{

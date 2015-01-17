@@ -29,7 +29,7 @@ public class SSLSocketChannelConnection implements IConnection
 	private int remaingUnwraps;
 
 	@Override
-	public boolean open(String aHostname, int aPort, SSLContext aContext, Proxy aProxy) throws IOException
+	public boolean open(String aHostname, int aPort, SSLContext aContext, Proxy aProxy, boolean resolveThroughProxy) throws IOException
 	{
 		sslEngine  = aContext != null ? aContext.createSSLEngine(aHostname, aPort) : getDefaultSSLContext().createSSLEngine(aHostname, aPort);			
 		sslEngine.setNeedClientAuth(false);
@@ -45,9 +45,15 @@ public class SSLSocketChannelConnection implements IConnection
 		final InetSocketAddress address;
 		if (aProxy != null && aProxy.type() == Proxy.Type.SOCKS)
 		{
-			// FIXME how to determine whether to resolve immediately or use SOCKS5 proxy resolve feature
 			sChannel = new ProxiedSocketChannel(aProxy);
-			address = InetSocketAddress.createUnresolved(aHostname, aPort);
+			if (resolveThroughProxy)
+			{
+				address = InetSocketAddress.createUnresolved(aHostname, aPort);
+			}
+			else
+			{
+				address = new InetSocketAddress(aHostname, aPort);
+			}
 		}
 		else
 		{

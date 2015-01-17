@@ -18,6 +18,7 @@ public class IRCServer implements ISource
 	private final int port;
 	private final Boolean isSSL;
 	private final Proxy proxy;
+	private final boolean resolveByProxy;
 
 	public IRCServer(String aHostname)
 	{
@@ -38,30 +39,32 @@ public class IRCServer implements ISource
 		password = "";
 		isSSL = aSSLServer;
 		proxy = null;
+		resolveByProxy = false;
 	}
 
 	public IRCServer(String aHostname, int aPort)
 	{
-		this(aHostname, aPort, "", false, null);
+		this(aHostname, aPort, "", false, null, false);
 	}
 
 	public IRCServer(String aHostname, int aPort, Boolean aIsSSL)
 	{
-		this(aHostname, aPort, "", aIsSSL, null);
+		this(aHostname, aPort, "", aIsSSL, null, false);
 	}
 
 	public IRCServer(String aHostname, int aPort, String aPassword, Boolean aIsSSL)
 	{
-		this(aHostname, aPort, aPassword, aIsSSL, null);
+		this(aHostname, aPort, aPassword, aIsSSL, null, false);
 	}
 
-	public IRCServer(String aHostname, int aPort, String aPassword, Boolean aIsSSL, Proxy aProxy)
+	public IRCServer(String aHostname, int aPort, String aPassword, Boolean aIsSSL, Proxy aProxy, boolean aResolveByProxy)
 	{
 		hostname = aHostname;
 		port = aPort;
 		password = aPassword;
 		isSSL = aIsSSL;
 		proxy = aProxy;
+		resolveByProxy = aResolveByProxy;
 	}
 
 	public String getPassword()
@@ -87,6 +90,11 @@ public class IRCServer implements ISource
 	public Proxy getProxy()
 	{
 		return proxy;
+	}
+
+	public boolean isResolveByProxy()
+	{
+		return resolveByProxy;
 	}
 	
 	@Override

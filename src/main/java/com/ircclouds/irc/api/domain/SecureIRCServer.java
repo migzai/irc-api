@@ -37,9 +37,9 @@ public class SecureIRCServer extends IRCServer
 		sslContext = aSSLContext;
 	}
 
-	public SecureIRCServer(String aHostname, int aPort, SSLContext aSSLContext, Proxy aProxy)
+	public SecureIRCServer(String aHostname, int aPort, SSLContext aSSLContext, Proxy aProxy, boolean aResolveByProxy)
 	{
-		super(aHostname, aPort, "", true, aProxy);
+		super(aHostname, aPort, "", true, aProxy, aResolveByProxy);
 
 		sslContext = aSSLContext;
 	}
@@ -51,9 +51,9 @@ public class SecureIRCServer extends IRCServer
 		sslContext = aSSLContext;
 	}
 
-	public SecureIRCServer(String aHostname, int aPort, String aPassword, SSLContext aSSLContext, Proxy aProxy)
+	public SecureIRCServer(String aHostname, int aPort, String aPassword, SSLContext aSSLContext, Proxy aProxy, boolean aResolveByProxy)
 	{
-		super(aHostname, aPort, aPassword, true, aProxy);
+		super(aHostname, aPort, aPassword, true, aProxy, aResolveByProxy);
 
 		sslContext = aSSLContext;
 	}

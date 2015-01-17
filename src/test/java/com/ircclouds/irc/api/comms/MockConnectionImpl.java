@@ -20,7 +20,7 @@ public class MockConnectionImpl implements IConnection
 	}
 	
 	@Mock
-	public boolean open(String aHostname, int aPort, SSLContext aCtx, Proxy aProxy) throws IOException
+	public boolean open(String aHostname, int aPort, SSLContext aCtx, Proxy aProxy, boolean aResolveByProxy) throws IOException
 	{
 		InputStream _resourceAsStream = MockConnectionImpl.class.getResourceAsStream(filename);
 		if (_resourceAsStream != null)

@@ -21,16 +21,22 @@ public class SocketChannelConnection implements IConnection
 	}
 
 	@Override
-	public boolean open(String aHostname, int aPort, SSLContext aCtx, Proxy aProxy) throws IOException
+	public boolean open(String aHostname, int aPort, SSLContext aCtx, Proxy aProxy, boolean resolveByProxy) throws IOException
 	{
 		if (channel == null || !channel.isConnected())
 		{
 			final InetSocketAddress address;
 			if (aProxy != null && aProxy.type() == Proxy.Type.SOCKS)
 			{
-				// FIXME how to determine whether to resolve immediately or use SOCKS5 proxy resolve feature
 				channel = new ProxiedSocketChannel(aProxy);
-				address = InetSocketAddress.createUnresolved(aHostname, aPort);
+				if (resolveByProxy)
+				{
+					address = InetSocketAddress.createUnresolved(aHostname, aPort);
+				}
+				else
+				{
+					address = new InetSocketAddress(aHostname, aPort);
+				}
 			}
 			else
 			{

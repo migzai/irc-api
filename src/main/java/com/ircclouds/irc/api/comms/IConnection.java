@@ -7,7 +7,7 @@ import javax.net.ssl.*;
 
 public interface IConnection
 {
-	boolean open(String aHostname, int aPort, SSLContext aContext, Proxy aProxy) throws IOException;
+	boolean open(String aHostname, int aPort, SSLContext aContext, Proxy aProxy, boolean resolveByProxy) throws IOException;
 	
 	void close() throws IOException;
 

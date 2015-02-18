@@ -38,6 +38,7 @@ public abstract class AbstractMessageFactory
 	private static final ChanPartBuilder CHAN_PART_BUILDER = new ChanPartBuilder();
 	private static final QuitMessageBuilder QUIT_MESSAGE_BUILDER = new QuitMessageBuilder();
 	private static final ErrorMessageBuilder ERROR_MESSAGE_BUILDER = new ErrorMessageBuilder();
+	private static final UnknownMessageBuilder UNKNOWN_MESSAGE_BUILDER = new UnknownMessageBuilder();
 	
 	private final AbstractPrivateMessageBuilder PRIVATE_MESSAGE_BUILDER;
 	private final AbstractNoticeBuilder NOTICE_BUILDER;
@@ -131,7 +132,7 @@ public abstract class AbstractMessageFactory
 				}
 			}
 
-			return IMessage.NULL_MESSAGE;
+			return UNKNOWN_MESSAGE_BUILDER.build(aMsg);
 		}
 		catch (Exception aExc)
 		{

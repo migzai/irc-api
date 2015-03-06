@@ -30,7 +30,7 @@ public abstract class AbstractApiDaemon extends Thread
 			while (reader.available())
 			{
 				IMessage _msg = reader.readMessage();
-				if (_msg != IMessage.NULL_MESSAGE)
+				if (_msg != null)
 				{
 					dispatcher.dispatchToPrivateListeners(_msg);
 					

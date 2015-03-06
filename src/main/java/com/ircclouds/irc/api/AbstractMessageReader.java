@@ -55,7 +55,7 @@ public abstract class AbstractMessageReader implements IMessageReader, INeedsCon
 
 	public IMessage readMessage()
 	{
-		IMessage _msg = IMessage.NULL_MESSAGE;
+		IMessage _msg = null;
 		
 		if (ircMessages.peek() != null)
 		{

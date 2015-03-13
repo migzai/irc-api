@@ -9,6 +9,7 @@ import com.ircclouds.irc.api.commands.ICommand;
 import com.ircclouds.irc.api.domain.messages.interfaces.IMessage;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,6 +20,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Composite Negotiator. A composite negotiator that will handle negotiator for
  * a provided list of capabilities.
+ *
+ * The composite negotiator is a stateful negotiator that will start with a
+ * clean state upon initiation.
  *
  * FIXME Consider using a second collection and keep primary collection
  * "capabilities" as immutable reference.
@@ -36,23 +40,39 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	private static final Pattern CAPABILITY_ACK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+ACK\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
 	private static final Pattern CAPABILITY_NAK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+NAK");
 
+	/**
+	 * List of requested capabilities.
+	 */
 	private final List<Capability> capabilities;
+	/**
+	 * Host instance used for feedback during the negotiation process.
+	 */
 	private final Host host;
 
+	/**
+	 * List of requested capabilities. (Starts empty.) The list will contain all
+	 * capabilities that have been requested from the server.
+	 */
+	private final LinkedList<Capability> requested = new LinkedList<Capability>();
+	/**
+	 * List of acknowledged capabilities. (Starts empty.) The list will contain
+	 * all capabilities that have been acknowledged by the server.
+	 */
+	private final LinkedList<Capability> acknowledged = new LinkedList<Capability>();
+
+	/**
+	 * The IRC-API instance.
+	 */
 	private IRCApi irc;
 
 	public CompositeNegotiator(List<Capability> capabilities, Host host)
 	{
-		if (host == null)
-		{
-			throw new NullPointerException("host");
-		}
-		this.host = host;
 		if (capabilities == null)
 		{
 			throw new NullPointerException("capabilities");
 		}
-		this.capabilities = new LinkedList<Capability>(verify(capabilities));
+		this.capabilities = Collections.unmodifiableList(verify(capabilities));
+		this.host = host;
 	}
 
 	/**
@@ -87,6 +107,8 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 			throw new IllegalArgumentException("irc instance is required");
 		}
 		this.irc = irc;
+		this.requested.clear();
+		this.acknowledged.clear();
 		return new CapLsCmd();
 	}
 
@@ -118,8 +140,8 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 				}
 				else
 				{
-					this.capabilities.retainAll(request);
-					sendCapabilityRequest(request);
+					this.requested.addAll(request);
+					sendCapabilityRequest();
 				}
 			}
 			else if (capAck.find())
@@ -128,11 +150,13 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 				final List<Capability> confirms = acknowledgeCapabilities(responseCaps);
 				if (!confirms.isEmpty())
 				{
-					// According to irc.atheme.org/ircv3 server will remain silent after sending client ACKs.
+					// According to irc.atheme.org/ircv3 server will remain
+					// silent after sending client ACKs. So fire and forget.
 					sendCapabilityConfirmation(confirms);
-					this.capabilities.addAll(confirms);
+					this.acknowledged.addAll(confirms);
 					feedbackAcknowledgements(confirms);
 				}
+				// FIXME wait for multi-response acks?
 				// FIXME start capability conversations
 				send(this.irc, new CapEndCmd());
 			}
@@ -140,10 +164,6 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 			{
 				LOG.error("Capability request NOT Acknowledged: " + rawmsg + " (this may be due to inconsistent server responses)");
 				send(this.irc, new CapEndCmd());
-			}
-			else
-			{
-				// IGNORING, currently ...
 			}
 		}
 		catch (RuntimeException e)
@@ -159,11 +179,15 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	 * @param responseText the response text
 	 * @return Returns list of Cap instances.
 	 */
-	private static LinkedList<Cap> parseResponseCaps(final String responseText)
+	static LinkedList<Cap> parseResponseCaps(final String responseText)
 	{
 		final LinkedList<Cap> caps = new LinkedList<Cap>();
 		for (String capdesc : responseText.split("\\s+"))
 		{
+			if (capdesc.isEmpty())
+			{
+				continue;
+			}
 			caps.add(new Cap(capdesc));
 		}
 		return caps;
@@ -180,13 +204,20 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	{
 		// find all supported capabilities
 		final ArrayList<Capability> found = new ArrayList<Capability>();
-		for (Capability requested : this.capabilities)
+		for (Capability request : this.capabilities)
 		{
 			for (Cap available : capLs)
 			{
-				if (requested.getId().equals(available.id))
+				if (request.getId().equals(available.id))
 				{
-					found.add(requested);
+					if (request.enable() == available.isEnabled() || !available.isMandatory())
+					{
+						// Only if wishes match server expectations, will we
+						// consider it found. So if we wish to disable a feature
+						// and it is mandatory, then we consider it unsupported.
+						found.add(request);
+					}
+					// in any case we found the capability, so stop looking for it
 					break;
 				}
 			}
@@ -225,13 +256,11 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 
 	/**
 	 * Send capability request.
-	 *
-	 * @param request list of capabilities to request
 	 */
-	private void sendCapabilityRequest(final List<Capability> request)
+	private void sendCapabilityRequest()
 	{
 		final StringBuilder requestLine = new StringBuilder("CAP REQ :");
-		for (Capability cap : request)
+		for (Capability cap : this.requested)
 		{
 			requestLine.append(repr(cap)).append(' ');
 		}
@@ -246,25 +275,25 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	 */
 	private List<Capability> acknowledgeCapabilities(final LinkedList<Cap> capAck)
 	{
-		final LinkedList<Capability> acknowledged = new LinkedList<Capability>();
+		final LinkedList<Capability> acks = new LinkedList<Capability>();
 		final LinkedList<Capability> needsConfirmation = new LinkedList<Capability>();
-		for (Capability requestCap : this.capabilities)
+		for (Capability request : this.capabilities)
 		{
 			for (Cap cap : capAck)
 			{
-				if (!requestCap.getId().equals(cap.id))
+				if (!request.getId().equals(cap.id))
 				{
 					continue;
 				}
-				if (requestCap.enable() == cap.enabled)
+				if (request.enable() == cap.enabled)
 				{
 					if (cap.requiresAck)
 					{
-						needsConfirmation.add(requestCap);
+						needsConfirmation.add(request);
 					}
 					else
 					{
-						acknowledged.add(requestCap);
+						acks.add(request);
 					}
 				}
 				else
@@ -273,13 +302,13 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 					LOG.warn("Inverse of requested state was acknowledged by IRC server: " + cap.id + "(" + cap.enabled + ")");
 				}
 			}
-			if (!acknowledged.contains(requestCap) && !needsConfirmation.contains(requestCap)) {
+			if (!acks.contains(request) && !needsConfirmation.contains(request)) {
 				// FIXME feedback lost capability as rejected?
-				LOG.warn("Capability " + requestCap.getId() + " was not acknowledged by IRC server. (Lost)");
+				LOG.warn("Capability " + request.getId() + " was not acknowledged by IRC server. (Lost)");
 			}
 		}
-		feedbackAcknowledgements(acknowledged);
-		this.capabilities.retainAll(acknowledged);
+		this.acknowledged.addAll(acks);
+		feedbackAcknowledgements(acks);
 		return needsConfirmation;
 	}
 
@@ -386,7 +415,7 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 		irc.rawMessage(msg);
 	}
 
-	private static class Cap
+	static class Cap
 	{
 		/**
 		 * Capability is enabled.
@@ -442,6 +471,22 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 			this.enabled = enabled;
 			this.requiresAck = requiresAck;
 			this.mandatory = mandatory;
+		}
+
+		String getId() {
+			return this.id;
+		}
+
+		boolean isEnabled() {
+			return this.enabled;
+		}
+
+		boolean isRquiresAck() {
+			return this.requiresAck;
+		}
+
+		boolean isMandatory() {
+			return this.mandatory;
 		}
 	}
 

@@ -7,8 +7,8 @@ import com.ircclouds.irc.api.commands.CapEndCmd;
 import com.ircclouds.irc.api.commands.CapLsCmd;
 import com.ircclouds.irc.api.commands.ICommand;
 import com.ircclouds.irc.api.domain.messages.interfaces.IMessage;
-import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
-import java.util.ArrayList;
+import com.ircclouds.irc.api.listeners.IMessageListener;
+import com.ircclouds.irc.api.negotiators.util.Relay;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Danny van Heumen
  */
-public class CompositeNegotiator extends VariousMessageListenerAdapter implements CapabilityNegotiator
+public class CompositeNegotiator implements CapabilityNegotiator, IMessageListener
 {
 	/**
 	 * Logger.
@@ -61,9 +61,24 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	private final LinkedList<Capability> acknowledged = new LinkedList<Capability>();
 
 	/**
+	 * List of all capabilities whose conversations are finished.
+	 */
+	private final LinkedList<Capability> conversed = new LinkedList<Capability>();
+
+	/**
 	 * The IRC-API instance.
 	 */
 	private IRCApi irc;
+
+	/**
+	 *  Prepared relay for Capability-Server conversations.
+	 */
+	private Relay relay;
+
+	/**
+	 * Flag for signaling that negotiation is completely finished.
+	 */
+	private boolean negotiationInProgress;
 
 	public CompositeNegotiator(List<Capability> capabilities, Host host)
 	{
@@ -73,6 +88,7 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 		}
 		this.capabilities = Collections.unmodifiableList(verify(capabilities));
 		this.host = host;
+		this.negotiationInProgress = false;
 	}
 
 	/**
@@ -91,33 +107,55 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 			{
 				throw new IllegalArgumentException("capability " + cap.getId() + " cannot have null or empty id");
 			}
-//			if (cap.needsConversation() && !(cap instanceof ConversationCapability))
-//			{
-//				throw new IllegalArgumentException("capability " + cap.getId() + " requests conversation with server, but does not implement interface ConversationCapability");
-//			}
 		}
 		return caps;
 	}
 
 	@Override
-	public CapCmd initiate(IRCApi irc)
+	public CapCmd initiate(final IRCApi irc)
 	{
 		if (irc == null)
 		{
 			throw new IllegalArgumentException("irc instance is required");
 		}
 		this.irc = irc;
+		this.relay = new Relay()
+		{
+
+			@Override
+			public void send(String msg)
+			{
+				if (LOG.isDebugEnabled())
+				{
+					LOG.debug("CAPABILITY: " + msg);
+				}
+				irc.rawMessage(msg);
+			}
+		};
 		this.requested.clear();
 		this.acknowledged.clear();
+		this.conversed.clear();
+		this.negotiationInProgress = true;
 		return new CapLsCmd();
 	}
 
 	@Override
 	public void onMessage(IMessage msg)
 	{
+		if (!this.negotiationInProgress)
+		{
+			// TODO renegotiation after registration is currently not possible
+			return;
+		}
 		if (LOG.isDebugEnabled())
 		{
 			LOG.debug("SERVER: " + msg.asRaw());
+		}
+		if (false)
+		{
+			// FIXME detect 001 message indicating that CAP NEG phase has ended,
+			// end CAP NEG phase immediately
+			this.endNegotiation();
 		}
 		final String rawmsg = msg.asRaw();
 		final Matcher capLs = CAPABILITY_LS.matcher(rawmsg);
@@ -136,13 +174,14 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 				if (request.isEmpty())
 				{
 					// there's nothing left to request, so finish capability negotiation
-					send(this.irc, new CapEndCmd());
+					endNegotiation();
 				}
 				else
 				{
 					this.requested.addAll(request);
 					sendCapabilityRequest();
 				}
+				return;
 			}
 			else if (capAck.find())
 			{
@@ -157,19 +196,74 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 					feedbackAcknowledgements(confirms);
 				}
 				// FIXME wait for multi-response acks?
-				// FIXME start capability conversations
-				send(this.irc, new CapEndCmd());
+
+				// fall through to start capability conversations immediately,
+				// but do clean the message, since it has already been handled.
+				msg = null;
 			}
 			else if (capNak.find())
 			{
-				LOG.error("Capability request NOT Acknowledged: " + rawmsg + " (this may be due to inconsistent server responses)");
-				send(this.irc, new CapEndCmd());
+				LOG.error("Capability request NOT Acknowledged: " + rawmsg +
+						" (this may be due to inconsistent server responses)");
+				endNegotiation();
+				return;
+			}
+
+			// The part below is focused on capability conversations with IRC
+			// server.
+			
+			// FIXME make sure that CAP NEG messages aren't passed on to the capability conversation. Negotiator is responsible for those.
+
+			Capability cap = conversingCapability();
+			if (cap != null) {
+				// Only start this processing loop if there is at least one
+				// capability that is in conversation. Otherwise every unknown
+				// message will get processed by this loop, which doesn't make
+				// sense, because this loop is for capability conversations in
+				// the first place.
+				
+				do
+				{
+					boolean continu;
+					if (msg == null)
+					{
+						LOG.debug("Starting conversation of capability: " + cap.getId());
+						continu = cap.converse(this.relay, null);
+					}
+					else
+					{
+						LOG.debug("Continuing conversation of capability: " + cap.getId());
+						continu = cap.converse(this.relay, msg.asRaw());
+					}
+					if (continu)
+					{
+						LOG.debug("Conversation will continue, waiting for message from server.");
+						// Break loop, wait for next message such that conversation
+						// can be continued.
+						break;
+					}
+					else
+					{
+						this.conversed.add(cap);
+						LOG.debug("Finished conversation of capability: " + cap.getId());
+						msg = null;
+					}
+				}
+				while ((cap = conversingCapability()) != null);
+
+				if (cap == null)
+				{
+					// If there are no conversations ongoing and no capabilities
+					// left for conversation, then I guess we're done with
+					// negotiatons.
+					endNegotiation();
+				}
 			}
 		}
 		catch (RuntimeException e)
 		{
 			LOG.error("Error occurred during CAP negotiation. Prematurely ending CAP negotiation phase and continuing IRC registration as is.", e);
-			this.irc.rawMessage(new CapEndCmd().asString());
+			endNegotiation();
 		}
 	}
 
@@ -203,7 +297,7 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	private List<Capability> unsupportedCapabilities(final LinkedList<Cap> capLs)
 	{
 		// find all supported capabilities
-		final ArrayList<Capability> found = new ArrayList<Capability>();
+		final LinkedList<Capability> found = new LinkedList<Capability>();
 		for (Capability request : this.capabilities)
 		{
 			for (Cap available : capLs)
@@ -223,7 +317,7 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 			}
 		}
 		// compute unsupported capabilities
-		final ArrayList<Capability> unsupported = new ArrayList<Capability>(this.capabilities);
+		final LinkedList<Capability> unsupported = new LinkedList<Capability>(this.capabilities);
 		unsupported.removeAll(found);
 		if (LOG.isTraceEnabled())
 		{
@@ -245,13 +339,13 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	 */
 	private List<Capability> requestedCapabilities(final List<Capability> unsupported)
 	{
-		final ArrayList<Capability> requested = new ArrayList<Capability>(this.capabilities);
-		requested.removeAll(unsupported);
+		final LinkedList<Capability> requests = new LinkedList<Capability>(this.capabilities);
+		requests.removeAll(unsupported);
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("Requesting capabilities: " + repr(requested));
+			LOG.debug("Requesting capabilities: " + repr(requests));
 		}
-		return requested;
+		return requests;
 	}
 
 	/**
@@ -277,7 +371,7 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	{
 		final LinkedList<Capability> acks = new LinkedList<Capability>();
 		final LinkedList<Capability> needsConfirmation = new LinkedList<Capability>();
-		for (Capability request : this.capabilities)
+		for (Capability request : this.requested)
 		{
 			for (Cap cap : capAck)
 			{
@@ -334,6 +428,10 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	 */
 	private void feedbackAcknowledgements(List<Capability> caps)
 	{
+		if (this.host == null)
+		{
+			return;
+		}
 		for (Capability cap : caps)
 		{
 			try
@@ -354,6 +452,10 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	 */
 	private void feedbackRejection(List<Capability> caps)
 	{
+		if (this.host == null)
+		{
+			return;
+		}
 		for (Capability cap : caps)
 		{
 			try
@@ -365,6 +467,32 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 				LOG.warn("BUG: host threw a runtime exception while processing rejection.", e);
 			}
 		}
+	}
+
+	/**
+	 * Get the currently conversing capability, either one that continues a
+	 * conversation or one that just now starts a conversation.
+	 *
+	 * @return Returns the instance of the conversing capability or
+	 * <tt>null</tt> if no capability is left to start/continue a conversation.
+	 */
+	private Capability conversingCapability()
+	{
+		LinkedList<Capability> caps = new LinkedList<Capability>(this.acknowledged);
+		caps.removeAll(this.conversed);
+		if (caps.isEmpty()) {
+			return null;
+		}
+		return caps.getFirst();
+	}
+
+	/**
+	 * End negotiations.
+	 */
+	private void endNegotiation() {
+		this.negotiationInProgress = false;
+		send(this.irc, new CapEndCmd());
+		LOG.debug("Capability negotiation phase finished. CAP END sent.");
 	}
 
 	/**
@@ -410,11 +538,14 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 	{
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("CLIENT: " + msg);
+			LOG.debug("NEGOTIATOR: " + msg);
 		}
 		irc.rawMessage(msg);
 	}
 
+	/**
+	 * Internal class used for storing server response parts inside an object.
+	 */
 	static class Cap
 	{
 		/**
@@ -446,7 +577,7 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 		private Cap(final String response)
 		{
 			int start = 0;
-			boolean enabled = true, requiresAck = false, mandatory = false;
+			boolean setEnabled = true, setRequiresAck = false, setMandatory = false;
 
 			modifierLoop:
 			for (int i = 0; i < response.length(); i++)
@@ -454,13 +585,13 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 				switch (response.charAt(i))
 				{
 				case '-':
-					enabled = false;
+					setEnabled = false;
 					break;
 				case '~':
-					requiresAck = true;
+					setRequiresAck = true;
 					break;
 				case '=':
-					mandatory = true;
+					setMandatory = true;
 					break;
 				default:
 					start = i;
@@ -468,9 +599,9 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 				}
 			}
 			this.id = response.substring(start);
-			this.enabled = enabled;
-			this.requiresAck = requiresAck;
-			this.mandatory = mandatory;
+			this.enabled = setEnabled;
+			this.requiresAck = setRequiresAck;
+			this.mandatory = setMandatory;
 		}
 
 		String getId() {
@@ -490,6 +621,10 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 		}
 	}
 
+	/**
+	 * Interface for a host instance that will receive feedback during
+	 * capability negotiation phase.
+	 */
 	public static interface Host
 	{
 		/**
@@ -530,19 +665,33 @@ public class CompositeNegotiator extends VariousMessageListenerAdapter implement
 		 */
 		boolean enable();
 
-//		/**
-//		 * Indicates that a capability needs conversation time with the server.
-//		 *
-//		 * FIXME correct interface, extend description
-//		 * If this indicator is true, it is assumed that ConversationCapability interface is implemented.
-//		 *
-//		 * @return Returns true if capability needs conversation time with server, or false if not.
-//		 */
-//		boolean needsConversation();
+		/**
+		 * Converse with IRC server, message from server provided.
+		 *
+		 * The first message, as a way of initiating the conversation will
+		 * contain a <tt>null</tt> message. The null message is a sign that
+		 * there isn't a server response yet to process.
+		 *
+		 * The relay instance will be provided for every call. The relay
+		 * instance can be used to send message to the IRC server. It is allowed
+		 * to send multiple message. Once the method returns with a value
+		 * <tt>true</tt>, this signals the end of this round. Once a server
+		 * response has arrived, the conversation continues. Once <tt>false</tt>
+		 * is returned, the CompositeNegotiator will register the negotiation as
+		 * completed and will not return anymore.
+		 *
+		 * Upon returning <tt>false</tt> the next capability will immediately
+		 * start conversation, so make sure that you only return <tt>false</tt>
+		 * once the conversation is completely finished. If a confirmation
+		 * message is expected from the server and immediately sending another
+		 * message may affect the outcome, then do not return <tt>false</tt>
+		 * yet.
+		 *
+		 * @param relay the relay to the IRC server
+		 * @param msg the message from the server
+		 * @return Returns true if conversation will continue, i.e. response
+		 * from server expected, or false if conversation is done.
+		 */
+		boolean converse(Relay relay, String msg);
 	}
-
-//	public static interface ConversationCapability
-//	{
-//		// FIXME define conversation methods
-//	}
 }

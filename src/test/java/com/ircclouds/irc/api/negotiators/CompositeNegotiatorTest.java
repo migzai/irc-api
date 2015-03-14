@@ -1,22 +1,11 @@
 package com.ircclouds.irc.api.negotiators;
 
-import com.ircclouds.irc.api.Callback;
-import com.ircclouds.irc.api.CapabilityNegotiator;
-import com.ircclouds.irc.api.DCCManager;
 import com.ircclouds.irc.api.IRCApi;
-import com.ircclouds.irc.api.IServerParameters;
 import com.ircclouds.irc.api.commands.CapCmd;
 import com.ircclouds.irc.api.commands.CapLsCmd;
-import com.ircclouds.irc.api.ctcp.DCCReceiveCallback;
-import com.ircclouds.irc.api.ctcp.DCCSendCallback;
-import com.ircclouds.irc.api.domain.IRCChannel;
-import com.ircclouds.irc.api.filters.IMessageFilter;
-import com.ircclouds.irc.api.listeners.IMessageListener;
 import com.ircclouds.irc.api.negotiators.CompositeNegotiator.Capability;
 import com.ircclouds.irc.api.negotiators.CompositeNegotiator.Host;
-import com.ircclouds.irc.api.state.IIRCState;
-import java.io.File;
-import java.net.SocketAddress;
+import com.ircclouds.irc.api.negotiators.util.Relay;
 import java.util.Collections;
 import java.util.LinkedList;
 import mockit.Mocked;
@@ -69,6 +58,9 @@ public class CompositeNegotiatorTest
 
 			@Override
 			public boolean enable() { return true; }
+
+			@Override
+			public boolean converse(Relay relay, String msg) { return false; }
 		});
 		new CompositeNegotiator(negotiators, null);
 	}
@@ -90,6 +82,9 @@ public class CompositeNegotiatorTest
 			{
 				return true;
 			}
+
+			@Override
+			public boolean converse(Relay relay, String msg) { return false; }
 		});
 		new CompositeNegotiator(negotiators, null);
 	}
@@ -105,6 +100,9 @@ public class CompositeNegotiatorTest
 
 			@Override
 			public boolean enable() { return false; }
+
+			@Override
+			public boolean converse(Relay relay, String msg) { return false; }
 		});
 		negotiators.add(new Capability() {
 
@@ -113,6 +111,9 @@ public class CompositeNegotiatorTest
 
 			@Override
 			public boolean enable() { return false; }
+
+			@Override
+			public boolean converse(Relay relay, String msg) { return false; }
 		});
 		negotiators.add(new Capability() {
 
@@ -121,6 +122,9 @@ public class CompositeNegotiatorTest
 
 			@Override
 			public boolean enable() { return true; }
+
+			@Override
+			public boolean converse(Relay relay, String msg) { return false; }
 		});
 		new CompositeNegotiator(negotiators, null);
 	}
@@ -291,6 +295,12 @@ public class CompositeNegotiatorTest
 			public boolean enable()
 			{
 				return true;
+			}
+
+			@Override
+			public boolean converse(Relay relay, String msg)
+			{
+				return false;
 			}
 		};
 	}

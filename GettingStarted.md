@@ -1,0 +1,60 @@
+Adding irc-api to your project is a simple process.  All what is needed is the api's jar file, and an optional logging framework pluggable into slf4j.
+
+You can either add the API through **Maven**, which is the preferred way, or you can obtain it from the **download section** and add it to your classpath.
+
+# Maven #
+
+Just add the API as a dependency to your POM:
+
+```
+<dependency>
+  <groupId>com.ircclouds.irc</groupId>
+  <artifactId>irc-api</artifactId>
+  <version>1.0-0011</version>
+</dependency>
+```
+
+and optionally add a logging framework, i.e. log4j, logback, etc.  This example uses log4j:
+
+```
+<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-log4j12</artifactId>
+  <version>1.6.1</version>
+</dependency>
+```
+
+Finally, a maven build should fetch all the transitive dependencies for you and add them to your project's classpath.
+
+# Download section #
+
+Soon will be deprecated.  You need to manually download the API's jar file, either the core one, or the one with dependencies from the download section.
+
+If you get the core one, you still need to manually download slf4j-api.  In contrast with the dependencies one which already has it.  Optionally, you can add a slf4j logging framework by also manually fetching its dependencies from the internet.
+
+A valid configuration of irc-api's core jar file would include the following jar files on the classpath:
+<ul>
+<li>irc-api-1.0-0011.jar</li>
+<li>slf4j-api-1.7.2.jar</li>
+<li>slf4j-log4j12-1.6.1.jar</li>
+<li>log4j-1.2.16</li>
+</ul>
+
+A valid configuration of irc-api's dependencies jar file would include the following jar files on the classpath:
+<ul>
+<li>irc-api-1.0-0011-jar-with-dependencies.jar</li>
+<li>slf4j-log4j12-1.6.1.jar</li>
+<li>log4j-1.2.16</li>
+</ul>
+
+## LOG4J ##
+Since this example uses log4j, you still need a basic log4j configuration.  A simple log4j.properties on your classpath will do:
+
+```
+log4j.rootLogger = INFO, Console
+log4j.appender.Console=org.apache.log4j.ConsoleAppender
+log4j.appender.Console.layout=org.apache.log4j.PatternLayout
+log4j.appender.Console.layout.conversionPattern=%m%n
+```
+
+And voilà, you can now move on to the more exciting stuff!

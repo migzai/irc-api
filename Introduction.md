@@ -1,0 +1,74 @@
+IRC-API is basically built on top of 3 components.
+
+1) the IRC server messages mapping layer where the raw IRC message is transformed into an instance of _IMessage_.
+
+2) the _IMessage_ listeners, dubbed _IMessageListener_, that can be registered for incoming message notifications with the _IRCApi_ interface.
+
+3) the _IRCApi_ interface that offers the ability to execute commands in both synchronous and asynchronous way.
+<br />
+Internally, IRC-API uses an IRC session to execute IRC commands, and awaits for notifications.
+
+Optionally, the user can choose whether the API should save the IRC state by setting the IRCApiImpl's _aSaveIRCState_ constructor parameter to true.  In this case, the state can now be queried by using the _IIRCState_ interface.
+
+**Synchronous use of the API:**
+
+```
+_api.joinChannel("#ircapi");
+```
+
+Here, the API doesn't provide feedback on whether the channel join was successful or not.
+
+**Asynchronous use of the API:**
+
+```
+_api.joinChannel("#ircapi", new Callback<IRCChannel>()
+{
+	@Override
+	public void onSuccess(IRCChannel aObject)
+	{
+		// do something
+	}
+
+	@Override
+	public void onFailure(Exception aException)
+	{
+	}
+});
+```
+
+Here, the client awaits for the callback to be invoked, and hence, will be informed about whether the join channel command was successful or not.  On success, the user will receive an _IRCChannel_ object which has all the available information about the IRC channel.
+
+**Saving IRC state**
+
+Saving IRC State is implemented in the API, and can be configured as shown in the following example:
+
+```
+IRCApi _api = new IRCApiImpl(true);
+```
+
+The state can then be obtained from the _IRCApi.connect_'s _Callback`<IIRCState>`_ parameter, and it basically inherits the _IIRCState_ interface.
+
+```
+public interface IIRCState
+{
+	String getNickname();
+
+	List<String> getAltNicks();
+
+	String getRealname();
+
+	String getIdent();
+
+	List<IRCChannel> getChannels();
+
+	IRCChannel getChannelByName(String aChannelName);
+
+	IRCServer getServer();
+
+	IRCServerOptions getServerOptions();
+	
+	boolean isConnected();
+	
+	IIRCState getPrevious();
+}
+```

@@ -26,17 +26,3 @@ Make sure you use the latest build!
 <li><a href='https://github.com/migzai/irc-api/blob/wiki/Connecting.md'>A simple IRC client</a></li>
 <li><a href='https://github.com/migzai/irc-api/blob/wiki/Listeners.md'>Message Listeners</a></li>
 </ul>
-
-<h3> News Highlights</h3>
-<ul><li>
-irc-api is now mavenized!<br>
-<pre><code>&lt;dependency&gt;
-  &lt;groupId&gt;com.ircclouds.irc&lt;/groupId&gt;
-  &lt;artifactId&gt;irc-api&lt;/artifactId&gt;
-  &lt;version&gt;1.0-0015-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;
-<br>
-</code></pre>
-</li></ul>
-
-<br />

@@ -61,7 +61,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 	private final String pass;
 	private final String authzid;
 
-	private SaslStateMachine.State state;
+	private SaslContext state;
 	private IRCApi irc;
 
 	// TODO How to handle time-outs? (though not crucial since IRC server will also time-out)
@@ -88,7 +88,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 			throw new IllegalArgumentException("irc instance is required");
 		}
 		this.irc = irc;
-		this.state = new SaslStateMachine.InitialState(new Relay() {
+		this.state = new SaslContext(new Relay() {
 
 			@Override
 			public void send(final String msg)
@@ -118,7 +118,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 		{
 			if (capAck.find() && saslAcknowledged(capAck.group(2)))
 			{
-				this.state = this.state.init();
+				this.state.init();
 			}
 			else if (capNak.find())
 			{
@@ -126,7 +126,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 			}
 			else if (confirmation.find())
 			{
-				this.state = this.state.confirm(confirmation.group(1), this.authzid, this.user, this.pass);
+				this.state.confirm(confirmation.group(1), this.authzid, this.user, this.pass);
 			}
 			else
 			{
@@ -165,24 +165,24 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 			switch (msg.getNumericCode())
 			{
 			case RPL_LOGGEDIN:
-				this.state = this.state.loggedIn();
+				this.state.loggedIn();
 				break;
 			case RPL_SASLSUCCESS:
-				this.state = this.state.success();
+				this.state.success();
 				this.irc.rawMessage(new CapEndCmd().asString());
 				break;
 			case ERR_SASLFAIL:
-				this.state = this.state.fail();
+				this.state.fail();
 				break;
 			case ERR_NICKLOCKED:
 				LOG.error("SASL account locked. Aborting authentication procedure.");
-				this.state = this.state.abort();
+				this.state.abort();
 				this.irc.rawMessage(new CapEndCmd().asString());
 				break;
 			case ERR_SASLABORTED:
 			case ERR_SASLALREADY:
 			case ERR_SASLTOOLONG:
-				this.state = this.state.abort();
+				this.state.abort();
 				this.irc.rawMessage(new CapEndCmd().asString());
 				break;
 			default:

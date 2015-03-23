@@ -3,7 +3,7 @@ package com.ircclouds.irc.api.negotiators.capabilities;
 import com.ircclouds.irc.api.domain.messages.ServerNumericMessage;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.negotiators.CompositeNegotiator;
-import com.ircclouds.irc.api.negotiators.SaslStateMachine;
+import com.ircclouds.irc.api.negotiators.SaslContext;
 import com.ircclouds.irc.api.negotiators.util.Relay;
 import com.ircclouds.irc.api.om.ServerMessageBuilder;
 import java.util.regex.Matcher;
@@ -76,7 +76,7 @@ public class SaslCapability extends VariousMessageListenerAdapter
 	/**
 	 * The SASL protocol state.
 	 */
-	private SaslStateMachine.State state;
+	private SaslContext state;
 
 	/**
 	 * Constructor.
@@ -126,13 +126,14 @@ public class SaslCapability extends VariousMessageListenerAdapter
 		}
 		if (msg == null)
 		{
-			this.state = new SaslStateMachine.InitialState(relay).init();
+			this.state = new SaslContext(relay);
+			this.state.init();
 			return true;
 		}
 		final Matcher confirmation = AUTHENTICATE_CONFIRMATION.matcher(msg);
 		if (confirmation.find())
 		{
-			this.state = this.state.confirm(confirmation.group(1), this.authzId, this.user, this.pass);
+			this.state.confirm(confirmation.group(1), this.authzId, this.user, this.pass);
 			return true;
 		}
 		else if (isServerNumericMessage(msg))
@@ -141,24 +142,24 @@ public class SaslCapability extends VariousMessageListenerAdapter
 			switch (numMsg.getNumericCode())
 			{
 			case RPL_LOGGEDIN:
-				this.state = this.state.loggedIn();
+				this.state.loggedIn();
 				return true;
 			case RPL_SASLSUCCESS:
-				this.state = this.state.success();
+				this.state.success();
 				return false;
 			case ERR_SASLFAIL:
-				this.state = this.state.fail();
+				this.state.fail();
 				// FIXME not sure if we receive another message after fail
 				return true;
 			case ERR_NICKLOCKED:
 				LOG.error("SASL account locked. Aborting authentication procedure.");
-				this.state = this.state.fail();
+				this.state.fail();
 				// FIXME not sure if we receive another message after fail
 				return true;
 			case ERR_SASLABORTED:
 			case ERR_SASLALREADY:
 			case ERR_SASLTOOLONG:
-				this.state = this.state.abort();
+				this.state.abort();
 				return false;
 			default:
 				LOG.warn("Unsupported numeric message: " + msg);

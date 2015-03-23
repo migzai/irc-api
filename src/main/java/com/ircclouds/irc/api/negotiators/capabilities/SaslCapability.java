@@ -4,7 +4,7 @@ import com.ircclouds.irc.api.domain.messages.ServerNumericMessage;
 import com.ircclouds.irc.api.listeners.VariousMessageListenerAdapter;
 import com.ircclouds.irc.api.negotiators.CompositeNegotiator;
 import com.ircclouds.irc.api.negotiators.SaslContext;
-import com.ircclouds.irc.api.negotiators.util.Relay;
+import com.ircclouds.irc.api.negotiators.api.Relay;
 import com.ircclouds.irc.api.om.ServerMessageBuilder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

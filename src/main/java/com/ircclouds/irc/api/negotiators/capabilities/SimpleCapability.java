@@ -1,7 +1,7 @@
 package com.ircclouds.irc.api.negotiators.capabilities;
 
 import com.ircclouds.irc.api.negotiators.CompositeNegotiator;
-import com.ircclouds.irc.api.negotiators.util.Relay;
+import com.ircclouds.irc.api.negotiators.api.Relay;
 
 /**
  * A generic implementation for a simple capability used for negotiation. This

@@ -5,7 +5,7 @@ import com.ircclouds.irc.api.commands.CapCmd;
 import com.ircclouds.irc.api.commands.CapLsCmd;
 import com.ircclouds.irc.api.negotiators.CompositeNegotiator.Capability;
 import com.ircclouds.irc.api.negotiators.CompositeNegotiator.Host;
-import com.ircclouds.irc.api.negotiators.util.Relay;
+import com.ircclouds.irc.api.negotiators.api.Relay;
 import java.util.Collections;
 import java.util.LinkedList;
 import mockit.Mocked;

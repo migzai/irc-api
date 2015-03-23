@@ -8,7 +8,7 @@ import com.ircclouds.irc.api.commands.CapLsCmd;
 import com.ircclouds.irc.api.commands.ICommand;
 import com.ircclouds.irc.api.domain.messages.interfaces.IMessage;
 import com.ircclouds.irc.api.listeners.IMessageListener;
-import com.ircclouds.irc.api.negotiators.util.Relay;
+import com.ircclouds.irc.api.negotiators.api.Relay;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

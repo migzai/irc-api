@@ -1,6 +1,6 @@
 package com.ircclouds.irc.api.negotiators;
 
-import com.ircclouds.irc.api.negotiators.util.Relay;
+import com.ircclouds.irc.api.negotiators.api.Relay;
 import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base64;
 

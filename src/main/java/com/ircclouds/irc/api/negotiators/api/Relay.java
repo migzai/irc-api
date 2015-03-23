@@ -1,4 +1,4 @@
-package com.ircclouds.irc.api.negotiators.util;
+package com.ircclouds.irc.api.negotiators.api;
 
 /**
  * Relay instance for sending messages to an IRC server.

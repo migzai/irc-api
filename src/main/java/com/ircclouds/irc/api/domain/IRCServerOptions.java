@@ -98,6 +98,14 @@ public class IRCServerOptions
 				CHAN_TYPES.add(new Character(_cTypes.charAt(_i)));
 			}
 		}
+		else
+		{
+			// RFC1459 clearly states the (default) possible channel types. In
+			// case no channel types are defined by 005 RPL_ISUPPORT, then
+			// assume these defaults.
+			CHAN_TYPES.add('#');
+			CHAN_TYPES.add('&');
+		}
 	}
 	
 	private Set<Character> getModes(String aModes)

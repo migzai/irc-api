@@ -14,18 +14,19 @@ public abstract class AbstractPrivateMessageBuilder implements IBuilder<Abstract
 	private static final String VERSION = "VERSION";
 	private static final String ACTION = "ACTION";
 
+	@Override
 	public AbstractPrivMsg build(String aMessage)
 	{
 		String _components[] = aMessage.split(EMPTY);
 		WritableIRCUser _user = ParseUtils.getUser(_components[0]);
 
-		AbstractPrivMsg _msg = null;
+		final AbstractPrivMsg _msg;
 		String _m = aMessage.substring(aMessage.indexOf(" :") + 2);
 
-		if (getChannelTypes().contains(_components[2].charAt(0)))
+		if (!_components[2].isEmpty() && getChannelTypes().contains(_components[2].charAt(0)))
 		{
 			// channel msg
-			ChannelPrivMsg _cPrivMsg = null;
+			final ChannelPrivMsg _cPrivMsg;
 			String _chanName = _components[2];
 
 			if (_m.length() >= 2 && _m.charAt(0) == NUL && _m.charAt(_m.length() - 1) == NUL)

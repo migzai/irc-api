@@ -27,9 +27,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:svn:http://irc-api.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://irc-api.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://irc-api.googlecode.com/svn/trunk/</url>
+		<url>https://github.com/migzai/irc-api</url>
+		<connection>scm:git:git://github.com/migzai/irc-api.git</connection>
+		<developerConnection>scm:git:git@github.com:migzai/irc-api.git</developerConnection>
 	</scm>
 
 	<dependencies>

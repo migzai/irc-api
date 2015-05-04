@@ -31,8 +31,8 @@ public interface IRCApi
 	/**
 	 * Synchronous disconnect
 	 */
-	void disconnect();		
-	
+	void disconnect();
+
 	/**
 	 * Synchronous disconnect
 	 * 
@@ -62,7 +62,7 @@ public interface IRCApi
 	 * @param aKey A channel key
 	 */
 	void joinChannel(String aChannelName, String aKey);
-	
+
 	/**
 	 * Asynchronous channel join
 	 * 
@@ -109,7 +109,7 @@ public interface IRCApi
 	 * @param aNewNick A new nickname
 	 */
 	void changeNick(String aNewNick);
-	
+
 	/**
 	 * Asynchronous nick change
 	 * 
@@ -134,7 +134,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return the sent message on success, or an {@link Exception} in case of failure
 	 */
 	void message(String aTarget, String aMessage, Callback<String> aCallback);
-	
+
 	/**
 	 * Synchronous Action message
 	 * 
@@ -151,7 +151,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return the sent action message on success, or an {@link Exception} in case of failure
 	 */
 	void act(String aTarget, String aMessage, Callback<String> aCallback);
-	
+
 	/**
 	 * Synchronous Notice message
 	 * 
@@ -159,7 +159,7 @@ public interface IRCApi
 	 * @param aMessage A message 
 	 */
 	void notice(String aTarget, String aMessage);
-	
+
 	/**
 	 * Asynchronous Notice message
 	 * 
@@ -176,7 +176,7 @@ public interface IRCApi
 	 * @param aNick A nick to be kicked
 	 */
 	void kick(String aChannel, String aNick);
-	
+
 	/**
 	 * Synchronous kick message
 	 * 
@@ -194,7 +194,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return an empty message on success, or an {@link Exception} in case of failure
 	 */
 	void kick(String aChannel, String aNick, Callback<String> aCallback);
-	
+
 	/**
 	 * Asynchronous kick message
 	 * 
@@ -204,7 +204,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return an empty message on success, or an {@link Exception} in case of failure
 	 */
 	void kick(String aChannel, String aNick, String aKickMessage, Callback<String> aCallback);
-	
+
 	/**
 	 * Synchronous change topic
 	 * 
@@ -212,21 +212,21 @@ public interface IRCApi
 	 * @param aTopic A new topic
 	 */
 	void changeTopic(String aChannel, String aTopic);
-	
+
 	/**
 	 * Synchronous change mode
 	 * 
 	 * @param aModeString This will basically execute a 'mode ' + aModeString
 	 */
 	void changeMode(String aModeString);
-	
+
 	/**
 	 * Synchronous raw message
 	 * 
-	 * @param A raw text message to be sent to the IRC server
+	 * @param aMessage A raw text message to be sent to the IRC server
 	 */
 	void rawMessage(String aMessage);
-	
+
 	/**
 	 * 
 	 * @param aNick A nick to send the file to
@@ -242,7 +242,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return a {@link DCCSendResult} on success, or a {@link DCCSendException} on failure
 	 */
 	void dccSend(String aNick, File aFile, Integer aTimeout, DCCSendCallback aCallback);
-	
+
 	/**
 	 * @param aNick A nick to send the file to
 	 * @param aListeningPort A port to listen on
@@ -260,7 +260,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return a {@link DCCSendResult} on success, or a {@link DCCSendException} on failure
 	 */
 	void dccSend(String aNick, File aFile, Integer aListeningPort, Integer aTimeout, DCCSendCallback aCallback);
-	
+
 	/**
 	 * 
 	 * @param aNick A nick to accept the file from
@@ -270,7 +270,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return a {@link DCCSendResult} on success, or a {@link DCCSendException} on failure
 	 */
 	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, DCCSendCallback aCallback);
-	
+
 	/**
 	 * 
 	 * @param aNick A nick to accept the file from
@@ -281,7 +281,7 @@ public interface IRCApi
 	 * @param aCallback A callback that will return a {@link DCCSendResult} on success, or a {@link DCCSendException} on failure
 	 */
 	void dccAccept(String aNick, File aFile, Integer aPort, Integer aResumePosition, Integer aTimeout, DCCSendCallback aCallback);
-	
+
 	/**
 	 * 
 	 * @param aFile A file resource
@@ -290,9 +290,19 @@ public interface IRCApi
 	 * @param aCallback A callback that will return a {@link DCCReceiveResult} on success, or a {@link DCCSendException} on failure
 	 */
 	void dccReceive(File aFile, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback);
-	
+
 	/**
 	 * 
+	 * @param aFile A file resource
+	 * @param aSize A file size.  Used to denote how much to receive to file
+	 * @param aAddress A socket address to connect to and get the file
+	 * @param aCallback A callback that will return a {@link DCCReceiveResult} on success, or a {@link DCCSendException} on failure
+	 * @param aProxy A SOCKS proxy
+	 */
+	void dccReceive(File aFile, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback, Proxy aProxy);
+
+	/**
+	 *
 	 * @param aFile A file resource
 	 * @param aResumePosition A resume position in bytes
 	 * @param aSize A size in bytes.  Used to denote how much to receive to file
@@ -300,28 +310,39 @@ public interface IRCApi
 	 * @param aCallback A callback that will return a {@link DCCReceiveResult} on success, or a {@link DCCSendException} on failure
 	 */
 	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback);
-	
+
+	/**
+	 *
+	 * @param aFile A file resource
+	 * @param aResumePosition A resume position in bytes
+	 * @param aSize A size in bytes.  Used to denote how much to receive to file
+	 * @param aAddress A socket address to connect to and get the file
+	 * @param aCallback A callback that will return a {@link DCCReceiveResult} on success, or a {@link DCCSendException} on failure
+	 * @param aProxy The proxy server to use for connecting.
+	 */
+	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback, Proxy aProxy);
+
 	/**
 	 * Returns the DCC manager
 	 * 
 	 * @return {@link DCCManager}
 	 */
 	DCCManager getDCCManager();
-	
+
 	/**
 	 * Adds a message listener
 	 * 
 	 * @param aListener A message listener
 	 */
 	void addListener(IMessageListener aListener);
-	
+
 	/**
 	 * Deletes a message listener
 	 * 
 	 * @param aListener A message listener
 	 */
 	void deleteListener(IMessageListener aListener);
-	
+
 	/**
 	 * Sets a message filter
 	 * 

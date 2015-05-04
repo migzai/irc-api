@@ -119,7 +119,7 @@ public abstract class AbstractIRCSession implements IIRCSession
 			_ctx = ((SecureIRCServer) aServer).getSSLContext();
 		}
 		
-		if (conn.open(aServer.getHostname(), aServer.getPort(), _ctx))
+		if (conn.open(aServer.getHostname(), aServer.getPort(), _ctx, aServer.getProxy(), aServer.isResolveByProxy()))
 		{
 			if (!daemon.isAlive())
 			{

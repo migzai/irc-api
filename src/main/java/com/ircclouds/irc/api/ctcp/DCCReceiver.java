@@ -4,24 +4,28 @@ import java.io.*;
 import java.net.*;
 import java.nio.*;
 import java.nio.channels.*;
+import nl.dannyvanheumen.nio.ProxiedSocketChannel;
 
 import org.slf4j.*;
 
 public class DCCReceiver
 {
 	private static final Logger LOG = LoggerFactory.getLogger(DCCReceiver.class);
-	
-	private ByteBuffer bb = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN);
-	
-	private DCCReceiveCallback callback;
-	
+
+	private final ByteBuffer bb = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN);
+
+	private final DCCReceiveCallback callback;
+
+	private final Proxy proxy;
+
 	private int totalBytesReceived;
 	private int totalAcksSent;
-	
+
 	private IOException exc;
-	
-	public DCCReceiver(DCCReceiveCallback aCallback)
+
+	public DCCReceiver(DCCReceiveCallback aCallback, Proxy aProxy)
 	{
+		proxy = aProxy;
 		callback = aCallback;
 	}
 	
@@ -35,23 +39,30 @@ public class DCCReceiver
 				SocketChannel _sc = null;
 				FileChannel _fc = null;
 				FileOutputStream _fos = null;
-				
+
 				long _timeBefore = 0;
-				
+
 				try
 				{
 					_timeBefore = System.currentTimeMillis();
-					_sc = SocketChannel.open(aAddress);
+					if (proxy == null)
+					{
+						_sc = SocketChannel.open(aAddress);
+					}
+					else
+					{
+						_sc = new ProxiedSocketChannel(proxy);
+						_sc.connect(aAddress);
+					}
 					_fos = new FileOutputStream(aFile);
 					_fc = _fos.getChannel();
-			
-			        long _read = aResumePos;
-			        while (_read < aSize) 
-			        {
-			            _read += _fc.transferFrom(_sc, aResumePos + _read, aSize);
-			            
-			            writeTotalBytesReceived(_sc, (int) _read);
-			        }
+
+					long _read = aResumePos;
+					while (_read < aSize)
+					{
+						_read += _fc.transferFrom(_sc, aResumePos + _read, aSize);
+						writeTotalBytesReceived(_sc, (int) _read);
+					}
 				}
 				catch (IOException aExc)
 				{

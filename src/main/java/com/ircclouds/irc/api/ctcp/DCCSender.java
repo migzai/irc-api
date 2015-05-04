@@ -56,7 +56,7 @@ public class DCCSender
 				try
 				{
 					_timeBefore = System.currentTimeMillis();
-										
+
 					_ssc = ServerSocketChannel.open();
 					_ssc.configureBlocking(false);
 					_ssc.socket().bind(new InetSocketAddress(listeningPort));

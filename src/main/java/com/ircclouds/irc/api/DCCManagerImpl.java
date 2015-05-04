@@ -55,18 +55,29 @@ public class DCCManagerImpl implements DCCManager
 
 	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback)
 	{
-		DCCReceiver _dccReceiver = new DCCReceiver(addManagerDCCReceiveCallback(aCallback));
+		DCCReceiver _dccReceiver = new DCCReceiver(addManagerDCCReceiveCallback(aCallback), null);
 		
 		registerReceiver(_dccReceiver);
 		
 		_dccReceiver.receive(aFile, aResumePosition, aSize, aAddress);
 	}
 
+	void dccResume(File aFile, Integer aResumePosition, Integer aSize, SocketAddress aAddress, DCCReceiveCallback aCallback, Proxy aProxy)
+	{
+		DCCReceiver _dccReceiver = new DCCReceiver(addManagerDCCReceiveCallback(aCallback), aProxy);
+
+		registerReceiver(_dccReceiver);
+
+		_dccReceiver.receive(aFile, aResumePosition, aSize, aAddress);
+	}
+
+	@Override
 	public int activeDCCSendsCount()
 	{
 		return sendersMap.size();
 	}
 
+	@Override
 	public int activeDCCReceivesCount()
 	{
 		return dccReceivers.size();

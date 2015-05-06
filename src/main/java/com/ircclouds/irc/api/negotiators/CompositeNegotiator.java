@@ -80,6 +80,17 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 	 */
 	private boolean negotiationInProgress;
 
+	/**
+	 * Constructor for composite negotiator.
+	 *
+	 * Negotiator for negotiating multiple capabilities with ability to give
+	 * (complex) capabilities conversation time with the IRC server during the
+	 * registration phase.
+	 *
+	 * @param capabilities list of capabilities that must be negotiated for
+	 * @param host the host instance to be called back to in case a new
+	 * negotiation result is known
+	 */
 	public CompositeNegotiator(List<Capability> capabilities, Host host)
 	{
 		if (capabilities == null)

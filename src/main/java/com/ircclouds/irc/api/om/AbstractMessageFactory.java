@@ -28,6 +28,7 @@ public abstract class AbstractMessageFactory
 	private static final String KICK_KEY = "KICK";
 	private static final String MODE_KEY = "MODE";
 	private static final String ERROR_KEY = "ERROR";
+	private static final String AWAY_KEY = "AWAY";
 	
 	private static final ServerMessageBuilder SERVER_MESSAGE_BUILDER = new ServerMessageBuilder();
 	private static final TopicMessageBuilder TOPIC_MESSAGE_BUILDER = new TopicMessageBuilder();
@@ -39,6 +40,7 @@ public abstract class AbstractMessageFactory
 	private static final QuitMessageBuilder QUIT_MESSAGE_BUILDER = new QuitMessageBuilder();
 	private static final ErrorMessageBuilder ERROR_MESSAGE_BUILDER = new ErrorMessageBuilder();
 	private static final UnknownMessageBuilder UNKNOWN_MESSAGE_BUILDER = new UnknownMessageBuilder();
+	private static final AwayMessageBuilder AWAY_MESSAGE_BUILDER = new AwayMessageBuilder();
 	
 	private final AbstractPrivateMessageBuilder PRIVATE_MESSAGE_BUILDER;
 	private final AbstractNoticeBuilder NOTICE_BUILDER;
@@ -121,6 +123,10 @@ public abstract class AbstractMessageFactory
 				else if (MODE_KEY.equals(_msgType) && getIRCServerOptions().getChanTypes().contains(_components[2].charAt(0)))
 				{
 					return CHAN_MODE_BUILDER.build(aMsg);
+				}
+				else if (AWAY_KEY.equals(_msgType))
+				{
+					return AWAY_MESSAGE_BUILDER.build(aMsg);
 				}
 				else if (isNumeric(_msgType))
 				{

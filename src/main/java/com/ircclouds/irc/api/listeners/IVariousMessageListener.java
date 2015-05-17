@@ -43,4 +43,6 @@ public interface IVariousMessageListener extends IMessageListener
 	void onUserVersion(UserVersion aMsg);
 	
 	void onServerPing(ServerPing aMsg);
+	
+	void onUserAway(AwayMessage aMsg);
 }

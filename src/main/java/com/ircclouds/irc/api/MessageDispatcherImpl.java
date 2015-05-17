@@ -11,9 +11,9 @@ import com.ircclouds.irc.api.listeners.*;
 
 public final class MessageDispatcherImpl implements IMessageDispatcher
 {
-	private static Logger LOG = LoggerFactory.getLogger(MessageDispatcherImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MessageDispatcherImpl.class);
 	
-	private Map<MESSAGE_VISIBILITY, List<IMessageListener>> listenersMap = new EnumMap<MESSAGE_VISIBILITY, List<IMessageListener>>(MESSAGE_VISIBILITY.class);
+	private final Map<MESSAGE_VISIBILITY, List<IMessageListener>> listenersMap = new EnumMap<MESSAGE_VISIBILITY, List<IMessageListener>>(MESSAGE_VISIBILITY.class);
 	
 	public MessageDispatcherImpl()
 	{
@@ -21,6 +21,7 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 		listenersMap.put(MESSAGE_VISIBILITY.PUBLIC, new ArrayList<IMessageListener>());		
 	}
 
+	@Override
 	public void dispatch(IMessage aMessage, TargetListeners aTargetListeners)
 	{
 		if (aTargetListeners.getHowMany().equals(HowMany.ALL))
@@ -39,11 +40,13 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 		dispatchTo(aMessage, new ArrayList<IMessageListener>(listenersMap.get(MESSAGE_VISIBILITY.PRIVATE)));
 	}	
 	
+	@Override
 	public void register(IMessageListener aListener, MESSAGE_VISIBILITY aVisibility)
 	{
 		listenersMap.get(aVisibility).add(aListener);
 	}
 
+	@Override
 	public void unregister(IMessageListener aListener)
 	{
 		listenersMap.get(MESSAGE_VISIBILITY.PRIVATE).remove(aListener);
@@ -69,8 +72,8 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 			catch (Exception aExc)
 			{
 				LOG.error("", aExc);
-			}			
-		}		
+			}
+		}
 	}
 
 	private void dispatchVarious(IVariousMessageListener aListener, IMessage aMessage)
@@ -157,6 +160,10 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 		else if (aMessage instanceof ServerPing)
 		{
 			aListener.onServerPing((ServerPing) aMessage);
+		}
+		else if (aMessage instanceof AwayMessage)
+		{
+			aListener.onUserAway((AwayMessage) aMessage);
 		}
 		else
 		{

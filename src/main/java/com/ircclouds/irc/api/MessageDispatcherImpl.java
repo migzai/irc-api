@@ -13,7 +13,7 @@ public final class MessageDispatcherImpl implements IMessageDispatcher
 {
 	private static Logger LOG = LoggerFactory.getLogger(MessageDispatcherImpl.class);
 	
-	private Map<MESSAGE_VISIBILITY, List<IMessageListener>> listenersMap = new HashMap<MESSAGE_VISIBILITY, List<IMessageListener>>();
+	private Map<MESSAGE_VISIBILITY, List<IMessageListener>> listenersMap = new EnumMap<MESSAGE_VISIBILITY, List<IMessageListener>>(MESSAGE_VISIBILITY.class);
 	
 	public MessageDispatcherImpl()
 	{

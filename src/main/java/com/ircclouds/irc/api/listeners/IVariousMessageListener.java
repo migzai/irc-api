@@ -43,6 +43,16 @@ public interface IVariousMessageListener extends IMessageListener
 	void onUserVersion(UserVersion aMsg);
 	
 	void onServerPing(ServerPing aMsg);
-	
+
+	/**
+	 * Event for user away change notifications. (capability: away-notify)
+	 *
+	 * This event signals a change in the away status of a channel member. If an
+	 * away message is set this means that a channel member is away. If no away
+	 * message is set, this means that the user just got back. This event will
+	 * only be used if capability away-notify (IRCv3) is enabled.
+	 *
+	 * @param aMsg the away message
+	 */
 	void onUserAway(AwayMessage aMsg);
 }

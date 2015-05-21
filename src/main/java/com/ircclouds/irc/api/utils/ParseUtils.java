@@ -26,10 +26,14 @@ public final class ParseUtils
 	
 	public static WritableIRCUser getUser(String aString)
 	{
-		String[] _cmpnts1 = aString.split("@");
-		String[] _cmpnts2 = _cmpnts1[0].split("!");
+		final String[] _cmpnts1 = aString.split("@");
+		final String[] _cmpnts2 = _cmpnts1[0].split("!");
 
-		return new WritableIRCUser(_cmpnts2[0].substring(1), _cmpnts2[1], _cmpnts1[1]);
+		final String nick = _cmpnts2[0].substring(1);
+		final String ident = _cmpnts2.length > 1 ? _cmpnts2[1] : "";
+		final String hostname = _cmpnts1.length > 1 ? _cmpnts1[1] : "";
+
+		return new WritableIRCUser(nick, ident, hostname);
 	}
 	
 	public static ISource getSource(String aString)

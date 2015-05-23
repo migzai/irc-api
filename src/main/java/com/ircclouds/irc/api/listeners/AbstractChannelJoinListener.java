@@ -6,10 +6,14 @@ import com.ircclouds.irc.api.*;
 import com.ircclouds.irc.api.domain.*;
 import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.utils.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractChannelJoinListener
 {
-	private Map<String, Callback<IRCChannel>> callbacks = new HashMap<String, Callback<IRCChannel>>();
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractChannelJoinListener.class);
+
+	private final Map<String, Callback<IRCChannel>> callbacks = new HashMap<String, Callback<IRCChannel>>();
 
 	private WritableIRCChannel channel;
 	private WritableIRCTopic topic;
@@ -106,32 +110,38 @@ public abstract class AbstractChannelJoinListener
 
 	private void add(String aNick)
 	{
-		boolean _flag = true;
-
-		char _pref = aNick.charAt(0);
-		for (final IRCUserStatus _ucs : getIRCUserStatuses())
+		final Map<Character, IRCUserStatus> statuses = mapPrefixes(getIRCUserStatuses());
+		final HashSet<IRCUserStatus> active = new HashSet<IRCUserStatus>();
+		IRCUser user = null;
+		for (int i = 0; i < aNick.length(); i++)
 		{
-			if (_ucs.getPrefix().equals(_pref))
+			char p = aNick.charAt(i);
+			if (!statuses.containsKey(p))
 			{
-				channel.addUser(new WritableIRCUser(aNick.substring(1)), new SynchronizedUnmodifiableSet<IRCUserStatus>(new HashSet<IRCUserStatus>()
-				{
-					{
-						add(_ucs);
-					}
-				}));
-				_flag = false;
+				user = new WritableIRCUser(aNick.substring(i));
 				break;
 			}
+			active.add(statuses.get(p));
 		}
-
-		if (_flag)
+		if (user == null)
 		{
-			channel.addUser(new WritableIRCUser(aNick));
+			LOG.debug("Skipping user {}: not able to extract a valid nick name.", aNick);
+			return;
 		}
+		channel.addUser(user, new SynchronizedUnmodifiableSet<IRCUserStatus>(active));
 	}
 
 	private String getTopic(ServerNumericMessage aServMsg)
 	{
 		return aServMsg.getText().substring(aServMsg.getText().indexOf(":") + 1);
+	}
+
+	private static Map<Character, IRCUserStatus> mapPrefixes(final IRCUserStatuses statuses) {
+		final HashMap<Character, IRCUserStatus> map = new HashMap<Character, IRCUserStatus>();
+		for (IRCUserStatus status : statuses)
+		{
+			map.put(status.getPrefix(), status);
+		}
+		return map;
 	}
 }

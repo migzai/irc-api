@@ -6,6 +6,7 @@ import com.ircclouds.irc.api.negotiators.CompositeNegotiator;
 import com.ircclouds.irc.api.negotiators.SaslContext;
 import com.ircclouds.irc.api.negotiators.api.Relay;
 import com.ircclouds.irc.api.om.ServerMessageBuilder;
+import com.ircclouds.irc.api.utils.RawMessageUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -16,6 +17,10 @@ import org.slf4j.LoggerFactory;
  *
  * The implementation of SASL capability using IRC server conversation in order
  * to do actual SASL authentication after the capability has been confirmed.
+ *
+ * TODO introduce exception (should be defined in CompositeNegotiator) that will
+ * be thrown in case SASL authentication fails and registration is not allowed
+ * to continue after failed SASL.
  *
  * @author Danny van Heumen
  */
@@ -136,7 +141,7 @@ public class SaslCapability extends VariousMessageListenerAdapter
 			this.state.confirm(confirmation.group(1), this.authzId, this.user, this.pass);
 			return true;
 		}
-		else if (isServerNumericMessage(msg))
+		else if (RawMessageUtils.isServerNumericMessage(msg))
 		{
 			final ServerNumericMessage numMsg = SERVER_MSG_BUILDER.build(msg);
 			switch (numMsg.getNumericCode())
@@ -149,46 +154,31 @@ public class SaslCapability extends VariousMessageListenerAdapter
 				return false;
 			case ERR_SASLFAIL:
 				this.state.fail();
-				// FIXME not sure if we receive another message after fail
 				return true;
 			case ERR_NICKLOCKED:
-				LOG.error("SASL account locked. Aborting authentication procedure.");
+				LOG.error("SASL account locked. Failing authentication procedure.");
 				this.state.fail();
-				// FIXME not sure if we receive another message after fail
 				return true;
 			case ERR_SASLABORTED:
 			case ERR_SASLALREADY:
-			case ERR_SASLTOOLONG:
-				this.state.abort();
+				// No multiple tries. In case of abort, don't restart conversation.
 				return false;
-			default:
-				LOG.warn("Unsupported numeric message: " + msg);
-				// FIXME assuming that we receive another (useful) message
+			case ERR_SASLTOOLONG:
+				LOG.error("We have sent a bad message. Message was longer than 400 chars. This is a bug in the SASL capability implementation. Aborting SASL authentication.");
+				this.state.abort();
 				return true;
+			default:
+				LOG.warn("Unsupported numeric message. Aborting SASL authentication. ({})", msg);
+				return false;
 			}
 		}
 		else
 		{
+			// Case of an unknown message. Assuming that the message was not
+			// intended for SASL capability. Hoping for another message that is
+			// part of conversation.
 			LOG.warn("Unknown message, not handling: " + msg);
 			return true;
-		}
-	}
-
-	private boolean isServerNumericMessage(final String aMsg)
-	{
-		String[] parts = aMsg.split(" ");
-		if (parts.length <= 1)
-		{
-			return false;
-		}
-		try
-		{
-			Integer.parseInt(parts[1]);
-			return true;
-		}
-		catch (NumberFormatException e)
-		{
-			return false;
 		}
 	}
 }

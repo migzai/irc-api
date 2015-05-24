@@ -6,9 +6,12 @@ import com.ircclouds.irc.api.commands.CapCmd;
 import com.ircclouds.irc.api.commands.CapEndCmd;
 import com.ircclouds.irc.api.commands.CapLsCmd;
 import com.ircclouds.irc.api.commands.ICommand;
+import com.ircclouds.irc.api.domain.messages.ServerNumericMessage;
 import com.ircclouds.irc.api.domain.messages.interfaces.IMessage;
 import com.ircclouds.irc.api.listeners.IMessageListener;
 import com.ircclouds.irc.api.negotiators.api.Relay;
+import com.ircclouds.irc.api.om.ServerMessageBuilder;
+import com.ircclouds.irc.api.utils.RawMessageUtils;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,8 +27,7 @@ import org.slf4j.LoggerFactory;
  * The composite negotiator is a stateful negotiator that will start with a
  * clean state upon initiation.
  *
- * FIXME Consider using a second collection and keep primary collection
- * "capabilities" as immutable reference.
+ * TODO add special exception to signal for connection abort. This may be used by SASL capability to signal to abort connection if sasl is NAKed.
  *
  * @author Danny van Heumen
  */
@@ -35,6 +37,11 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 	 * Logger.
 	 */
 	private static final Logger LOG = LoggerFactory.getLogger(CompositeNegotiator.class);
+
+	/**
+	 * Message builder for Server Numeric Messages.
+	 */
+	private static final ServerMessageBuilder SERVER_MSG_BUILDER = new ServerMessageBuilder();
 
 	private static final Pattern CAPABILITY_LS = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+LS\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
 	private static final Pattern CAPABILITY_ACK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+ACK\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
@@ -158,24 +165,29 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 			// TODO renegotiation after registration is currently not possible
 			return;
 		}
+		final String raw = msg.asRaw();
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("SERVER: " + msg.asRaw());
+			LOG.debug("SERVER: {}", raw);
 		}
-		if (false)
+		if (RawMessageUtils.isServerNumericMessage(raw))
 		{
-			// FIXME detect 001 message indicating that CAP NEG phase has ended,
-			// end CAP NEG phase immediately
-			this.endNegotiation();
+			final ServerNumericMessage numeric = SERVER_MSG_BUILDER.build(raw);
+			if (numeric.getNumericCode() == 1)
+			{
+				// server numeric message 001 is indication that IRC server finished
+				// IRC registration phase. That is an indication that CAP NEG phase
+				// has ended.
+				LOG.warn("Detected IRC server numeric message 001. Apparently CAP NEG phase has ended. Ending negotiation process.");
+				this.endNegotiation();
+				return;
+			}
 		}
-		final String rawmsg = msg.asRaw();
-		final Matcher capLs = CAPABILITY_LS.matcher(rawmsg);
-		final Matcher capAck = CAPABILITY_ACK.matcher(rawmsg);
-		final Matcher capNak = CAPABILITY_NAK.matcher(rawmsg);
+		final Matcher capLs = CAPABILITY_LS.matcher(raw);
+		final Matcher capAck = CAPABILITY_ACK.matcher(raw);
+		final Matcher capNak = CAPABILITY_NAK.matcher(raw);
 		try
 		{
-			// FIXME support sticky capabilities
-			// FIXME support sticky capabilities that don't match the request
 			if (capLs.find())
 			{
 				final LinkedList<Cap> responseCaps = parseResponseCaps(capLs.group(2));
@@ -206,7 +218,6 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 					this.acknowledged.addAll(confirms);
 					feedbackAcknowledgements(confirms);
 				}
-				// FIXME wait for multi-response acks?
 
 				// fall through to start capability conversations immediately,
 				// but do clean the message, since it has already been handled.
@@ -214,17 +225,20 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 			}
 			else if (capNak.find())
 			{
-				LOG.error("Capability request NOT Acknowledged: " + rawmsg +
-						" (this may be due to inconsistent server responses)");
+				LOG.error("Capability request NOT Acknowledged: {} (this may be due to inconsistent server responses)", raw);
 				endNegotiation();
 				return;
 			}
 
-			// The part below is focused on capability conversations with IRC
-			// server.
-			
-			// FIXME make sure that CAP NEG messages aren't passed on to the capability conversation. Negotiator is responsible for those.
+			if (!this.requested.isEmpty())
+			{
+				// Wait for acknowledgement of remaining requests.
+				LOG.info("Not all requested capabilities have been acknowledged yet. Awaiting further CAP ACK messages from server for remaining capabilities. ({})", repr(this.requested));
+				return;
+			}
 
+			// Now that all capabilities are acked/rejected, next part focuses
+			// on enabling capability conversations with the IRC server.
 			Capability cap = conversingCapability();
 			if (cap != null) {
 				// Only start this processing loop if there is at least one
@@ -232,18 +246,17 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 				// message will get processed by this loop, which doesn't make
 				// sense, because this loop is for capability conversations in
 				// the first place.
-				
 				do
 				{
 					boolean continu;
 					if (msg == null)
 					{
-						LOG.debug("Starting conversation of capability: " + cap.getId());
+						LOG.debug("Starting conversation of capability: {}", cap.getId());
 						continu = cap.converse(this.relay, null);
 					}
 					else
 					{
-						LOG.debug("Continuing conversation of capability: " + cap.getId());
+						LOG.debug("Continuing conversation of capability: {}", cap.getId());
 						continu = cap.converse(this.relay, msg.asRaw());
 					}
 					if (continu)
@@ -256,7 +269,7 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 					else
 					{
 						this.conversed.add(cap);
-						LOG.debug("Finished conversation of capability: " + cap.getId());
+						LOG.debug("Finished conversation of capability: {}", cap.getId());
 						msg = null;
 					}
 				}
@@ -332,11 +345,11 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 		unsupported.removeAll(found);
 		if (LOG.isTraceEnabled())
 		{
-			LOG.trace("Supported capabilities: " + repr(found));
+			LOG.trace("Supported capabilities: {}", repr(found));
 		}
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("Unsupported capabilities: " + repr(unsupported));
+			LOG.debug("Unsupported capabilities: {}", repr(unsupported));
 		}
 		return unsupported;
 	}
@@ -354,7 +367,7 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 		requests.removeAll(unsupported);
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("Requesting capabilities: " + repr(requests));
+			LOG.debug("Requesting capabilities: {}", repr(requests));
 		}
 		return requests;
 	}
@@ -368,6 +381,10 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 		for (Capability cap : this.requested)
 		{
 			requestLine.append(repr(cap)).append(' ');
+		}
+		if (requestLine.length() > 510) {
+			// TODO Multiple lines of CAP REQ are not supported yet.
+			LOG.warn("Capability request message is larger than supported by IRC. Some capabilities may not have been requested correctly. Multiple messages containing capability requests are not supported yet.");
 		}
 		send(this.irc, requestLine.toString());
 	}
@@ -403,13 +420,13 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 				}
 				else
 				{
-					// FIXME feedback inverse capability as rejected?
-					LOG.warn("Inverse of requested state was acknowledged by IRC server: " + cap.id + "(" + cap.enabled + ")");
+					// In case of weird server behaviour: if inverse of
+					// capability is acknowledged, then feedback a rejection of
+					// requested capability.
+					LOG.warn("Inverse of requested capability was acknowledged by IRC server: {} ({})", cap.id, cap.enabled);
+					feedbackRejection(Collections.singletonList(request));
 				}
-			}
-			if (!acks.contains(request) && !needsConfirmation.contains(request)) {
-				// FIXME feedback lost capability as rejected?
-				LOG.warn("Capability " + request.getId() + " was not acknowledged by IRC server. (Lost)");
+				this.requested.remove(request);
 			}
 		}
 		this.acknowledged.addAll(acks);

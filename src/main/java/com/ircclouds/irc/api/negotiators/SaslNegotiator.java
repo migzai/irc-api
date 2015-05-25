@@ -16,23 +16,7 @@ import org.slf4j.LoggerFactory;
  * Implementation of a SASL negotiator. This negotiator will negotiate for the
  * 'sasl' extension. If the extension is acknowledged by the IRC server, it will
  * start the authentication procedure and authenticate the user with the
- * credentials provided in the constructor. The implementation currently only
- * supports authentication mechanism PLAIN.
- *
- * Other mechanisms available in context of IRC are:
- * - DH-BLOWFISH (https://github.com/ircv3/ircv3-specifications/blob/master/documentation/sasl-dh-blowfish.md)
- * - DH-AES (https://github.com/ircv3/ircv3-specifications/blob/master/documentation/sasl-dh-aes.md)
- * There appears to be some discussion on the actual value of these mechanisms,
- * because they do not protect against MITM attacks.
- *
- * Apart from that, key sizes may be smaller than the key sizes you get when
- * connecting to an IRC server via a TLS connection. For example, DH-AES is
- * based on AES-128, i.e. a 128 bit AES key. Therefore, it may be more secure to
- * connect with an IRC server over TLS (which may provide AES-256) and use the
- * PLAIN mechanism for authentication, which is already sent over a secure
- * connection.
- *
- * Also see http://kaniini.dereferenced.org/2014/12/26/do-not-use-DH-AES-or-DH-BLOWFISH.html.
+ * credentials provided in the constructor.
  *
  * @author Danny van Heumen
  */
@@ -179,10 +163,11 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 				this.state.abort();
 				this.irc.rawMessage(new CapEndCmd().asString());
 				break;
-			case ERR_SASLABORTED:
-			case ERR_SASLALREADY:
 			case ERR_SASLTOOLONG:
 				this.state.abort();
+				break;
+			case ERR_SASLABORTED:
+			case ERR_SASLALREADY:
 				this.irc.rawMessage(new CapEndCmd().asString());
 				break;
 			default:

@@ -7,6 +7,22 @@ import org.apache.commons.codec.binary.Base64;
 /**
  * State Machine for the SASL authentication protocol.
  *
+ * The implementation currently only supports authentication mechanism
+ * PLAIN. Other mechanisms available in context of IRC are:
+ * - DH-BLOWFISH (https://github.com/ircv3/ircv3-specifications/blob/master/documentation/sasl-dh-blowfish.md)
+ * - DH-AES (https://github.com/ircv3/ircv3-specifications/blob/master/documentation/sasl-dh-aes.md)
+ * There appears to be some discussion on the actual value of these mechanisms,
+ * because they do not protect against MITM attacks.
+ *
+ * Apart from that, key sizes may be smaller than the key sizes you get when
+ * connecting to an IRC server via a TLS connection. For example, DH-AES is
+ * based on AES-128, i.e. a 128 bit AES key. Therefore, it may be more secure to
+ * connect with an IRC server over TLS (which may provide AES-256) and use the
+ * PLAIN mechanism for authentication, which is already sent over a secure
+ * connection.
+ *
+ * Also see http://kaniini.dereferenced.org/2014/12/26/do-not-use-DH-AES-or-DH-BLOWFISH.html.
+ *
  * @author Danny van Heumen
  */
 public class SaslContext
@@ -191,14 +207,13 @@ public class SaslContext
 		@Override
 		void fail(final SaslContext context)
 		{
-			// If we failed to CAP REQ sasl extension, then we cannot continue.
-			abort(context);
+			throw new IllegalStateException("SASL not initiated. Awaiting initiation of request.");
 		}
 
 		@Override
 		void abort(final SaslContext context)
 		{
-			context.setState(new InitialState());
+			throw new IllegalStateException("SASL not initiated. Awaiting initiation of request.");
 		}
 	}
 

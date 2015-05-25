@@ -131,6 +131,7 @@ public class SaslCapability extends VariousMessageListenerAdapter
 		}
 		if (msg == null)
 		{
+			// start of conversation with IRC server
 			this.state = new SaslContext(relay);
 			this.state.init();
 			return true;

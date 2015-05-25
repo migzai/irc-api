@@ -254,7 +254,7 @@ public class SaslContext
 			response.append('\0').append(user).append('\0').append(pass);
 			try
 			{
-				return Base64.encodeBase64String(response.toString().getBytes("UTF-8"));
+				return new String(Base64.encodeBase64(response.toString().getBytes("UTF-8")));
 			}
 			catch (UnsupportedEncodingException e)
 			{

@@ -76,7 +76,7 @@ public class SaslContextTest {
     public void testConfirm(@Mocked final Relay relay) {
         new Expectations() {{
             relay.send("AUTHENTICATE PLAIN");
-            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=\r\n");
+            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=");
         }};
         SaslContext context = new SaslContext(relay);
         context.init();
@@ -87,18 +87,18 @@ public class SaslContextTest {
     public void testConfirmWithMessageCutoff(@Mocked final Relay relay) {
         new Expectations() {{
             relay.send("AUTHENTICATE PLAIN");
-            relay.send("AUTHENTICATE amlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVz77+9amlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVz77+9bXlwYXNzaXNncmVhdG15cGFzc2lzZ3JlYXRteXBhc3Npc2dyZWF0bXlwYXNzaXNncmVhdG15cGFzc2lzZ3JlYXRteXBhc3Npc2dyZWF0bX");
+            relay.send("AUTHENTICATE amlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzamlsbGVzAGppbGxlc2ppbGxlc2ppbGxlc2ppbGxlc2ppbGxlc2ppbGxlc2ppbGxlc2ppbGxlc2ppbGxlc2ppbGxlcwBzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWVzZXNhbWV");
         }};
         SaslContext context = new SaslContext(relay);
         context.init();
-        context.confirm("+", "jillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjilles", "jillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjilles", "mypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreatmypassisgreat");
+        context.confirm("+", "jillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjillesjilles", "jillesjillesjillesjillesjillesjillesjillesjillesjillesjilles", "sesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesamesesame");
     }
 
     @Test
     public void testConfirmLoggedIn(@Mocked final Relay relay) {
         new Expectations() {{
             relay.send("AUTHENTICATE PLAIN");
-            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=\r\n");
+            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=");
         }};
         SaslContext context = new SaslContext(relay);
         context.init();
@@ -110,7 +110,7 @@ public class SaslContextTest {
     public void testConfirmSuccess(@Mocked final Relay relay) {
         new Expectations() {{
             relay.send("AUTHENTICATE PLAIN");
-            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=\r\n");
+            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=");
         }};
         SaslContext context = new SaslContext(relay);
         context.init();
@@ -122,7 +122,7 @@ public class SaslContextTest {
     public void testFullyAuthenticated(@Mocked final Relay relay) {
         new Expectations() {{
             relay.send("AUTHENTICATE PLAIN");
-            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=\r\n");
+            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=");
         }};
         SaslContext context = new SaslContext(relay);
         context.init();
@@ -146,7 +146,7 @@ public class SaslContextTest {
     public void testAbortOnFailedAuthentication(@Mocked final Relay relay) {
         new Expectations() {{
             relay.send("AUTHENTICATE PLAIN");
-            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=\r\n");
+            relay.send("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=");
             relay.send("AUTHENTICATE *");
         }};
         SaslContext context = new SaslContext(relay);

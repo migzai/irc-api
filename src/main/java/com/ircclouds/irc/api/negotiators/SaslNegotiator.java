@@ -95,7 +95,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 			{
 				if (LOG.isDebugEnabled())
 				{
-					LOG.debug("CLIENT: " + msg);
+					LOG.debug("CLIENT: {}", msg);
 				}
 				SaslNegotiator.this.irc.rawMessage(msg);
 			}
@@ -108,7 +108,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 	{
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("SERVER: " + msg.asRaw());
+			LOG.debug("SERVER: {}", msg.asRaw());
 		}
 		final String rawmsg = msg.asRaw();
 		final Matcher capAck = CAPABILITY_ACK.matcher(rawmsg);
@@ -158,7 +158,7 @@ public class SaslNegotiator extends VariousMessageListenerAdapter implements Cap
 	{
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("SERVER: " + msg.asRaw());
+			LOG.debug("SERVER: {}", msg.asRaw());
 		}
 		try
 		{

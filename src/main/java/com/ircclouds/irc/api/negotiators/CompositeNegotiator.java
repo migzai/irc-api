@@ -13,6 +13,7 @@ import com.ircclouds.irc.api.negotiators.api.Relay;
 import com.ircclouds.irc.api.om.ServerMessageBuilder;
 import com.ircclouds.irc.api.utils.RawMessageUtils;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -399,8 +400,10 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 	{
 		final LinkedList<Capability> acks = new LinkedList<Capability>();
 		final LinkedList<Capability> needsConfirmation = new LinkedList<Capability>();
-		for (Capability request : this.requested)
+		final Iterator<Capability> requestIt = this.requested.iterator();
+		while (requestIt.hasNext())
 		{
+			Capability request = requestIt.next();
 			for (Cap cap : capAck)
 			{
 				if (!request.getId().equals(cap.id))
@@ -426,7 +429,8 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 					LOG.warn("Inverse of requested capability was acknowledged by IRC server: {} ({})", cap.id, cap.enabled);
 					feedbackRejection(Collections.singletonList(request));
 				}
-				this.requested.remove(request);
+				requestIt.remove();
+				break;
 			}
 		}
 		this.acknowledged.addAll(acks);

@@ -29,6 +29,7 @@ public class ConnectCmd implements ICommand
 		this.capInitCmd = capInitCmd;
 	}
 
+	@Override
 	public String asString()
 	{
 		return new StringBuffer()

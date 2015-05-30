@@ -28,8 +28,8 @@ public class IRCApiImpl implements IRCApi
 {
 	private static final Logger LOG = LoggerFactory.getLogger(IRCApiImpl.class);
 
-	private IIRCSession session;
-	private AbstractExecuteCommandListener executeCmdListener;
+	private final IIRCSession session;
+	private final AbstractExecuteCommandListener executeCmdListener;
 	private IIRCState state;
 	private int asyncId = 0;
 
@@ -44,7 +44,7 @@ public class IRCApiImpl implements IRCApi
 		}
 	};
 
-	private DCCManagerImpl dccManager;
+	private final DCCManagerImpl dccManager;
 
 	/**
 	 * 
@@ -81,6 +81,12 @@ public class IRCApiImpl implements IRCApi
 				session));
 
 		dccManager = new DCCManagerImpl(this);
+	}
+
+	@Override
+	public void connect(final IServerParameters aServerParameters, final Callback<IIRCState> aCallback)
+	{
+		connect(aServerParameters, aCallback, null);
 	}
 
 	@Override

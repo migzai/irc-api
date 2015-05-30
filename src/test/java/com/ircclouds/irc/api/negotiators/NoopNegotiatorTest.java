@@ -25,7 +25,6 @@ public class NoopNegotiatorTest
 	public void testInitiate(@Mocked IRCApi irc)
 	{
 		CapCmd cmd = neg.initiate(irc);
-		assertNotNull(cmd);
 		assertEquals("CAP END", cmd.asString());
 	}
 

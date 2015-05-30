@@ -10,8 +10,6 @@ import com.ircclouds.irc.api.domain.messages.ServerNumericMessage;
 import com.ircclouds.irc.api.domain.messages.interfaces.IMessage;
 import com.ircclouds.irc.api.listeners.IMessageListener;
 import com.ircclouds.irc.api.negotiators.api.Relay;
-import com.ircclouds.irc.api.om.ServerMessageBuilder;
-import com.ircclouds.irc.api.utils.RawMessageUtils;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,11 +36,6 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 	 * Logger.
 	 */
 	private static final Logger LOG = LoggerFactory.getLogger(CompositeNegotiator.class);
-
-	/**
-	 * Message builder for Server Numeric Messages.
-	 */
-	private static final ServerMessageBuilder SERVER_MSG_BUILDER = new ServerMessageBuilder();
 
 	private static final Pattern CAPABILITY_LS = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+LS\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
 	private static final Pattern CAPABILITY_ACK = Pattern.compile("\\sCAP\\s+([^\\s]+)\\s+ACK\\s+:([\\w-_]+(?:\\s+[\\w-_]+)*)\\s*$", 0);
@@ -166,14 +159,13 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 			// TODO renegotiation after registration is currently not possible
 			return;
 		}
-		final String raw = msg.asRaw();
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("SERVER: {}", raw);
+			LOG.debug("SERVER: {}", msg.asRaw());
 		}
-		if (RawMessageUtils.isServerNumericMessage(raw))
+		if (msg instanceof ServerNumericMessage)
 		{
-			final ServerNumericMessage numeric = SERVER_MSG_BUILDER.build(raw);
+			final ServerNumericMessage numeric = (ServerNumericMessage) msg;
 			if (numeric.getNumericCode() == 1)
 			{
 				// server numeric message 001 is indication that IRC server finished
@@ -184,6 +176,7 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 				return;
 			}
 		}
+		final String raw = msg.asRaw();
 		final Matcher capLs = CAPABILITY_LS.matcher(raw);
 		final Matcher capAck = CAPABILITY_ACK.matcher(raw);
 		final Matcher capNak = CAPABILITY_NAK.matcher(raw);
@@ -241,7 +234,8 @@ public class CompositeNegotiator implements CapabilityNegotiator, IMessageListen
 			// Now that all capabilities are acked/rejected, next part focuses
 			// on enabling capability conversations with the IRC server.
 			Capability cap = conversingCapability();
-			if (cap != null) {
+			if (cap != null)
+			{
 				// Only start this processing loop if there is at least one
 				// capability that is in conversation. Otherwise every unknown
 				// message will get processed by this loop, which doesn't make

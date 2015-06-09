@@ -7,6 +7,7 @@ import javax.net.ssl.*;
 import com.ircclouds.irc.api.commands.*;
 import com.ircclouds.irc.api.comms.*;
 import com.ircclouds.irc.api.domain.*;
+import com.ircclouds.irc.api.domain.messages.*;
 import com.ircclouds.irc.api.filters.*;
 import com.ircclouds.irc.api.listeners.*;
 import com.ircclouds.irc.api.state.*;
@@ -143,4 +144,20 @@ public abstract class AbstractIRCSession implements IIRCSession
 	}
 
 	protected abstract IRCServerOptions getIRCServerOptions();
+
+	@Override
+	public void dispatchClientError(final Exception e)
+	{
+		final IMessageDispatcher currentDispatcher = this.dispatcher;
+		new Thread()
+		{
+
+			@Override
+			public void run()
+			{
+				final ClientErrorMessage errorMsg = new ClientErrorMessage(e);
+				currentDispatcher.dispatch(errorMsg, TargetListeners.ALL);
+			}
+		}.start();
+	}
 }

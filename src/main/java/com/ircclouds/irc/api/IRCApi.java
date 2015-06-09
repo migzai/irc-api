@@ -19,14 +19,55 @@ import com.ircclouds.irc.api.state.*;
  *  @author miguel@lebane.se  
  */
 public interface IRCApi
-{	
+{
 	/**
 	 * Asynchronous connect
-	 * 
-	 * @param aServerParameters The IRC Server connection parameters
-	 * @param aCallback A callback that will be invoked when the connection is established, and will return an {@link IIRCState} on success, or an {@link Exception} in case of failure
+	 *
+	 * Connect to an IRC server without enabling IRCv3.
+	 *
+	 * @param aServerParameters
+	 *            The IRC Server connection parameters
+	 * @param aCallback
+	 *            A callback that will be invoked when the connection is
+	 *            established, and will return an {@link IIRCState} on success,
+	 *            or an {@link Exception} in case of failure
 	 */
 	void connect(IServerParameters aServerParameters, Callback<IIRCState> aCallback);
+
+	/**
+	 * Asynchronous connect
+	 *
+	 * Connect to an IRC server with ability to enable IRCv3 and (optionally)
+	 * negotiate for capabilities.
+	 *
+	 * @param aServerParameters
+	 *            The IRC Server connection parameters
+	 * @param aCallback
+	 *            A callback that will be invoked when the connection is
+	 *            established, and will return an {@link IIRCState} on success,
+	 *            or an {@link Exception} in case of failure
+	 * @param negotiator
+	 *            CAP negotiator instance used when establishing the IRC
+	 *            connection. If <code>null</code> instance is provided, then
+	 *            capability negotiation is not started and IRCv3 will not be
+	 *            available.<br/>
+	 *            Please refer to available negotiators in package
+	 *            {@link com.ircclouds.irc.api.negotiators} for various options.
+	 *            The {@link com.ircclouds.irc.api.negotiators.NoopNegotiator}
+	 *            is useful for case where you want to let the IRC server know
+	 *            that IRCv3 support is available, but no capabilities need to
+	 *            be negotiated. The {@link com.ircclouds.irc.api.negotiators.CompositeNegotiator}
+	 *            is most likely the negotiator to use for your use case.<br/>
+	 *            <b>Note</b> that the negotiator is expected to
+	 *            take over (transparently, irc-api will not signal the
+	 *            instance) when CAP negotiation has started. For this purpose,
+	 *            the provided negotiator instance is added to the private
+	 *            listeners collection such that it will receive communications.
+	 *            After CAP END has been sent, as by spec the server will resume
+	 *            the normal registration process starting with message 001 and
+	 *            irc-api will then continue its standard procedure.
+	 */
+	void connect(IServerParameters aServerParameters, Callback<IIRCState> aCallback, CapabilityNegotiator negotiator);
 
 	/**
 	 * Synchronous disconnect

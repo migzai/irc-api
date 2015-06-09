@@ -38,7 +38,7 @@ public class MockUtils
 
 				_cdl.countDown();
 			}
-		});
+		}, null);
 
 		_cdl.await(aWaitingDuration, TimeUnit.SECONDS);
 		if (readerThread != null)

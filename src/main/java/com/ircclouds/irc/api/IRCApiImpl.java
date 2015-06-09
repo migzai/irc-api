@@ -28,8 +28,8 @@ public class IRCApiImpl implements IRCApi
 {
 	private static final Logger LOG = LoggerFactory.getLogger(IRCApiImpl.class);
 
-	private IIRCSession session;
-	private AbstractExecuteCommandListener executeCmdListener;
+	private final IIRCSession session;
+	private final AbstractExecuteCommandListener executeCmdListener;
 	private IIRCState state;
 	private int asyncId = 0;
 
@@ -44,7 +44,7 @@ public class IRCApiImpl implements IRCApi
 		}
 	};
 
-	private DCCManagerImpl dccManager;
+	private final DCCManagerImpl dccManager;
 
 	/**
 	 * 
@@ -84,7 +84,13 @@ public class IRCApiImpl implements IRCApi
 	}
 
 	@Override
-	public void connect(final IServerParameters aServerParameters, Callback<IIRCState> aCallback)
+	public void connect(final IServerParameters aServerParameters, final Callback<IIRCState> aCallback)
+	{
+		connect(aServerParameters, aCallback, null);
+	}
+
+	@Override
+	public void connect(final IServerParameters aServerParameters, final Callback<IIRCState> aCallback, final CapabilityNegotiator negotiator)
 	{
 		if (state.isConnected())
 		{
@@ -101,7 +107,17 @@ public class IRCApiImpl implements IRCApi
 		{
 			if (_isOpen = session.open(aServerParameters.getServer(), _connectCallback))
 			{
-				executeAsync(new ConnectCmd(aServerParameters), aCallback, _d);
+				final CapCmd initCmd;
+				if (negotiator == null)
+				{
+					initCmd = null;
+				}
+				else
+				{
+					session.addListeners(MESSAGE_VISIBILITY.PRIVATE, negotiator);
+					initCmd = negotiator.initiate(this);
+				}
+				executeAsync(new ConnectCmd(aServerParameters, initCmd), aCallback, _d);
 			}
 			else
 			{
@@ -534,6 +550,12 @@ public class IRCApiImpl implements IRCApi
 		{
 			getCommandServer().execute(aCommand);
 		}
+		catch (SocketException aExc)
+		{
+			((IRCStateImpl) this.state).setConnected(false);
+			dispatchError(aExc);
+			throw new RuntimeException(aExc);
+		}
 		catch (IOException aExc)
 		{
 			LOG.error("Error executing command", aExc);
@@ -601,12 +623,24 @@ public class IRCApiImpl implements IRCApi
 		{
 			getCommandServer().execute(aCommand);
 		}
+		catch (SocketException aExc)
+		{
+			((IRCStateImpl) this.state).setConnected(false);
+			dispatchError(aExc);
+			tryInvokeCallback(aCallback, aDirty, aExc);
+		}
 		catch (IOException aExc)
 		{
 			LOG.error("Error executing command", aExc);
 
 			tryInvokeCallback(aCallback, aDirty, aExc);
 		}
+	}
+
+	private void dispatchError(final Exception aExc)
+	{
+		LOG.debug("Connectivity error: socket exception are non-recoverable, dispatching error message.", aExc);
+		this.session.dispatchClientError(aExc);
 	}
 
 	private <R> Callback<R> getDirtyCallback(final Callback<R> aCallback, final Dirty aDirty)

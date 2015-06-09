@@ -99,7 +99,17 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 		messsageListener.onServerMsg(aMsg);
 		kickUserListener.onServerMessage(aMsg);
 	}
-	
+
+	/**
+	 * (Server-side) error message handling.
+	 *
+	 * NOTE: There exists 'onClientError'. In this execute listener we are
+	 * solely interested in error handling <em>after</em> the command has been
+	 * executed. In case an exception is thrown during the initial execution,
+	 * then it will be discovered immediately.
+	 *
+	 * @param aMsg the error message
+	 */
 	@Override
 	public void onError(ErrorMessage aMsg)
 	{
@@ -107,7 +117,7 @@ public abstract class AbstractExecuteCommandListener extends VariousMessageListe
 		{
 			connectListener.onError(aMsg);
 		}
-		
+
 		if (getIRCState() instanceof IRCStateImpl)
 		{
 			((IRCStateImpl) (getIRCState())).setConnected(false);

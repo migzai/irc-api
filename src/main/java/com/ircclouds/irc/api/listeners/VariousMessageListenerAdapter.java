@@ -101,7 +101,17 @@ public class VariousMessageListenerAdapter implements IVariousMessageListener
 	}
 
 	@Override
+	public void onClientError(ClientErrorMessage aMsg)
+	{
+	}
+
+	@Override
 	public void onChannelMode(ChannelModeMessage aMsg)
+	{
+	}
+
+	@Override
+	public void onUserAway(AwayMessage aMsg)
 	{
 	}
 }

@@ -1,4 +1,4 @@
-IRC-API is an IRC (Internet Relay Chat) API client library written in Java.  The API offers a synchronous as well as an asynchronous programming model to the user, and has the ability to save the IRC connection state per session.
+IRC-API is an IRC (Internet Relay Chat) API client library written in Java.  The API offers a synchronous as well as an asynchronous programming model to the user, and has the ability to track the IRC connection state per session.
 
 The API has been tested on various IRC networks, including EFnet, DALnet, Undernet, and offers a useful and detailed client interface to the Server it connects to.
 

@@ -12,6 +12,7 @@ Make sure you use the latest build!
 <li>State retention</li>
 <li>Callbacks support / Asynchronous programming model</li>
 <li>Message Listeners, Message Filters</li>
+<li>Proxy support</li>
 <li>SSL support</li>
 <li>DCC support</li>
 <li>IPV6 support</li>

@@ -1,6 +1,6 @@
-IRC-API is a state(ful)/(less), (a)synchronous IRC API written in Java.  The API offers an (a)synchronous programming model, and has the ability to save the IRC connection state per user.  SSL support has lately been added, and more features are to come soon.
+IRC-API is an IRC (Internet Relay Chat) API client library written in Java.  The API offers a synchronous as well as an asynchronous programming model to the user, and has the ability to save the IRC connection state per session.
 
-The API has been tested on various IRC networks, i.e. EFnet, DALnet, Undernet, and offers a useful and detailed interface to the Server it connects to.
+The API has been tested on various IRC networks, including EFnet, DALnet, Undernet, and offers a useful and detailed client interface to the Server it connects to.
 
 This is an open source project, and feedback is welcome from end-users as well as from developers.
 
@@ -9,14 +9,14 @@ Make sure you use the latest build!
 
 <h3> Main features</h3>
 <ul>
-<li>State(ful/less) API</li>
-<li>Callbacks support / Asynchronous</li>
-<li>Message Listeners - Message Filters</li>
+<li>State retention</li>
+<li>Callbacks support / Asynchronous programming model</li>
+<li>Message Listeners, Message Filters</li>
 <li>SSL support</li>
 <li>DCC support</li>
 <li>IPV6 support</li>
-<li>SLF4J/Maven integration</li>
 <li>Java NIO</li>
+<li>SLF4J/Maven integration</li>
 </ul>
 
 <h3> Documentation</h3>
